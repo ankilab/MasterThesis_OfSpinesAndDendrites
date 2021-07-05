@@ -1,1 +1,1 @@
-# MasterThesis_OfSpinesAndDendrites
+# Master Thesis: Of Spines And Dendrites

@@ -2,13 +2,15 @@ from __future__ import print_function, unicode_literals, absolute_import, divisi
 import numpy as np
 import matplotlib.pyplot as plt
 import os
-os.environ["CUDA_DEVICE_ORDER"]="PCI_BUS_ID"
-os.environ["CUDA_VISIBLE_DEVICES"]="0" # or 1 or 2 or 3
+from functools import partial
+
+os.environ["CUDA_DEVICE_ORDER"] = "PCI_BUS_ID"
+os.environ["CUDA_VISIBLE_DEVICES"] = "0"  # or 1 or 2 or 3
 # from csbdeep.utils import axes_dict, plot_some, plot_history
 # from csbdeep.io import load_training_data
 # from csbdeep.models import Config, CARE
 # from csbdeep.utils import normalize
-import json
+import multiprocessing
 # import tensorflow as tf
 # import fbpconvnet_pytorch as fbp
 from scipy.signal import fftconvolve, convolve
@@ -24,7 +26,9 @@ import pickle
 # import cupy as cp
 # import cupyx.scipy.signal as csig
 
-from mu_net import denoiser as den
+from mu_net1 import denoiser as den
+
+
 # config = tf.compat.v1.ConfigProto()
 # config.gpu_options.allow_growth = True
 # sess = tf.compat.v1.Session(config=config)
@@ -33,7 +37,7 @@ from mu_net import denoiser as den
 
 class Deconvolver:
     def __init__(self, args):
-        self.data_path = os.path.join(os.getcwd(),args['data_path'])
+        self.data_path = os.path.join(os.getcwd(), args['data_path'])
         dir = os.path.join(os.getcwd(), self.data_path, args['result_path'])
         self.res_path = dir
 
@@ -60,50 +64,74 @@ class BlindRL(Deconvolver):
         super().__init__(args)
         self.psf_dir = args['psf']
         self.last_img = None
+        self.pixels_padding = 20 if not 'pixels_padding' in args.keys() else args['pixels_padding']
+        self.planes_padding = 10 if not 'planes_padding' in args.keys() else args['planes_padding']
+        self._init_res_dict()
 
-    def preprocess(self, img, sigma= 1):
+    def preprocess(self, img, sigma=1):
         smoothed = gaussian(img, sigma=sigma)
         return smoothed
 
     def train(self, **kwargs):
         pass
 
-    def predict(self, data_dir, n_iter_outer=10, n_iter_image=5, n_iter_psf=5, sigma=1, plot_frequency=1,
-                eval_img_steps=False, save_intermediate_res = False, pixels_padding =20, planes_padding=20):
+    def predict(self, data_dir, n_iter_outer=10, n_iter_image=5, n_iter_psf=5, sigma=1, plot_frequency=100,
+                eval_img_steps=False, save_intermediate_res=False, parallel = True):
+
+        self.data_path = data_dir
+        self._init_res_dict()
+
         files = [f for f in os.listdir(data_dir) if f.endswith('.tif')]
-        res_dict = {}
-        res_dict['n_iter_outer'] = n_iter_outer
-        res_dict['n_iter_image'] = n_iter_image
-        res_dict['n_iter_psf'] = n_iter_psf
-        res_dict['sigma'] = sigma
-        res_dict['Runtime_per_image'] = []
+        l_file = len(files)
+        self.res_dict['n_iter_outer'] = n_iter_outer
+        self.res_dict['n_iter_image'] = n_iter_image
+        self.res_dict['n_iter_psf'] = n_iter_psf
+        self.res_dict['sigma'] = sigma
+        self.res_dict['Runtime_per_image'] = []
 
-        for (idx, nm) in enumerate(files):
-            X = io.imread(os.path.join(data_dir,nm))
+        # Determine amount of processes required
+        n_cores = multiprocessing.cpu_count() if parallel else 1
+        n_processes = 1
+        if parallel:
+            if l_file <= n_cores:
+                n_processes = l_file
+            else:
+                n_processes = n_cores
 
-            g = self._get_psf(X.shape[1] + pixels_padding * 2, X.shape[0] + planes_padding * 2)
-            self.last_img = nm
-            start = timeit.default_timer()
-            f, psf, metrics = self.predict_img(X, g, n_iter_outer, n_iter_image, n_iter_psf, sigma, plot_frequency,
-                                               eval_img_steps, save_intermediate_res=save_intermediate_res,
-                                               pixels_padding=pixels_padding, planes_padding=planes_padding)
-            stop = timeit.default_timer()
+        f_x = partial(self._process_img, n_iter_outer = n_iter_outer, n_iter_image= n_iter_image, n_iter_psf= n_iter_psf,
+                      sigma= sigma, eval_img_steps=eval_img_steps, save_intermediate_res=save_intermediate_res,
+                      plot_frequency= plot_frequency)
 
-            # Save results
-            res_dict['Runtime_per_image'].append(stop-start)
-            res_dict[nm[:-4]] = metrics
-            name = os.path.join(self.res_path,'iter_' + str(n_iter_outer)+ nm)
-            tif.imsave(name, f)
-            tif.imsave(name[:-4] + '_psf.tif',psf)
+        with multiprocessing.Pool(processes=n_processes) as p:
+            p.map(f_x, files)
 
-        with open(os.path.join(self.res_path,f'results_{n_iter_outer}_{n_iter_image}_{n_iter_psf}_{sigma}.pkl'), 'wb') \
+        # Save results
+        with open(os.path.join(self.res_path, f'results_{n_iter_outer}_{n_iter_image}_{n_iter_psf}_{sigma}.pkl'), 'wb') \
                 as outfile:
-            pickle.dump(res_dict, outfile, pickle.HIGHEST_PROTOCOL)
+            pickle.dump(self.res_dict, outfile, pickle.HIGHEST_PROTOCOL)
 
-    def predict_img(self, X, psf, n_iter_outer=10, n_iter_image=5, n_iter_psf=5, sigma = 1, plot_frequency =1,
-                    eval_img_steps = False, save_intermediate_res = False, pixels_padding = 20, planes_padding=20):
+    def _init_res_dict(self):
+        self.res_dict = {}
+
+    def _load_img(self, file_name):
+        X = io.imread(os.path.join(self.data_path, file_name))
+        g = self._get_psf(X.shape[1] + self.pixels_padding * 2, X.shape[0] + self.planes_padding * 2)
+        return X, g
+
+    def _process_img(self, file_name, n_iter_outer, n_iter_image, n_iter_psf, sigma,
+                eval_img_steps, save_intermediate_res, plot_frequency=100):
+        X,g = self._load_img(file_name)
+        self.predict_img(X, g, n_iter_outer, n_iter_image, n_iter_psf, sigma, plot_frequency=plot_frequency,
+                         eval_img_steps=eval_img_steps, save_intermediate_res=save_intermediate_res, file_name=file_name)
+
+    def predict_img(self, X, psf, n_iter_outer=10, n_iter_image=5, n_iter_psf=5, sigma=1, plot_frequency=0,
+                    eval_img_steps=False, save_intermediate_res=False, file_name = ''):
+        # Start time measurement
+        start = timeit.default_timer()
+
+        # Preprocessing
         X, g = self._constraints(X, psf)
-        X_padded = self._pad(X, pixels_padding, planes_padding)
+        X_padded = self._pad(X, self.pixels_padding, self.planes_padding)
         X_smoothed = self.preprocess(X_padded, sigma=sigma)
 
         # Initial guess for object distribution
@@ -122,18 +150,13 @@ class BlindRL(Deconvolver):
 
             # Save intermediate result
             if save_intermediate_res:
-                f_unpad = self._unpad(f, pixels_padding, planes_padding)
-                psf_unpad = self._unpad(psf, pixels_padding, planes_padding)
-                name_img = os.path.join(self.res_path,'iter_' + str(k) + self.last_img)
-                tif.imsave(name_img, f_unpad)
-                name_psf = os.path.join(self.res_path, 'iter_' + str(k) +self.last_img[:-4] +'_psf.tif')
-                tif.imsave(name_psf, psf_unpad)
+                self._save_res(f, psf, k, file_name)
 
             for i in range(n_iter_psf):  # m RL iterations, refining PSF
-                psf = fftconvolve((X_smoothed / (convolve(psf, f, mode='same') + epsilon)), f[::-1, ::-1, ::-1],
-                             mode='same') * psf
+                psf = convolve((X_smoothed / (convolve(psf, f, mode='same') + epsilon)), f[::-1, ::-1, ::-1],
+                               mode='same') * psf
             for i in range(n_iter_image):  # m RL iterations, refining reconstruction
-                f = fftconvolve((X_smoothed / (convolve(f, psf, mode='same') + epsilon)), psf[::-1, ::-1, ::-1],
+                f = convolve((X_smoothed / (convolve(f, psf, mode='same') + epsilon)), psf[::-1, ::-1, ::-1],
                              mode='same') * f
 
                 if eval_img_steps:
@@ -153,19 +176,31 @@ class BlindRL(Deconvolver):
                 plt.imshow(f[11, :, :])
                 plt.title(k)
                 plt.show()
-        f_unpad = self._unpad(f, pixels_padding, planes_padding)
-        psf_unpad = self._unpad(psf, pixels_padding, planes_padding)
+            print(f'Image {file_name}, Iteration {k} completed.')
+        stop = timeit.default_timer()
+        res['Runtime'].append(stop - start)
+        self.res_dict[file_name[:-4]] = res
+        f_unpad, psf_unpad = self._save_res(f, psf, n_iter_outer, file_name)
         return f_unpad, psf_unpad, res
 
-    def _get_psf(self,size_xy, size_z):
-        z = 150 if size_z%2 ==0 else 151
+    def _get_psf(self, size_xy, size_z):
+        z = 150 if size_z % 2 == 0 else 151
 
         psf_file = 'PSF_' + str(size_xy) + '_' + str(z) + '.tif'
 
         # Initial guess for PSF
         g = io.imread(os.path.join(self.psf_dir, psf_file), plugin='pil')
-        offset = int((z-size_z)/2)
-        return g[offset:g.shape[0]-offset, :,:]
+        offset = int((z - size_z) / 2)
+        return g[offset:g.shape[0] - offset, :, :]
+
+    def _save_res(self, f, psf, iteration, f_name='x.tif'):
+        f_unpad = self._unpad(f, self.pixels_padding, self.planes_padding)
+        psf_unpad = self._unpad(psf, self.pixels_padding, self.planes_padding)
+        name_img = os.path.join(self.res_path, 'iter_' + str(iteration) + f_name)
+        tif.imsave(name_img, f_unpad)
+        name_psf = os.path.join(self.res_path, 'iter_' + str(iteration) + f_name[:-4] + '_psf.tif')
+        tif.imsave(name_psf, psf_unpad)
+        return f_unpad, psf_unpad
 
     def _constraints(self, f, psf):
         # Non-negativity
@@ -186,14 +221,10 @@ class BlindRL(Deconvolver):
 
         return f, psf
 
-    def _pad(self, img, pixels = 20, planes=20):
-        (z, x, y) = img.shape
-        padded = np.pad(img, ((planes, planes), (pixels, pixels), (pixels, pixels)), 'reflect')
-        # padded = np.zeros((z+2*planes, x+2*pixels, y+2*pixels))
-        # padded[planes:planes+z, pixels:x+pixels, pixels:y+pixels] = img
-        return padded
+    def _pad(self, img, pixels=20, planes=10):
+        return np.pad(img, ((planes, planes), (pixels, pixels), (pixels, pixels)), 'reflect')
 
-    def _unpad(self, img, pixels=20 , planes=20):
+    def _unpad(self, img, pixels=20, planes=10):
         '''
         Crop the image by the number of pixels specified in x and y direction, by the amount of planes in z direction.
         :param img: Input image
@@ -203,9 +234,9 @@ class BlindRL(Deconvolver):
         '''
 
         pixels = int(pixels)
-        plane = int(planes)
-        (z,x,y) = img.shape
-        return img[planes:z-planes, pixels:x-pixels, pixels:y-pixels]
+        planes = int(planes)
+        (z, x, y) = img.shape
+        return img[planes:z - planes, pixels:x - pixels, pixels:y - pixels]
 
     #
     # def _generate_psf(self):
@@ -220,6 +251,7 @@ class BlindRL(Deconvolver):
     #     ij.py.run_plugin(plugin, args)
     #
     #     pass
+
 
 # class CAREDeconv(Deconvolver):
 #     def __init__(self, args):
@@ -297,10 +329,10 @@ class Mu_Net(Deconvolver):
     def preprocess(self):
         return NotImplementedError
 
-    def train(self, data_dir, validation_split =0.1, epochs =10, batch_size=8, train_steps=50):
+    def train(self, data_dir, validation_split=0.1, epochs=10, batch_size=8, train_steps=50):
         self.denoiser.train()
 
-    def predict(self, X, model_dir, Y= None, plot =False):
+    def predict(self, X, model_dir, Y=None, plot=False):
         batch_sz = 1
         self.denoiser.load_model(batch_sz)
 
@@ -333,6 +365,7 @@ class Mu_Net(Deconvolver):
 
 
 REGISTRY = {}
+REGISTRY['BlindRL'] = BlindRL
 # REGISTRY['csbdeep'] = CAREDeconv
 # REGISTRY['mu-net'] = Mu_Net
 # REGISTRY['fbpconvnet'] =FBP_ConvNet

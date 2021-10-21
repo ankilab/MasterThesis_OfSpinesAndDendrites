@@ -7,9 +7,9 @@ import tifffile as tif
 import os
 import glob
 from pystackreg import StackReg
-import pystackreg
 from skimage import transform, io, exposure
 import pandas as pd
+
 
 def display(im3d, cmap="gray", step=1):
     n_col = 5
@@ -96,6 +96,7 @@ def overlay_images(imgs, equalize=False, aggregator=np.mean):
 
     return aggregator(imgs, axis=0)
 
+
 def load_stack_from_drive(path, mouse, required_string=''):
     sub_dirs = [x for x in os.listdir(path)]
     img_dirs= [k for k in sub_dirs if mouse[0:4] in k]
@@ -123,7 +124,7 @@ def register_stacks_from_drive(csv_file, result_folder):
     df = pd.read_csv(csv_file, sep = ';')
     reg_files = df[df['Train']=='X']
     for (idx, row) in reg_files.iterrows():
-        path = 'D:/' + row['Researcher'] + '/25x_1NA_Raw/' + row['Mouse'] + '/' + row['Date'] +'/' +row['Region']
+        path = 'G:/' + row['Researcher'] + '/25x_1NA_Raw/' + row['Mouse'] + '/' + row['Date'] +'/' +row['Region']
         stack = load_stack_from_drive(path, row['Mouse'], required_string='000001.ome')
         reg_stack = register_3d_stack_from_middle(stack, ['affine'])
         save_name = os.path.join(result_folder, row['Researcher'] +'_'+ row['Mouse'] + '_' + row['Date']

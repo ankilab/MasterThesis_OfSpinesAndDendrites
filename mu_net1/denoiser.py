@@ -28,6 +28,7 @@ class Denoiser():
         self.max_value = 5000.0  # we set maximum value to 5,000 of microscope output
         self.learning_rate = None
         self.model_setup()
+        print(self.model.summary)
         self.loss_setup()
         self.data_setup()
 
@@ -37,19 +38,19 @@ class Denoiser():
         self.label = tf.keras.layers.Input(shape=(self.sz_z, self.sz, self.sz, 1), batch_size=self.batch_sz,
                                            name='label', dtype=tf.float32)
 
-        self.L2_img = tf.keras.layers.Conv3D(filters=tf.constant(1.0, shape=[1, 1, 1, 1, 1]), strides=(1, 2, 2, 2, 1),
-                                             padding='SAME')(self.img)
-        self.L1_img = tf.keras.layers.Conv3D(filters=tf.constant(1.0, shape=[1, 1, 1, 1, 1]), strides=(1, 4, 4, 4, 1),
-                                             padding='SAME')(self.img)
-        self.L0_img = tf.keras.layers.Conv3D(filters=tf.constant(1.0, shape=[1, 1, 1, 1, 1]), strides=(1, 8, 8, 8, 1),
-                                             padding='SAME')(self.img)
+        self.L2_img = tf.nn.conv3d(self.img, filters=tf.constant(1.0, shape=[1, 1, 1, 1, 1]), strides=(1, 2, 2, 2, 1),
+                                             padding='SAME')
+        self.L1_img = tf.nn.conv3d(self.img, filters=tf.constant(1.0, shape=[1, 1, 1, 1, 1]), strides=(1, 4, 4, 4, 1),
+                                             padding='SAME')
+        self.L0_img = tf.nn.conv3d(self.img, filters=tf.constant(1.0, shape=[1, 1, 1, 1, 1]), strides=(1, 8, 8, 8, 1),
+                                             padding='SAME')
 
-        self.L2_label = tf.keras.layers.Conv3D(filters=tf.constant(1.0, shape=[1, 1, 1, 1, 1]), strides=(1, 2, 2, 2, 1),
-                                               padding='SAME')(self.label)
-        self.L1_label = tf.keras.layers.Conv3D(filters=tf.constant(1.0, shape=[1, 1, 1, 1, 1]), strides=(1, 4, 4, 4, 1),
-                                               padding='SAME')(self.label)
-        self.L0_label = tf.keras.layers.Conv3D(filters=tf.constant(1.0, shape=[1, 1, 1, 1, 1]), strides=(1, 8, 8, 8, 1),
-                                               padding='SAME')(self.label)
+        self.L2_label = tf.nn.conv3d(self.label, filters=tf.constant(1.0, shape=[1, 1, 1, 1, 1]), strides=(1, 2, 2, 2, 1),
+                                               padding='SAME')
+        self.L1_label = tf.nn.conv3d(self.label, filters=tf.constant(1.0, shape=[1, 1, 1, 1, 1]), strides=(1, 4, 4, 4, 1),
+                                               padding='SAME')
+        self.L0_label = tf.nn.conv3d(self.label, filters=tf.constant(1.0, shape=[1, 1, 1, 1, 1]), strides=(1, 8, 8, 8, 1),
+                                               padding='SAME')
 
         self.real_img = tf.keras.layers.Input(shape=(self.sz_z, self.sz, self.sz, 1), batch_size=self.batch_sz,
                                               name='real_img', dtype=tf.float32)
@@ -100,8 +101,8 @@ class Denoiser():
         d_loss = (tf.reduce_mean(tf.compat.v1.squared_difference(self.real_rec, 0)) + tf.reduce_mean(
             tf.compat.v1.squared_difference(self.fake_rec, random.uniform(0.9, 1.0)))) * 0.5
 
-        g_optimizer = tf.keras.optimizer.Adam(self.learning_rate * 2, beta_1=0.5)
-        d_optimizer = tf.keras.optimizer.Adam(self.learning_rate, beta_1=0.5)
+        g_optimizer = tf.keras.optimizers.Adam(self.learning_rate * 2, beta_1=0.5)
+        d_optimizer = tf.keras.optimizers.Adam(self.learning_rate, beta_1=0.5)
 
         self.model_vars = tf.compat.v1.trainable_variables()
         g_vars = [var for var in self.model_vars if 'gen' in var.name]

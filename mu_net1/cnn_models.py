@@ -9,12 +9,17 @@ import tensorflow as tf
 
 nf = 16
 fz = 3
+N = 0
 
 
 def build_conv_layer(input_conv, num_filters=32, filter_sz=3, stride=1, padding='SAME', relu_op=False, norm=False):
     if padding == 'VALID':
         input_conv = tf.pad(input_conv, [[0, 0], [1, 1], [1, 1], [1, 1], [0, 0]], "REFLECT")
-    conv = tf.keras.layers.Conv3D(num_filters, filter_sz, stride, 'valid', activation=None, name='conv')(input_conv)
+    global N
+    nx = N
+    N = nx+1
+    conv = tf.keras.layers.Conv3D(num_filters, filter_sz, stride, 'valid', activation=None, name='conv'+str(nx))(input_conv)
+
     if relu_op:
         conv = tf.nn.leaky_relu(conv)
     if norm:
@@ -28,7 +33,11 @@ def build_upconv_layer(input_conv, num_filters=16, filter_sz=3, stride=(2, 2, 2)
     up_sample = tf.keras.layers.UpSampling3D(size=stride)(input_conv)
     if padding == 'VALID':
         up_sample = tf.pad(up_sample, [[0, 0], [1, 1], [1, 1], [1, 1], [0, 0]], "REFLECT")
-    conv = tf.keras.layers.Conv3D(num_filters, filter_sz, 1, 'valid', activation=None, name='conv')(up_sample)
+
+    global N
+    nx = N
+    N = nx+1
+    conv = tf.keras.layers.Conv3D(num_filters, filter_sz, 1, 'valid', activation=None, name='conv'+str(nx))(up_sample)
 
     if relu_op:
         conv = tf.nn.leaky_relu(conv)

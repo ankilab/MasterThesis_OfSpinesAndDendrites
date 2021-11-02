@@ -37,18 +37,18 @@ class Denoiser():
         self.label = tf.keras.layers.Input(shape=(self.sz_z, self.sz, self.sz, 1), batch_size=self.batch_sz,
                                            name='label', dtype=tf.float32)
 
-        self.L2_img = tf.keras.layers.Conv3D(filter=tf.constant(1.0, shape=[1, 1, 1, 1, 1]), strides=(1, 2, 2, 2, 1),
+        self.L2_img = tf.keras.layers.Conv3D(filters=tf.constant(1.0, shape=[1, 1, 1, 1, 1]), strides=(1, 2, 2, 2, 1),
                                              padding='SAME')(self.img)
-        self.L1_img = tf.keras.layers.Conv3D(filter=tf.constant(1.0, shape=[1, 1, 1, 1, 1]), strides=(1, 4, 4, 4, 1),
+        self.L1_img = tf.keras.layers.Conv3D(filters=tf.constant(1.0, shape=[1, 1, 1, 1, 1]), strides=(1, 4, 4, 4, 1),
                                              padding='SAME')(self.img)
-        self.L0_img = tf.keras.layers.Conv3D(filter=tf.constant(1.0, shape=[1, 1, 1, 1, 1]), strides=(1, 8, 8, 8, 1),
+        self.L0_img = tf.keras.layers.Conv3D(filters=tf.constant(1.0, shape=[1, 1, 1, 1, 1]), strides=(1, 8, 8, 8, 1),
                                              padding='SAME')(self.img)
 
-        self.L2_label = tf.keras.layers.Conv3D(filter=tf.constant(1.0, shape=[1, 1, 1, 1, 1]), strides=(1, 2, 2, 2, 1),
+        self.L2_label = tf.keras.layers.Conv3D(filters=tf.constant(1.0, shape=[1, 1, 1, 1, 1]), strides=(1, 2, 2, 2, 1),
                                                padding='SAME')(self.label)
-        self.L1_label = tf.keras.layers.Conv3D(filter=tf.constant(1.0, shape=[1, 1, 1, 1, 1]), strides=(1, 4, 4, 4, 1),
+        self.L1_label = tf.keras.layers.Conv3D(filters=tf.constant(1.0, shape=[1, 1, 1, 1, 1]), strides=(1, 4, 4, 4, 1),
                                                padding='SAME')(self.label)
-        self.L0_label = tf.keras.layers.Conv3D(filter=tf.constant(1.0, shape=[1, 1, 1, 1, 1]), strides=(1, 8, 8, 8, 1),
+        self.L0_label = tf.keras.layers.Conv3D(filters=tf.constant(1.0, shape=[1, 1, 1, 1, 1]), strides=(1, 8, 8, 8, 1),
                                                padding='SAME')(self.label)
 
         self.real_img = tf.keras.layers.Input(shape=(self.sz_z, self.sz, self.sz, 1), batch_size=self.batch_sz,

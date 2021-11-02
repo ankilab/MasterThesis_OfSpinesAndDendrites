@@ -12,6 +12,15 @@ class DataAugmenter():
         self.n_patches = args['n_patches']
 
     def augment(self, data_path, source, target, care=False, data_dir = None):
+        """
+
+        :param data_path:
+        :param source:
+        :param target:
+        :param care:
+        :param data_dir:
+        :return:
+        """
         # If data_dir is None, result is not saved to file
         if data_dir is not None:
             data_dir = os.path.join(data_dir,'my_data.npz')

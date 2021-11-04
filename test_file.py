@@ -24,9 +24,10 @@ from imagequalitymetrics import ImageQualityMetrics
 # X = np.double(X)
 # i = ImageQualityMetrics()
 # i.niqe(X)
+########################################################################################################################
 args = {}
 args['data_path']= ''
-args['source_folder']= 'C:\\Users\\Johan\\Documents\\FAU_Masterarbeit\\Implementation\\Registered'
+args['source_folder']= '.\\Registered'
 args['target_folder']= ''
 args['result_path'] = '..\\Blind_RL'
 args['psf'] = "C:/Users/Johan/Documents/FAU_Masterarbeit/Implementation/Data/PSF"
@@ -37,3 +38,50 @@ deconvolver = deconv.Mu_Net(args)
 deconvolver.train(args['source_folder'])
 
 #####################################################################################################################
+# checkpoint_path = "training_2/cp-{epoch:04d}.ckpt"
+# checkpoint_dir = os.path.dirname(checkpoint_path)
+#
+# # Create a new model instance
+# model = create_model()
+#
+# # Load the previously saved weights
+# model.load_weights(latest)
+#
+#
+# ######
+# with tf.compat.v1.Session(graph=tf.Graph()) as sess:
+#     tf.compat.v1.saved_model.loader.load(sess, ["serve"], 'C:/Users/jo77pihe/Downloads/mdl')
+#     graph = tf.get_default_graph()
+#     print(graph.get_operations())
+#
+#
+# #####
+#
+#
+# with tf.compat.v1.Session() as sess:
+#     new_saver = tf.compat.v1.train.import_meta_graph('C:/Users/jo77pihe/Downloads/mdl')
+#     new_saver.restore(sess, tf.train.latest_checkpoint('C:/Users/jo77pihe/Downloads/mdl'))
+#
+#
+# #####
+# import tensorflow as tf
+# import tensorflow.compat.v1 as tf1
+#
+# def print_checkpoint(save_path):
+#   reader = tf.train.load_checkpoint(save_path)
+#   reader.
+#   shapes = reader.get_variable_to_shape_map()
+#   dtypes = reader.get_variable_to_dtype_map()
+#   print(f"Checkpoint at '{save_path}':")
+#   for key in shapes:
+#     print(f"  (key='{key}', shape={shapes[key]}, dtype={dtypes[key].name}, "
+#           f"value={reader.get_tensor(key)})")
+#
+#
+# ####
+# batch_sz = 1
+# self.model_setup()
+# saver = tf.compat.v1.train.Saver()
+# sess = tf.compat.v1.Session()
+# graph = tf.compat.v1.get_default_graph()
+# ckpt_path = saver.restore(sess, 'C:/Users/jo77pihe/Downloads/mdl/')

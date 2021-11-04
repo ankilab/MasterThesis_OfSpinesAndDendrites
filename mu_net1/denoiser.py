@@ -11,6 +11,7 @@ from mu_net1.utils import *
 import random
 import time
 from data_augmentation import DataProvider
+from tensorflow.keras.callbacks import LearningRateScheduler
 
 
 # tf.compat.v1.disable_eager_execution()
@@ -22,7 +23,7 @@ class Denoiser():
     def __init__(self, args):
         self.args = args
         # basic parameters
-        self.batch_sz = 4
+        self.batch_sz = 1
         self.sz = 128
         self.sz_z = 32
         self.max_value = 5000.0  # we set maximum value to 5,000 of microscope output
@@ -67,8 +68,9 @@ class Denoiser():
         _, _, _, self.real_rec = discriminator(self.real_img, 'disc')
 
         _, _, _, self.fake_rec = discriminator(self.fake_img, 'disc')
-        self.fake_f1, self.fake_f2, self.fake_f3, _ = discriminator(self.L3_pred, 'disc')
-        self.real_f1, self.real_f2, self.real_f3, _ = discriminator(self.label, 'disc')
+        self.fake_f1, self.fake_f2, self.fake_f3, _ = discriminator(self.L3_pred)
+        self.real_f1, self.real_f2, self.real_f3, _ = discriminator(self.label)
+        self.disc_model = tf.keras.Model(self.img, self.L3_pred)
 
     def fake_image_pool(self, num_fakes, fake, fake_pool):
         if (num_fakes < self.pool_size):
@@ -88,33 +90,57 @@ class Denoiser():
         self.data_provider = DataProvider((self.sz_z, self.sz), self.args['source_folder'])
 
     def loss_setup(self):
+        self.gen_loss_setup()
+        self.disc_loss_setup()
+    #     # gen_loss = tf.reduce_mean(tf.abs(self.L3_pred - self.label)) + tf.reduce_mean(
+    #     #     tf.abs(self.L2_pred - self.L2_label)) + tf.reduce_mean(
+    #     #     tf.abs(self.L1_pred - self.L1_label)) + tf.reduce_mean(tf.abs(self.L0_pred - self.L0_label))
+    #     #
+    #     # GAN_weight = 0.1
+    #     # fm_loss = tf.reduce_mean(tf.abs(self.fake_f1 - self.real_f1)) + tf.reduce_mean(
+    #     #     tf.abs(self.fake_f2 - self.real_f2)) + tf.reduce_mean(tf.abs(self.fake_f3 - self.real_f3))
+    #     #
+    #     # g_loss = gen_loss / 3 + fm_loss * GAN_weight
+    #     #
+    #     # d_loss = (tf.reduce_mean(tf.compat.v1.squared_difference(self.real_rec, 0)) + tf.reduce_mean(
+    #     #     tf.compat.v1.squared_difference(self.fake_rec, random.uniform(0.9, 1.0)))) * 0.5
+    #
+    #
+    #
+    #     # # Summary variables for tensorboard
+    #     # self.g_loss = g_loss
+    #     # self.d_loss = d_loss
+
+    def gen_loss_setup(self, *args):
         gen_loss = tf.reduce_mean(tf.abs(self.L3_pred - self.label)) + tf.reduce_mean(
             tf.abs(self.L2_pred - self.L2_label)) + tf.reduce_mean(
             tf.abs(self.L1_pred - self.L1_label)) + tf.reduce_mean(tf.abs(self.L0_pred - self.L0_label))
-
         GAN_weight = 0.1
         fm_loss = tf.reduce_mean(tf.abs(self.fake_f1 - self.real_f1)) + tf.reduce_mean(
             tf.abs(self.fake_f2 - self.real_f2)) + tf.reduce_mean(tf.abs(self.fake_f3 - self.real_f3))
 
         g_loss = gen_loss / 3 + fm_loss * GAN_weight
+        self.g_loss = g_loss
+        return g_loss
 
+    def disc_loss_setup(self, *args):
         d_loss = (tf.reduce_mean(tf.compat.v1.squared_difference(self.real_rec, 0)) + tf.reduce_mean(
             tf.compat.v1.squared_difference(self.fake_rec, random.uniform(0.9, 1.0)))) * 0.5
-
-        g_optimizer = tf.keras.optimizers.Adam(self.learning_rate * 2, beta_1=0.5)
-        d_optimizer = tf.keras.optimizers.Adam(self.learning_rate, beta_1=0.5)
-
-        self.model_vars = tf.compat.v1.trainable_variables()
-        g_vars = [var for var in self.model_vars if 'gen' in var.name]
-        d_vars = [var for var in self.model_vars if 'disc' in var.name]
-
-        for var in self.model_vars: print(var.name)
-        self.g_trainer = g_optimizer.minimize(g_loss, var_list=g_vars)
-        self.d_trainer = d_optimizer.minimize(d_loss, var_list=d_vars)
-
-        # Summary variables for tensorboard
-        self.g_loss = g_loss
         self.d_loss = d_loss
+        return d_loss
+
+    def lr_schedule(self, epoch, curr_lr=0.0001):
+        curr_lr = self.learning_rate
+        if epoch == 10:
+            curr_lr = curr_lr / 2
+        if epoch == 15:
+            curr_lr = curr_lr / 2
+        if epoch == 20:
+            curr_lr = curr_lr / 2
+        if epoch == 25:
+            curr_lr = curr_lr / 2
+        self.learning_rate = curr_lr
+        return curr_lr
 
     def train(self):
         num_repeat = 2
@@ -127,14 +153,6 @@ class Denoiser():
             for epoch in range(0, training_epochs):
                 self.data_provider.shuffle()
                 # Dealing with the learning rate as per the epoch number
-                if epoch == 10:
-                    curr_lr = curr_lr / 2
-                if epoch == 15:
-                    curr_lr = curr_lr / 2
-                if epoch == 20:
-                    curr_lr = curr_lr / 2
-                if epoch == 25:
-                    curr_lr = curr_lr / 2
 
                 self.learning_rate = curr_lr
 
@@ -143,14 +161,27 @@ class Denoiser():
                     sample_patch, sample_label = self.data_provider.get(self.batch_sz)
                     sample_patch = sample_patch[:, :, :, :, np.newaxis]
                     sample_label = sample_label[:, :, :, :, np.newaxis]
+
+                    # Set up optimizers
+                    g_optimizer = tf.keras.optimizers.Adam(learning_rate=self.lr_schedule(epoch) * 2, beta_1=0.5)
+                    d_optimizer = tf.keras.optimizers.Adam(learning_rate=self.lr_schedule(epoch), beta_1=0.5)
+
+                    self.model_vars = tf.compat.v1.trainable_variables()
+                    g_vars = [var for var in self.model_vars if 'gen' in var.name]
+                    d_vars = [var for var in self.model_vars if 'disc' in var.name]
+
+                    self.g_trainer = g_optimizer.minimize(self.g_loss, var_list=g_vars)
+                    self.d_trainer = d_optimizer.minimize(self.d_loss, var_list=d_vars)
+
+                    # Compile and fit models
                     self.model.compile(optimizer=self.g_trainer, loss = self.g_loss)
-                    _, pred, g_loss = self.model.fit(sample_patch, sample_label)
+                    _, pred, g_loss = self.model.fit(sample_patch, sample_label, callbacks=[LearningRateScheduler(self.lr_schedule, verbose=1)])
                     # _, pred, g_loss = sess.run([self.g_trainer, self.L3_pred, self.g_loss],
                     #                            feed_dict={self.img: sample_patch, self.label: sample_label,
                     #                                       self.learning_rate: curr_lr})
                     sampled_fake = self.fake_image_pool(self.num_fake_inputs, pred, self.fake_pool)
                     self.model.compile(optimizer=self.d_trainer, loss=self.d_loss)
-                    _, d_loss = self.model.fit(sample_patch, sampled_fake)
+                    _, d_loss = self.model.fit(sample_patch, sampled_fake,callbacks=[LearningRateScheduler(self.lr_schedule, verbose=1)])
                     # _, d_loss = sess.run([self.d_trainer, self.d_loss],
                     #                      feed_dict={self.real_img: sample_patch, self.fake_img: sampled_fake,
                     #                                 self.learning_rate: curr_lr})

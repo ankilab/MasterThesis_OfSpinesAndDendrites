@@ -12,17 +12,32 @@ import cupy
 import deconv
 from numba import njit
 
+
 def _get_psf(size_xy, size_z):
-    file_path = '.\\PSF'
-    z = size_z
+    """
+    Load PSF-file and extract relevant z-planes
+    :param size_xy: Size in X and Y- direction (after padding)
+    :param size_z: Size in Z direction (after padding)
+    :return: PSF
+    """
+    z = 150 if size_z % 2 == 0 else 151
 
     psf_file = 'PSF_' + str(size_xy) + '_' + str(z) + '.tif'
 
     # Initial guess for PSF
-    g = io.imread(os.path.join(file_path,psf_file), plugin='pil')
-    g = np.float32(g)
+    g = io.imread(os.path.join('.\\PSF', psf_file), plugin='pil')
     offset = int((z - size_z) / 2)
     return g[offset:g.shape[0] - offset, :, :]
+
+def _pad(img, pixels=20, planes=10):
+    """
+    Pad image
+    :param img: Original image (np.array)
+    :param pixels: amount to pad in x and y direction
+    :param planes: amount to pad in z direction
+    :return: padded image
+    """
+    return np.pad(img, ((planes, planes), (pixels, pixels), (pixels, pixels)), 'reflect')
 
 def fft(array):
   fft = np.fft.ifftshift(np.fft.fftn(np.fft.fftshift(array)))
@@ -60,25 +75,47 @@ def custom_conv(img, ker):
     return convolve
 
 if __name__ == "__main__":
-    X = io.imread(os.path.join('.\\Registered', 'Alessandro_427_ArcCreERT2_Thy1GFP_Ai9_TRAP_2019-08-31_A2.tif'))
-    X = np.float32(X)
-    X -=np.min(X)
-    X /= np.max(X)
-    # z_pad_s = X.shape[0]//2
-    # y_pad_s = X.shape[2]//2
-    # x_pad_s = X.shape[1] // 2
-    # X_pad= np.pad(X, ((z_pad_s, z_pad_s), (x_pad_s, x_pad_s), (y_pad_s, y_pad_s)), 'constant', constant_values =((0,0),(0,0),(0,0)))
-    # psf_pad= np.pad(psf, ((z_pad_s, z_pad_s), (x_pad_s, x_pad_s), (y_pad_s, y_pad_s)), 'constant', constant_values =(0,0,0))
-    psf = _get_psf(X.shape[1], X.shape[0])
+    files = [f for f in os.listdir('.\\Registered') if f.endswith('.tif')]
 
+    for i in range(3):
+        X = io.imread(os.path.join('.\\Registered', files[i]))
+        X = np.float32(X)
+        X -=np.min(X)
+        X /= np.max(X)
 
+        psf = np.float32(_get_psf(X.shape[1]+40, X.shape[0]+10))
 
-    # Variante 4:
-    start = timeit.default_timer()
-    xt = cupy.array(X)
-    res = ndimage.convolve(xt, cupy.array(psf), mode='constant')
-    stop = timeit.default_timer()
-    print( 'Option 4 (cupyx.scipy.ndimage.convolve) took ' + str(stop-start) +' s')
+        # Variante 4:
+        start = timeit.default_timer()
+        xt = cupy.array(X)
+        xt =cupy.pad(xt, ((10, 10), (20, 20), (20, 20)), 'reflect')
+        stop_1 =timeit.default_timer()
+        print( 'Option 4 preprocessing took ' + str(stop_1-start) +' s')
+        start_1 = timeit.default_timer()
+        res = ndimage.convolve(xt, cupy.array(psf), mode='constant')
+        stop = timeit.default_timer()
+        print( 'Option 4 (cupyx.scipy.ndimage.convolve) took ' + str(stop-start_1) +' s')
+
+        start_2 = timeit.default_timer()
+        (z, x, y) = res.shape
+        res= res[10:z - 10, 20:x - 20, 20:y - 20]
+        n_a = cupy.asnumpy(res)
+        stop_2 = timeit.default_timer()
+        print( 'GPU to CPU took ' + str(stop_2-start_2) +' s')
+        print( 'Cupy total ' + str(stop_2-start) +' s')
+
+        X = _pad(X)
+        # Variante 2:
+        start = timeit.default_timer()
+        conv_2 = convolve(X, psf, 'same')
+        stop = timeit.default_timer()
+        print('Option 2 (scipy.signal.convolve) took ' + str(stop - start) + ' s')
+
+        # Variante 3:
+        start = timeit.default_timer()
+        conv_3 = fftconvolve(X, psf, 'same')
+        stop = timeit.default_timer()
+        print('Option 3 (scipy.signal.fftconvolve) took ' + str(stop - start) + ' s')
 
     # # # Variante 5:
     # start = timeit.default_timer()
@@ -87,28 +124,18 @@ if __name__ == "__main__":
     # print( 'Option 5 (cupyx.scipy.fftconvolve) took ' + str(stop-start) +' s')
 
 
-    # Variante 2:
-    start = timeit.default_timer()
-    conv_2 = convolve(X, psf, 'same')
-    stop = timeit.default_timer()
-    print( 'Option 2 (scipy.signal.convolve) took ' + str(stop-start) +' s')
 
-    # Variante 3:
-    start = timeit.default_timer()
-    conv_3 = fftconvolve(X, psf, 'same')
-    stop = timeit.default_timer()
-    print( 'Option 3 (scipy.signal.fftconvolve) took ' + str(stop-start) +' s')
 
     # xt = np.isclose(conv_2, cupy.asnumpy(res)).astype(int)
     # xt_3 = np.isclose(conv_2, conv_3).astype(int)
     # print(conv_2.size - np.sum(xt))
     # print(conv_2.size - xt_3)
 
-    # Variante 5:
-    start = timeit.default_timer()
-    conv_5 = custom_conv(X, psf)
-    stop = timeit.default_timer()
-    print( 'Option 5 (Custom conv) took ' + str(stop-start) +' s')
+    # # Variante 5:
+    # start = timeit.default_timer()
+    # conv_5 = custom_conv(X, psf)
+    # stop = timeit.default_timer()
+    # print( 'Option 5 (Custom conv) took ' + str(stop-start) +' s')
 
 
 
@@ -121,15 +148,15 @@ if __name__ == "__main__":
 
     # tif.imsave('res_cupy.tif', n_a)
 
-    ##########################################
-    args = {}
-    args['data_path']= ''
-    args['source_folder']= './Registered/Heatmap'
-    args['target_folder']= ''
-    args['result_path'] = 'Blind_RL_P'
-
-    args['psf'] = "./PSF"
-    blind_rl = deconv.BlindRL(args)
+    # ##########################################
+    # args = {}
+    # args['data_path']= ''
+    # args['source_folder']= './Registered/Heatmap'
+    # args['target_folder']= ''
+    # args['result_path'] = 'Blind_RL_P'
+    #
+    # args['psf'] = "./PSF"
+    # blind_rl = deconv.BlindRL(args)
 
 
 

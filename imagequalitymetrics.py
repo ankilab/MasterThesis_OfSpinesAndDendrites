@@ -5,7 +5,7 @@ from skimage.metrics import peak_signal_noise_ratio as sk_psnr
 # Doku: https://sewar.readthedocs.io/en/latest/
 import sewar
 import numpy as np
-import matlab.engine
+# import matlab.engine
 
 
 class ImageQualityMetrics:
@@ -46,9 +46,9 @@ class ImageQualityMetrics:
         return sewar.msssim(gt_img, img)
 
     def niqe(self, img):
-        eng = matlab.engine.start_matlab()
-        eng.niqe(matlab.double(img.tolist()))
-        eng.quit()
+        # eng = matlab.engine.start_matlab()
+        # eng.niqe(matlab.double(img.tolist()))
+        # eng.quit()
         return 0 #sk_niqe(img)
 
     def brisque(self, img):

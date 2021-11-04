@@ -3,8 +3,8 @@ import numpy as np
 import matplotlib.pyplot as plt
 import os
 from functools import partial
-import cupy
-from numba import jit, njit
+# import cupy
+# from numba import jit, njit
 
 os.environ["CUDA_DEVICE_ORDER"] = "PCI_BUS_ID"
 os.environ["CUDA_VISIBLE_DEVICES"] = "0"  # or 1 or 2 or 3
@@ -20,7 +20,7 @@ from skimage.filters import gaussian
 from skimage import io
 import timeit
 import imagequalitymetrics
-from cupyx.scipy import ndimage
+# from cupyx.scipy import ndimage
 import yaml
 # import imagej
 import tifffile as tif
@@ -28,7 +28,7 @@ import pickle
 # from numba import jit
 # import cupy as cp
 # import cupyx.scipy.signal as csig
-from mu_net1 import denoiser as den
+from mu_net1 import denoiser_only_mu as den
 
 
 # config = tf.compat.v1.ConfigProto()
@@ -39,6 +39,7 @@ from mu_net1 import denoiser as den
 
 class Deconvolver:
     def __init__(self, args):
+        self.args= args
         self.data_path = os.path.join(os.getcwd(), args['data_path'])
         dir = os.path.join(os.getcwd(), self.data_path, args['result_path'])
         self.res_path = dir
@@ -62,10 +63,16 @@ class Deconvolver:
 
 
 class BlindRL(Deconvolver):
+    """
+    Blind deconvolution based on:
+    Fish, D. A., et al. "Blind deconvolution by means of the Richardson–Lucy algorithm." JOSA A 12.1 (1995): 58-65.
+    """
     def __init__(self, args):
         super().__init__(args)
         self.psf_dir = args['psf']
         self.last_img = None
+
+        # Required to reduce boundary artifacts
         self.pixels_padding = 20 if not 'pixels_padding' in args.keys() else args['pixels_padding']
         self.planes_padding = 10 if not 'planes_padding' in args.keys() else args['planes_padding']
         self._init_res_dict()
@@ -79,6 +86,19 @@ class BlindRL(Deconvolver):
 
     def predict(self, data_dir, n_iter_outer=10, n_iter_image=5, n_iter_psf=5, sigma=1, plot_frequency=100,
                 eval_img_steps=False, save_intermediate_res=False, parallel=True):
+        """
+        Iterate through folder and deconvolve all tif-images found
+        :param data_dir: Directory with tif-files
+        :param n_iter_outer: RL-iterations
+        :param n_iter_image: Convolution iterations on image
+        :param n_iter_psf: Convolution iterations on psf
+        :param sigma: Gaussian-smoothing parameter
+        :param plot_frequency: How often should intermdeiate results be plotted? If 1, after every iteration
+        :param eval_img_steps: Calculate image quality metrics after each iteration
+        :param save_intermediate_res: True, if results should be stored after each iteration
+        :param parallel: True, if as many processes as available cores should be launched
+        :return:
+        """
 
         self.data_path = data_dir
         self._init_res_dict()
@@ -89,7 +109,6 @@ class BlindRL(Deconvolver):
         self.res_dict['n_iter_image'] = n_iter_image
         self.res_dict['n_iter_psf'] = n_iter_psf
         self.res_dict['sigma'] = sigma
-        self.res_dict['Runtime_per_image'] = []
 
         # Determine amount of processes required
         n_cores = multiprocessing.cpu_count() if parallel else 1
@@ -112,110 +131,127 @@ class BlindRL(Deconvolver):
                 as outfile:
             pickle.dump(self.res_dict, outfile, pickle.HIGHEST_PROTOCOL)
 
-    def predict_gpu(self, data_dir, n_iter_outer=10, n_iter_image=5, n_iter_psf=5, sigma=1, plot_frequency=100,
-                    eval_img_steps=False, save_intermediate_res=False):
+    # def predict_gpu(self, data_dir, n_iter_outer=10, n_iter_image=5, n_iter_psf=5, sigma=1, plot_frequency=100,
+    #                 eval_img_steps=False, save_intermediate_res=False):
+    #
+    #     self.data_path = data_dir
+    #     self._init_res_dict()
+    #
+    #     files = [f for f in os.listdir(data_dir) if f.endswith('.tif')]
+    #     self.res_dict['n_iter_outer'] = n_iter_outer
+    #     self.res_dict['n_iter_image'] = n_iter_image
+    #     self.res_dict['n_iter_psf'] = n_iter_psf
+    #     self.res_dict['sigma'] = sigma
+    #     self.res_dict['Runtime_per_image'] = []
+    #
+    #     for f in files:
+    #         X, g = self._load_img(f)
+    #         X_padded = self._pad(X, self.pixels_padding, self.planes_padding)
+    #         X = self.preprocess(X_padded, sigma=sigma)
+    #
+    #         Xc = cupy.array(X)
+    #         psf = cupy.array(g)
+    #         Xc, psf = self._constraints_gpu(Xc, psf)
+    #
+    #         start = timeit.default_timer()
+    #
+    #         # Initial guess for object distribution
+    #         f = cupy.full(X.shape, 0.5, dtype=cupy.float32)
+    #         epsilon = 1e-9  # Avoid division by 0
+    #         met = imagequalitymetrics.ImageQualityMetrics()
+    #         res = {}
+    #         res['brisque'] = []
+    #         res['snr'] = []
+    #         res['brisque_img_steps'] = []
+    #         res['snr_img_steps'] = []
+    #
+    #         # Blind RL iterations
+    #         for k in range(n_iter_outer):
+    #
+    #             for i in range(n_iter_psf):  # m RL iterations, refining PSF
+    #                 psf = ndimage.convolve((Xc / (ndimage.convolve(psf, f, mode='constant') + epsilon)),
+    #                                        f[::-1, ::-1, ::-1],
+    #                                        mode='constant') * psf
+    #                 print('Here 1')
+    #             for i in range(n_iter_image):  # m RL iterations, refining reconstruction
+    #                 f = ndimage.convolve((Xc / (ndimage.convolve(f, psf, mode='constant') + epsilon)),
+    #                                      psf[::-1, ::-1, ::-1],
+    #                                      mode='constant') * f
+    #
+    #                 if eval_img_steps:
+    #                     f_1, psf_1 = self._constraints(f, psf)
+    #                     res['brisque_img_steps'].append(met.brisque(f_1))
+    #                     res['snr_img_steps'].append(met.snr(f_1))
+    #                 print('Here 2')
+    #
+    #             f, psf = self._constraints_gpu(f, psf)
+    #
+    #             # Evaluate intermediate result
+    #             res['brisque'].append(met.brisque(f))
+    #             res['snr'].append(met.snr(f))
+    #
+    #             # Plot intermediate result
+    #             if n_iter_outer % plot_frequency == 0:
+    #                 plt.figure()
+    #                 plt.imshow(f[11, :, :])
+    #                 plt.title(k)
+    #                 plt.show()
+    #             print(f'Image {f}, Iteration {k} completed.')
+    #         stop = timeit.default_timer()
+    #         res['Runtime'].append(stop - start)
+    #         self.res_dict[f[:-4]] = res
+    #         self._save_res(cupy.asnumpy(f), cupy.asnumpy(psf), n_iter_outer, f)
+    #
+    #     # Save results
+    #     with open(os.path.join(self.res_path, f'results_{n_iter_outer}_{n_iter_image}_{n_iter_psf}_{sigma}.pkl'), 'wb') \
+    #             as outfile:
+    #         pickle.dump(self.res_dict, outfile, pickle.HIGHEST_PROTOCOL)
 
-        self.data_path = data_dir
-        self._init_res_dict()
+    # def _convolution_step(self, a, b, c, epsilon=1e-9):
+    #     f = custom_conv((a / (custom_conv(b, c) + epsilon)), c[::-1, ::-1, ::-1]) * b
+    #     return f
 
-        files = [f for f in os.listdir(data_dir) if f.endswith('.tif')]
-        self.res_dict['n_iter_outer'] = n_iter_outer
-        self.res_dict['n_iter_image'] = n_iter_image
-        self.res_dict['n_iter_psf'] = n_iter_psf
-        self.res_dict['sigma'] = sigma
-        self.res_dict['Runtime_per_image'] = []
-
-        for f in files:
-            X, g = self._load_img(f)
-            X_padded = self._pad(X, self.pixels_padding, self.planes_padding)
-            X = self.preprocess(X_padded, sigma=sigma)
-
-            Xc = cupy.array(X)
-            psf = cupy.array(g)
-            Xc, psf = self._constraints_gpu(Xc, psf)
-
-            start = timeit.default_timer()
-
-            # Initial guess for object distribution
-            f = cupy.full(X.shape, 0.5, dtype=cupy.float32)
-            epsilon = 1e-9  # Avoid division by 0
-            met = imagequalitymetrics.ImageQualityMetrics()
-            res = {}
-            res['brisque'] = []
-            res['snr'] = []
-            res['brisque_img_steps'] = []
-            res['snr_img_steps'] = []
-
-            # Blind RL iterations
-            for k in range(n_iter_outer):
-
-                for i in range(n_iter_psf):  # m RL iterations, refining PSF
-                    psf = ndimage.convolve((Xc / (ndimage.convolve(psf, f, mode='constant') + epsilon)),
-                                           f[::-1, ::-1, ::-1],
-                                           mode='constant') * psf
-                    print('Here 1')
-                for i in range(n_iter_image):  # m RL iterations, refining reconstruction
-                    f = ndimage.convolve((Xc / (ndimage.convolve(f, psf, mode='constant') + epsilon)),
-                                         psf[::-1, ::-1, ::-1],
-                                         mode='constant') * f
-
-                    if eval_img_steps:
-                        f_1, psf_1 = self._constraints(f, psf)
-                        res['brisque_img_steps'].append(met.brisque(f_1))
-                        res['snr_img_steps'].append(met.snr(f_1))
-                    print('Here 2')
-
-                f, psf = self._constraints_gpu(f, psf)
-
-                # Evaluate intermediate result
-                res['brisque'].append(met.brisque(f))
-                res['snr'].append(met.snr(f))
-
-                # Plot intermediate result
-                if n_iter_outer % plot_frequency == 0:
-                    plt.figure()
-                    plt.imshow(f[11, :, :])
-                    plt.title(k)
-                    plt.show()
-                print(f'Image {f}, Iteration {k} completed.')
-            stop = timeit.default_timer()
-            res['Runtime'].append(stop - start)
-            self.res_dict[f[:-4]] = res
-            self._save_res(cupy.asnumpy(f), cupy.asnumpy(psf), n_iter_outer, f)
-
-        # Save results
-        with open(os.path.join(self.res_path, f'results_{n_iter_outer}_{n_iter_image}_{n_iter_psf}_{sigma}.pkl'), 'wb') \
-                as outfile:
-            pickle.dump(self.res_dict, outfile, pickle.HIGHEST_PROTOCOL)
-
-    def _convolution_step(self, a, b, c, epsilon=1e-9):
-        f = custom_conv((a / (custom_conv(b, c) + epsilon)), c[::-1, ::-1, ::-1]) * b
-        return f
-
-    def _constraints_gpu(self, f, psf):
-        # Non-negativity
-        f[(f < 0)] = 0
-        psf[psf < 0] = 0
-
-        # Avoid overflow
-        f[(f < 1e-100)] = 0
-        psf[(psf < 1e-100)] = 0
-
-        # Unit summation of PSF
-        psf /= cupy.sum(psf)
-
-        return f, psf
+    # def _constraints_gpu(self, f, psf):
+    #     # Non-negativity
+    #     f[(f < 0)] = 0
+    #     psf[psf < 0] = 0
+    #
+    #     # Avoid overflow
+    #     f[(f < 1e-100)] = 0
+    #     psf[(psf < 1e-100)] = 0
+    #
+    #     # Unit summation of PSF
+    #     psf /= cupy.sum(psf)
+    #
+    #     return f, psf
 
     def _init_res_dict(self):
         self.res_dict = {}
 
     def _load_img(self, file_name):
+        """
+        Load image by filename and generate corresponding PSF
+        :param file_name: Name of tif-file to be loaded
+        :return: Image as np-array, corresponding PSF
+        """
         X = np.float32(io.imread(os.path.join(self.data_path, file_name)))
         g = np.float32(self._get_psf(X.shape[1] + self.pixels_padding * 2, X.shape[0] + self.planes_padding * 2))
         return X, g
 
     def _process_img(self, file_name, n_iter_outer, n_iter_image, n_iter_psf, sigma,
                      eval_img_steps, save_intermediate_res, plot_frequency=100):
+        """
+        Process image: Load and deconvolve
+        :param file_name:
+        :param n_iter_outer: RL-iterations
+        :param n_iter_image: Convolution iterations on image
+        :param n_iter_psf: Convolution iterations on psf
+        :param sigma: Gaussian-smoothing parameter
+        :param eval_img_steps: Calculate image quality metrics after each iteration (not relevant here)
+        :param save_intermediate_res: True, if results should be stored after each iteration (not relevant here)
+        :param plot_frequency: How often should intermediate results be plotted? If 1, after every iteration
+        :return:
+        """
         X, g = self._load_img(file_name)
         self.predict_img(X, g, n_iter_outer, n_iter_image, n_iter_psf, sigma, plot_frequency=plot_frequency,
                          eval_img_steps=eval_img_steps, save_intermediate_res=save_intermediate_res,
@@ -223,6 +259,20 @@ class BlindRL(Deconvolver):
 
     def predict_img(self, X, psf, n_iter_outer=10, n_iter_image=5, n_iter_psf=5, sigma=1, plot_frequency=0,
                     eval_img_steps=False, save_intermediate_res=False, file_name=''):
+        """
+        Deconvolve image
+        :param X: Image (np.array)
+        :param psf: PSF (np.array)
+        :param n_iter_outer: RL-iterations
+        :param n_iter_image: Convolution iterations on image
+        :param n_iter_psf: Convolution iterations on psf
+        :param sigma: Gaussian-smoothing parameter
+        :param plot_frequency: How often should intermediate results be plotted? If 1, after every iteration
+        :param plot_frequency: How often should intermediate results be plotted? If 1, after every iteration
+        :param save_intermediate_res: True, if results should be stored after each iteration (not relevant here)
+        :param file_name:
+        :return:
+        """
         # Start time measurement
         start = timeit.default_timer()
 
@@ -241,6 +291,7 @@ class BlindRL(Deconvolver):
         res['snr'] = []
         res['brisque_img_steps'] = []
         res['snr_img_steps'] = []
+        res['Runtime'] = []
 
         # Blind RL iterations
         for k in range(n_iter_outer):
@@ -250,13 +301,13 @@ class BlindRL(Deconvolver):
                 self._save_res(f, psf, k, file_name)
 
             for i in range(n_iter_psf):  # m RL iterations, refining PSF
-                # psf = convolve((X_smoothed / (convolve(psf, f, mode='same') + epsilon)), f[::-1, ::-1, ::-1],
-                #                mode='same') * psf
-                psf = self._convolution_step(X_smoothed, psf, f)
+                psf = convolve((X_smoothed / (convolve(psf, f, mode='same') + epsilon)), f[::-1, ::-1, ::-1],
+                               mode='same') * psf
+                # psf = self._convolution_step(X_smoothed, psf, f)
             for i in range(n_iter_image):  # m RL iterations, refining reconstruction
-                # f = convolve((X_smoothed / (convolve(f, psf, mode='same') + epsilon)), psf[::-1, ::-1, ::-1],
-                #              mode='same') * f
-                f = self._convolution_step(X_smoothed, f, psf)
+                f = convolve((X_smoothed / (convolve(f, psf, mode='same') + epsilon)), psf[::-1, ::-1, ::-1],
+                             mode='same') * f
+                # f = self._convolution_step(X_smoothed, f, psf)
 
                 if eval_img_steps:
                     f_1, psf_1 = self._constraints(f, psf)
@@ -283,14 +334,36 @@ class BlindRL(Deconvolver):
         return f_unpad, psf_unpad, res
 
     def _get_psf(self, size_xy, size_z):
-        z = 150 if size_z % 2 == 0 else 151
-
-        psf_file = 'PSF_' + str(size_xy) + '_' + str(z) + '.tif'
+        """
+        Load PSF-file and extract relevant z-planes
+        :param size_xy: Size in X and Y- direction (after padding)
+        :param size_z: Size in Z direction (after padding)
+        :return: PSF
+        """
+        # test_flag = self.args['test_flag'] if 'test_flag' in self.args.keys() else False
+        # if size_z % 2 == 1 or test_flag:
+        #     z = 151
+        #     print('Test')
+        #     g = self._read_psf_file(size_xy, z)
+        #
+        #     # Initial guess for PSF
+        #     offset = int((z - size_z) / 2)
+        #     psf = g[offset+1:g.shape[0] - offset, :, :]
+        #
+        # else:
+        z = 150
+        g = self._read_psf_file(size_xy, z)
 
         # Initial guess for PSF
-        g = io.imread(os.path.join(self.psf_dir, psf_file), plugin='pil')
         offset = int((z - size_z) / 2)
-        return g[offset:g.shape[0] - offset, :, :]
+        psf = g[offset:g.shape[0] - offset, :, :] if size_z % 2 == 0 else g[offset+1:g.shape[0] - offset, :, :]
+
+        return psf
+
+    def _read_psf_file(self, size_xy, z):
+        psf_file = 'PSF_' + str(size_xy) + '_' + str(z) + '.tif'
+        g = np.float32(io.imread(os.path.join(self.psf_dir, psf_file), plugin='pil'))
+        return g
 
     def _save_res(self, f, psf, iteration, f_name='x.tif'):
         f_unpad = self._unpad(f, self.pixels_padding, self.planes_padding)
@@ -302,6 +375,13 @@ class BlindRL(Deconvolver):
         return f_unpad, psf_unpad
 
     def _constraints(self, f, psf):
+        """
+        Constraints to enable and imporve deconvolution
+        :param f: Image (np.array)
+        :param psf: PSF (np.array)
+        :return: Adjusted image and PSF
+        """
+
         # Non-negativity
         f[(f < 0)] = 0
         psf[psf < 0] = 0
@@ -321,6 +401,13 @@ class BlindRL(Deconvolver):
         return f, psf
 
     def _pad(self, img, pixels=20, planes=10):
+        """
+        Pad image
+        :param img: Original image (np.array)
+        :param pixels: amount to pad in x and y direction
+        :param planes: amount to pad in z direction
+        :return: padded image
+        """
         return np.pad(img, ((planes, planes), (pixels, pixels), (pixels, pixels)), 'reflect')
 
     def _unpad(self, img, pixels=20, planes=10):
@@ -469,18 +556,3 @@ REGISTRY['BlindRL'] = BlindRL
 # REGISTRY['mu-net'] = Mu_Net
 # REGISTRY['fbpconvnet'] =FBP_ConvNet
 
-
-@njit(parallel=True)
-def custom_conv(a, b):
-    C = np.zeros((a.shape[0] * 2, a.shape[1] * 2, a.shape[2] * 2), dtype=a.dtype)
-    for x1 in range(a.shape[0]):
-        for x2 in range(b.shape[0]):
-            for y1 in range(a.shape[1]):
-                for y2 in range(b.shape[1]):
-                    for z1 in range(a.shape[2]):
-                        for z2 in range(b.shape[2]):
-                            x = x1 + x2
-                            y = y1 + y2
-                            z = z1 + z2
-                            C[x, y, z] += a[x1, y1, z1] * b[x2, y2, z2]
-    return C

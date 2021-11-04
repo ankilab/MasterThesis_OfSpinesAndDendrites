@@ -1,3 +1,3 @@
 import utils
 
-utils.register_stacks_from_drive('C:/Users/Johan/Documents/FAU_Masterarbeit/Implementation/Train_Test.csv', './Registered')
+utils.register_stacks_from_drive('C:/Users/jo77pihe/Documents/MasterThesis_OfSpinesAndDendrites/Train_Test.csv', './Registered')

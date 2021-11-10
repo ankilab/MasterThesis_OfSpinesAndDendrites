@@ -13,13 +13,17 @@ fz = 3
 N = 0
 
 
-def build_conv_layer(input_conv, num_filters=32, filter_sz=3, stride=1, padding='SAME', relu_op=False, norm=False):
-    if padding == 'VALID':
-        input_conv = tf.pad(input_conv, [[0, 0], [1, 1], [1, 1], [1, 1], [0, 0]], "REFLECT")
+def build_conv_layer(input_conv, num_filters=32, filter_sz=3, stride=1, padding='SAME', relu_op=False, norm=False, name=''):
+    # if padding == 'VALID':
+    #     input_conv = tf.pad(input_conv, paddings=tf.constant([[1, 1], [1, 1], [1, 1], [1, 1], [1,1 ]]), mode="REFLECT")
+    #     input_conv = input_conv[1:-1,:,:,:,1:-1]
     global N
     nx = N
     N = nx+1
-    conv = tf.keras.layers.Conv3D(num_filters, filter_sz, stride, 'valid', activation=None, name='conv'+str(nx))(input_conv)
+    # conv = tf.keras.layers.Conv3D(num_filters, filter_sz, stride, 'valid', activation=None, name='conv'+str(nx))(input_conv)
+    name = name if name != '' else 'conv'+str(nx)
+    conv = tf.keras.layers.Conv3D(num_filters, filter_sz, stride, 'same', activation=None, name=name)(input_conv)
+
 
     if relu_op:
         conv = tf.nn.leaky_relu(conv)
@@ -29,15 +33,18 @@ def build_conv_layer(input_conv, num_filters=32, filter_sz=3, stride=1, padding=
 
 
 def build_upconv_layer(input_conv, num_filters=16, filter_sz=3, stride=(2, 2, 2), padding='SAME', relu_op=False,
-                       norm=False):
+                       norm=False, name=''):
     up_sample = tf.keras.layers.UpSampling3D(size=stride)(input_conv)
-    if padding == 'VALID':
-        up_sample = tf.pad(up_sample, [[0, 0], [1, 1], [1, 1], [1, 1], [0, 0]], "REFLECT")
+    # if padding == 'VALID':
+    #     up_sample = tf.pad(up_sample, paddings=tf.constant([[1, 1], [1, 1], [1, 1], [1, 1], [1,1]]), mode="REFLECT")
+    #     up_sample = up_sample[1:-1,:,:,:,1:-1]
 
     global N
     nx = N
     N = nx+1
-    conv = tf.keras.layers.Conv3D(num_filters, filter_sz, 1, 'valid', activation=None, name='conv'+str(nx))(up_sample)
+    # conv = tf.keras.layers.Conv3D(num_filters, filter_sz, 1, 'valid', activation=None, name='conv'+str(nx))(up_sample)
+    name = name if name != '' else 'conv'+str(nx)
+    conv = tf.keras.layers.Conv3D(num_filters, filter_sz, 1, 'same', activation=None, name=name)(up_sample)
 
     if relu_op:
         conv = tf.nn.leaky_relu(conv)
@@ -84,7 +91,7 @@ def munet_cnn_level_0(L0_img, name='munet'):
     conv7 = build_conv_layer(tf.concat([conv6_up, conv1], 4), num_filters=nf * 1, filter_sz=fz, stride=1,
                              padding='VALID', relu_op=True)
     conv7_1 = build_conv_layer(conv7, num_filters=nf * 1, filter_sz=fz, stride=1, padding='VALID', relu_op=True)
-    L0_pred = build_conv_layer(conv7_1, num_filters=1, filter_sz=fz, stride=1, padding='VALID')
+    L0_pred = build_conv_layer(conv7_1, num_filters=1, filter_sz=fz, stride=1, padding='VALID', name ='L0_pred')
     L0_L1 = tf.keras.layers.UpSampling3D(size=(2, 2, 2))(L0_pred)
     return L0_L1, L0_pred
 
@@ -126,7 +133,7 @@ def munet_cnn_level_1(L1_img, L0_L1, name = 'l1'):
     conv7 = build_conv_layer(tf.concat([conv6_up, conv1], 4), num_filters=nf * 1, filter_sz=fz, stride=1,
                              padding='VALID', relu_op=True)
     conv7_1 = build_conv_layer(conv7, num_filters=nf * 1, filter_sz=fz, stride=1, padding='VALID', relu_op=True)
-    L1_pred = build_conv_layer(conv7_1, num_filters=1, filter_sz=fz, stride=1, padding='VALID')
+    L1_pred = build_conv_layer(conv7_1, num_filters=1, filter_sz=fz, stride=1, padding='VALID', name ='L1_pred')
     L1_L2 = tf.keras.layers.UpSampling3D(size=(2, 2, 2))(L1_pred)
     return L1_L2, L1_pred
 
@@ -168,7 +175,7 @@ def munet_cnn_level_2(L2_img, L1_L2, name = 'l2'):
     conv7 = build_conv_layer(tf.concat([conv6_up, conv1], 4), num_filters=nf * 1, filter_sz=fz, stride=1,
                              padding='VALID', relu_op=True)
     conv7_1 = build_conv_layer(conv7, num_filters=nf * 1, filter_sz=fz, stride=1, padding='VALID', relu_op=True)
-    L2_pred = build_conv_layer(conv7_1, num_filters=1, filter_sz=fz, stride=1, padding='VALID', )
+    L2_pred = build_conv_layer(conv7_1, num_filters=1, filter_sz=fz, stride=1, padding='VALID', name ='L2_pred')
     L2_L3 = tf.keras.layers.UpSampling3D(size=(2, 2, 2))(L2_pred)
     return L2_L3, L2_pred
 
@@ -210,7 +217,7 @@ def munet_cnn_level_3(L3_img, L2_L3, name = 'l3'):
     conv7 = build_conv_layer(tf.concat([conv6_up, conv1], 4), num_filters=nf * 1, filter_sz=fz, stride=1,
                              padding='VALID', relu_op=True)
     conv7_1 = build_conv_layer(conv7, num_filters=nf * 1, filter_sz=fz, stride=1, padding='VALID', relu_op=True)
-    L3_pred = build_conv_layer(conv7_1, num_filters=1, filter_sz=fz, stride=1, padding='VALID')
+    L3_pred = build_conv_layer(conv7_1, num_filters=1, filter_sz=fz, stride=1, padding='VALID', name ='L3_pred')
     return L3_pred
 
 

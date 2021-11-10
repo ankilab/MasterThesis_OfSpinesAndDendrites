@@ -80,22 +80,28 @@ class DataProvider():
         args = {}
         args['z_shape'] = sz_z
         args['xy_shape'] = sz_xy
-        args['n_patches'] = 50
+        args['n_patches'] = 8
         da = DataAugmenter(args)
         (augmented_raw, augmented_gt, _), _ = da.augment(data_dir, 'Raw', 'GT', care=True)
         self.augmented_raw = augmented_raw[:,0,:,:,:]
         self.augmented_gt = augmented_gt[:, 0, :, :, :]
-        self.idx = 0
+        self._reset_idx()
+        self.size = self.augmented_raw.shape[0]
         # self.seed = 0
 
     def shuffle(self):
+        self._reset_idx()
         ind_list = [i for i in range(self.augmented_raw.shape[0])]
         shuffle(ind_list)
         self.augmented_raw = self.augmented_raw[ind_list, :, :, :]
         self.augmented_gt = self.augmented_gt[ind_list,:,:,:]
 
+    def _reset_idx(self):
+        self.idx=0
+
     def get(self, batch_size):
         end_idx = self.idx+batch_size
+        end_idx = end_idx if end_idx <= self.size else self.size
         raw = self.augmented_raw[self.idx:end_idx,:,:,:]
         gt = self.augmented_gt[self.idx:end_idx,:,:,:]
         self.idx += batch_size

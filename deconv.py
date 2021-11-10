@@ -22,8 +22,8 @@ import imagequalitymetrics
 import tifffile as tif
 import pickle
 from mu_net1 import denoiser_only_mu as den
-import torch
-import torch.nn.functional as F
+# import torch
+# import torch.nn.functional as F
 
 # config = tf.compat.v1.ConfigProto()
 # config.gpu_options.allow_growth = True
@@ -125,84 +125,84 @@ class BlindRL(Deconvolver):
                 as outfile:
             pickle.dump(self.res_dict, outfile, pickle.HIGHEST_PROTOCOL)
 
-    def predict_gpu(self, data_dir, n_iter_outer=10, n_iter_image=5, n_iter_psf=5, sigma=1, plot_frequency=100,
-                    eval_img_steps=False, save_intermediate_res=False):
-
-        self.data_path = data_dir
-        self._init_res_dict()
-        device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-
-        files = [f for f in os.listdir(data_dir) if f.endswith('.tif')]
-        self.res_dict['n_iter_outer'] = n_iter_outer
-        self.res_dict['n_iter_image'] = n_iter_image
-        self.res_dict['n_iter_psf'] = n_iter_psf
-        self.res_dict['sigma'] = sigma
-        self.res_dict['Runtime_per_image'] = []
-
-        for file in files:
-            X, g = self._load_img(file)
-            X_padded = self._pad(X, self.pixels_padding, self.planes_padding)
-            X = self.preprocess(X_padded, sigma=sigma)
-
-            Xc = torch.tensor(X[None,None,...], device=device)
-            psf = torch.tensor(g[None,None,...], device=device)
-            Xc, psf = self._constraints(Xc, psf)
-
-            start = timeit.default_timer()
-
-            # Initial guess for object distribution
-            f = torch.full_like(Xc, 0.5, dtype=torch.float32, device=device)
-            epsilon = 1e-9  # Avoid division by 0
-            met = imagequalitymetrics.ImageQualityMetrics()
-            res = {}
-            res['brisque'] = []
-            res['snr'] = []
-            res['brisque_img_steps'] = []
-            res['snr_img_steps'] = []
-
-            # Blind RL iterations
-            for k in range(n_iter_outer):
-                # Save intermediate result
-                if save_intermediate_res:
-                    self._save_res(f.cpu().detach.numpy(), psf.cpu().detach.numpy(), k, file)
-
-                for i in range(n_iter_psf):  # m RL iterations, refining PSF
-                    psf = F.conv3d((Xc / (F.conv3d(psf, f, padding='same') + epsilon)), torch.flip(f,[2,3,4]),
-                                           padding='same') * psf
-                    print('Here 1')
-                for i in range(n_iter_image):  # m RL iterations, refining reconstruction
-                    f = F.conv3d((Xc / (F.conv3d(f, psf, padding='same') + epsilon)), torch.flip(psf,[2,3,4]),
-                                         padding='same') * f
-
-                    if eval_img_steps:
-                        f_1, psf_1 = self._constraints(f, psf)
-                        res['brisque_img_steps'].append(met.brisque(f_1))
-                        res['snr_img_steps'].append(met.snr(f_1))
-                    print('Here 2')
-
-                f, psf = self._constraints(f, psf)
-
-                # Evaluate intermediate result
-                f_numpy = f.to('cpu').detach().numpy()
-                res['brisque'].append(met.brisque(f_numpy))
-                res['snr'].append(met.snr(f_numpy))
-
-                # Plot intermediate result
-                if n_iter_outer % plot_frequency == 0:
-                    plt.figure()
-                    plt.imshow(f_numpy[11, :, :])
-                    plt.title(k)
-                    plt.show()
-                print(f'{file}, Iteration {k} completed.')
-            stop = timeit.default_timer()
-            res['Runtime'].append(stop - start)
-            self.res_dict[file[:-4]] = res
-            self._save_res(f.cpu().detach.numpy(), psf.cpu().detach.numpy(), n_iter_outer, file, sigma)
-
-        # Save results
-        with open(os.path.join(self.res_path, f'results_{n_iter_outer}_{n_iter_image}_{n_iter_psf}_{sigma}.pkl'), 'wb') \
-                as outfile:
-            pickle.dump(self.res_dict, outfile, pickle.HIGHEST_PROTOCOL)
+    # def predict_gpu(self, data_dir, n_iter_outer=10, n_iter_image=5, n_iter_psf=5, sigma=1, plot_frequency=100,
+    #                 eval_img_steps=False, save_intermediate_res=False):
+    #
+    #     self.data_path = data_dir
+    #     self._init_res_dict()
+    #     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+    #
+    #     files = [f for f in os.listdir(data_dir) if f.endswith('.tif')]
+    #     self.res_dict['n_iter_outer'] = n_iter_outer
+    #     self.res_dict['n_iter_image'] = n_iter_image
+    #     self.res_dict['n_iter_psf'] = n_iter_psf
+    #     self.res_dict['sigma'] = sigma
+    #     self.res_dict['Runtime_per_image'] = []
+    #
+    #     for file in files:
+    #         X, g = self._load_img(file)
+    #         X_padded = self._pad(X, self.pixels_padding, self.planes_padding)
+    #         X = self.preprocess(X_padded, sigma=sigma)
+    #
+    #         Xc = torch.tensor(X[None,None,...], device=device)
+    #         psf = torch.tensor(g[None,None,...], device=device)
+    #         Xc, psf = self._constraints(Xc, psf)
+    #
+    #         start = timeit.default_timer()
+    #
+    #         # Initial guess for object distribution
+    #         f = torch.full_like(Xc, 0.5, dtype=torch.float32, device=device)
+    #         epsilon = 1e-9  # Avoid division by 0
+    #         met = imagequalitymetrics.ImageQualityMetrics()
+    #         res = {}
+    #         res['brisque'] = []
+    #         res['snr'] = []
+    #         res['brisque_img_steps'] = []
+    #         res['snr_img_steps'] = []
+    #
+    #         # Blind RL iterations
+    #         for k in range(n_iter_outer):
+    #             # Save intermediate result
+    #             if save_intermediate_res:
+    #                 self._save_res(f.cpu().detach.numpy(), psf.cpu().detach.numpy(), k, file)
+    #
+    #             for i in range(n_iter_psf):  # m RL iterations, refining PSF
+    #                 psf = F.conv3d((Xc / (F.conv3d(psf, f, padding='same') + epsilon)), torch.flip(f,[2,3,4]),
+    #                                        padding='same') * psf
+    #                 print('Here 1')
+    #             for i in range(n_iter_image):  # m RL iterations, refining reconstruction
+    #                 f = F.conv3d((Xc / (F.conv3d(f, psf, padding='same') + epsilon)), torch.flip(psf,[2,3,4]),
+    #                                      padding='same') * f
+    #
+    #                 if eval_img_steps:
+    #                     f_1, psf_1 = self._constraints(f, psf)
+    #                     res['brisque_img_steps'].append(met.brisque(f_1))
+    #                     res['snr_img_steps'].append(met.snr(f_1))
+    #                 print('Here 2')
+    #
+    #             f, psf = self._constraints(f, psf)
+    #
+    #             # Evaluate intermediate result
+    #             f_numpy = f.to('cpu').detach().numpy()
+    #             res['brisque'].append(met.brisque(f_numpy))
+    #             res['snr'].append(met.snr(f_numpy))
+    #
+    #             # Plot intermediate result
+    #             if n_iter_outer % plot_frequency == 0:
+    #                 plt.figure()
+    #                 plt.imshow(f_numpy[11, :, :])
+    #                 plt.title(k)
+    #                 plt.show()
+    #             print(f'{file}, Iteration {k} completed.')
+    #         stop = timeit.default_timer()
+    #         res['Runtime'].append(stop - start)
+    #         self.res_dict[file[:-4]] = res
+    #         self._save_res(f.cpu().detach.numpy(), psf.cpu().detach.numpy(), n_iter_outer, file, sigma)
+    #
+    #     # Save results
+    #     with open(os.path.join(self.res_path, f'results_{n_iter_outer}_{n_iter_image}_{n_iter_psf}_{sigma}.pkl'), 'wb') \
+    #             as outfile:
+    #         pickle.dump(self.res_dict, outfile, pickle.HIGHEST_PROTOCOL)
 
 
     def _init_res_dict(self):
@@ -370,23 +370,23 @@ class BlindRL(Deconvolver):
         f[(f < 1e-100)] = 0
         psf[(psf < 1e-100)] = 0
 
-        if torch.is_tensor(f):
-            s = torch.cat((f,psf))
-            m = s.min()
-            p = s.max() - s.min()
-            f = (f - m) / p
+        # if torch.is_tensor(f):
+        #     s = torch.cat((f,psf))
+        #     m = s.min()
+        #     p = s.max() - s.min()
+        #     f = (f - m) / p
+        #
+        #     # Unit summation of PSF
+        #     psf /= torch.sum(psf)
+        #
+        # else:
+        s = np.append(f, psf)
+        m = np.min(s)
+        p = np.ptp(s)
+        f = (f - m) / p
 
-            # Unit summation of PSF
-            psf /= torch.sum(psf)
-
-        else:
-            s = np.append(f, psf)
-            m = np.min(s)
-            p = np.ptp(s)
-            f = (f - m) / p
-
-            # Unit summation of PSF
-            psf /= np.sum(psf)
+        # Unit summation of PSF
+        psf /= np.sum(psf)
 
         return f, psf
 
@@ -506,7 +506,7 @@ class Mu_Net(Deconvolver):
         return NotImplementedError
 
     def train(self, data_dir, validation_split=0.1, epochs=10, batch_size=8, train_steps=50):
-        self.denoiser.train()
+        self.denoiser.train(train_steps=train_steps)
 
     def predict(self, X, model_dir, Y=None, plot=False):
         batch_sz = 1

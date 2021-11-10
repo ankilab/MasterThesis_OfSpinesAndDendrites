@@ -1,16 +1,15 @@
-# Source: https://numbersmithy.com/2d-and-3d-convolutions-using-numpy/
 import numpy as np
-from scipy.signal import fftconvolve, convolve
 from skimage import io
 import os
 import timeit
 from scipy.signal import fftconvolve, convolve
-import tifffile as tif
 from cupyx.scipy import ndimage
-from cupyx.scipy import signal
 import cupy
-import deconv
-from numba import njit
+import torch
+import torch.nn.functional as F
+import time
+import os
+os.environ["CUDA_LAUNCH_BLOCKING"] = "1"
 
 
 def _get_psf(size_xy, size_z):
@@ -39,40 +38,6 @@ def _pad(img, pixels=20, planes=10):
     """
     return np.pad(img, ((planes, planes), (pixels, pixels), (pixels, pixels)), 'reflect')
 
-def fft(array):
-  fft = np.fft.ifftshift(np.fft.fftn(np.fft.fftshift(array)))
-  return fft
-
-def ifft(array):
-  ifft = np.fft.fftshift(np.fft.ifftn(np.fft.ifftshift(array)))
-  return ifft
-
-def conv_3D(array, kernel):
-  conv = np.abs(ifft(fft(array)*fft(kernel)))
-  return conv
-
-# @njit(parallel=True)
-def custom_conv(img, ker):
-    img_d, img_h, img_w = img.shape
-    ker_d, ker_h, ker_w = ker.shape
-    b, pad, stride, img, ker = 0, 0, 1, img, ker
-
-    pad_img = np.pad(img, ((0, 0), (1, 1), (1, 1)), mode='constant')  # pad the input images with zeros around
-
-    i0 = np.int8(np.repeat(np.arange(ker_h), ker_h))
-    i1 = np.int8(np.repeat(np.arange(img_h), img_h))
-    j0 = np.int8(np.tile(np.arange(ker_w), ker_h))
-    j1 = np.int8(np.tile(np.arange(img_h), img_w))
-    i0 = i0.reshape(-1, 1) + i1.reshape(1, -1)
-    j0 = j0.reshape(-1, 1) + j1.reshape(1, -1)
-
-    select_img = pad_img[ :, i0,
-                      j0].squeeze()  # receptive feild pixels are selected based on the index***[1,9,100] reshaped to [9,100]
-    weights = ker.reshape(ker_h * ker_w, -1)  # weights reshaped to [9,1]
-    convolve = weights.transpose() @ select_img  # convolution operation [1,9]*[9,100] ----> [1,100]
-    convolve = convolve.reshape(img_d, img_h, img_w)
-
-    return convolve
 
 if __name__ == "__main__":
     files = [f for f in os.listdir('.\\Registered') if f.endswith('.tif')]
@@ -80,15 +45,45 @@ if __name__ == "__main__":
     for i in range(3):
         X = io.imread(os.path.join('.\\Registered', files[i]))
         X = np.float32(X)
-        X -=np.min(X)
-        X /= np.max(X)
+        # X -=np.min(X)
+        # X /= np.max(X)
+        X = _pad(X)
 
-        psf = np.float32(_get_psf(X.shape[1]+40, X.shape[0]+10))
+        psf = np.float32(_get_psf(X.shape[1], X.shape[0]))
+
+        # Variante 1:
+        device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+
+        torch.cuda.synchronize()
+        start = time.time()
+        Xc = torch.tensor(X[None, None, ...], device=device, requires_grad=False)
+        psf_t = torch.tensor(psf[None, None, ...], device=device, requires_grad=False)
+
+        torch.cuda.synchronize()
+        stop_1 =time.time()
+        print( 'Option 1 preprocessing took ' + str(stop_1-start) +' s')
+        torch.cuda.synchronize()
+        start_1 = time.time()
+        res_torch = F.conv3d(Xc, psf_t, padding='same')
+        torch.cuda.synchronize()
+        stop = time.time()
+        print( 'Option 1 (torch F.conv3d) took ' + str(stop-start_1) +' s')
+
+        torch.cuda.synchronize()
+        start_2 = time.time()
+        res_torch = res_torch[0,0,:,:,:]
+        (z, x, y) = res_torch.shape
+        res_torch= res_torch[10:z - 10, 20:x - 20, 20:y - 20]
+        num_torch = res_torch.to('cpu').detach.numpy()
+        torch.cuda.synchronize()
+        stop_2 = time.time()
+        print( 'GPU to CPU (torch) took ' + str(stop_2-start_2) +' s')
+        print( 'Torch total ' + str(stop_2-start) +' s')
 
         # Variante 4:
         start = timeit.default_timer()
         xt = cupy.array(X)
-        xt =cupy.pad(xt, ((10, 10), (20, 20), (20, 20)), 'reflect')
+        # xt =cupy.pad(xt, ((10, 10), (20, 20), (20, 20)), 'reflect')
         stop_1 =timeit.default_timer()
         print( 'Option 4 preprocessing took ' + str(stop_1-start) +' s')
         start_1 = timeit.default_timer()
@@ -104,7 +99,6 @@ if __name__ == "__main__":
         print( 'GPU to CPU took ' + str(stop_2-start_2) +' s')
         print( 'Cupy total ' + str(stop_2-start) +' s')
 
-        X = _pad(X)
         # Variante 2:
         start = timeit.default_timer()
         conv_2 = convolve(X, psf, 'same')

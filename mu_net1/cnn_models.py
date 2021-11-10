@@ -6,6 +6,7 @@ Created on Thu Mar 15 17:34:16 2018
 """
 
 import tensorflow as tf
+import tensorflow_addons as tfa
 
 nf = 16
 fz = 3
@@ -23,8 +24,7 @@ def build_conv_layer(input_conv, num_filters=32, filter_sz=3, stride=1, padding=
     if relu_op:
         conv = tf.nn.leaky_relu(conv)
     if norm:
-        # equals InstanceNorm (https://stackoverflow.com/questions/68088889/how-to-add-instancenormalization-on-tensorflow-keras)
-        conv = tf.keras.layers.BatchNormalization(axis=[0, 1])(conv)
+        conv = tfa.layers.InstanceNormalization()(conv)
     return conv
 
 
@@ -42,8 +42,7 @@ def build_upconv_layer(input_conv, num_filters=16, filter_sz=3, stride=(2, 2, 2)
     if relu_op:
         conv = tf.nn.leaky_relu(conv)
     if norm:
-        # equals InstanceNorm (https://stackoverflow.com/questions/68088889/how-to-add-instancenormalization-on-tensorflow-keras)
-        conv = tf.keras.layers.BatchNormalization(axis=[0, 1])(conv)
+        conv = tfa.layers.InstanceNormalization()(conv)
 
     return conv
 

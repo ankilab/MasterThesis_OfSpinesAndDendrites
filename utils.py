@@ -132,7 +132,36 @@ def register_stacks_from_drive(csv_file, result_folder):
         tif.imsave(save_name, reg_stack)
 
 
+def find_all_img_with_min_z(path, min_z, result_folder):
+    if not os.path.exists(result_folder):
+        os.makedirs(result_folder)
+    files = [f for f in os.listdir(path) if f.endswith('.tif')]
+    for f in files:
+        x=tif.imread(os.path.join(path, f))
+        if x.shape[0] >=min_z:
+            tif.imsave(os.path.join(result_folder, f), x)
 
+find_all_img_with_min_z('D:/jo77pihe/Registered/Raw', 32, 'D:/jo77pihe/Registered/Raw_32')
+
+
+# def predict_img_by_patches(img, predictor, patchsize=(32,128,128)):
+#     assert len(patchsize) == 3, 'Please specify a 3-D patch size'
+#     (sz, sx, sy) = img.shape
+#     z_steps = sz//patchsize[0] + 1 if sz%patchsize[0] !=0 else sz//patchsize[0]
+#     x_steps = sx//patchsize[1] + 1 if sx%patchsize[1] !=0 else sx//patchsize[1]
+#     y_steps = sy//patchsize[2] + 1 if sy%patchsize[2] !=0 else sy//patchsize[2]
+#     z_0, x_0, y_0 = 0,0,0
+#
+#     for z in range(z_steps):
+#         for y in range(y_steps):
+#             for x in range(x_steps):
+#                 predictor.
+#     pass
+
+
+
+
+# register_stacks_from_drive('C:/Users/jo77pihe/Documents/MasterThesis_OfSpinesAndDendrites/Train_Test.csv', './Registered')
 
 # register_stacks_from_drive('C:/Users/Johan/Documents/FAU_Masterarbeit/Implementation/Train_Test.csv', './Registered')
 

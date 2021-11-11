@@ -6,10 +6,10 @@ from functools import partial
 
 os.environ["CUDA_DEVICE_ORDER"] = "PCI_BUS_ID"
 os.environ["CUDA_VISIBLE_DEVICES"] = "0"  # or 1 or 2 or 3
-# from csbdeep.utils import axes_dict, plot_some, plot_history
-# from csbdeep.io import load_training_data
-# from csbdeep.models import Config, CARE
-# from csbdeep.utils import normalize
+from csbdeep.utils import axes_dict, plot_some, plot_history
+from csbdeep.io import load_training_data
+from csbdeep.models import Config, CARE
+from csbdeep.utils import normalize
 import multiprocessing
 # import tensorflow as tf
 # import fbpconvnet_pytorch as fbp
@@ -40,8 +40,6 @@ class Deconvolver:
 
         if not os.path.exists(dir):
             os.makedirs(dir)
-
-        # TODO: LOgger, log results, intermediate results for Blind RL
 
     def preprocess(self, **kwargs):
         return NotImplementedError
@@ -121,7 +119,7 @@ class BlindRL(Deconvolver):
             p.map(f_x, files)
 
         # Save results
-        with open(os.path.join(self.res_path, f'results_{n_iter_outer}_{n_iter_image}_{n_iter_psf}_{sigma}.pkl'), 'wb') \
+        with open(os.path.join(self.res_path, f'results_blind_rl_{n_iter_outer}_{n_iter_image}_{n_iter_psf}_{sigma}.pkl'), 'wb') \
                 as outfile:
             pickle.dump(self.res_dict, outfile, pickle.HIGHEST_PROTOCOL)
 
@@ -429,72 +427,83 @@ class BlindRL(Deconvolver):
     #     pass
 
 
-# class CAREDeconv(Deconvolver):
-#     def __init__(self, args):
-#         super().__init__(args)
-#         self.train_flag = args['train']
-#
-#     def preprocess(self):
-#         pass
-#
-#     def train(self, data_dir, validation_split =0.1, epochs =10, batch_size=8, train_steps=50):
-#         (X, Y), (X_val, Y_val), axes = load_training_data(data_dir,
-#                                                           validation_split=validation_split, verbose=True)
-#         c = axes_dict(axes)['C']
-#         n_channel_in, n_channel_out = X.shape[c], Y.shape[c]
-#
-#         config = Config(axes, n_channel_in, n_channel_out, train_batch_size=batch_size,
-#                         train_steps_per_epoch=train_steps, train_epochs=epochs)
-#         model_dir = os.path.join(self.res_path,'models')
-#         model = CARE(config, 'my_model', basedir=model_dir)
-#         print(model.keras_model.summary())
-#
-#         history = model.train(X, Y, validation_data=(X_val, Y_val))
-#
-#         # Save training history
-#         history.history['lr'] = [float(f) for f in history.history['lr']]
-#         res_dict = dict(history.history, **history.params)
-#         r = os.path.join(self.res_path,'result.json')
-#         json.dump(res_dict, open(r, 'w'))
-#
-#         #Save model
-#         mdl_path = os.path.join(self.res_path, 'TF_SavedModel.zip')
-#         model.export_TF(mdl_path)
-#
-#         plt.figure(figsize=(16, 5))
-#         plot_history(history, ['loss', 'val_loss'], ['mse', 'val_mse', 'mae', 'val_mae'])
-#
-#         plt.figure(figsize=(20, 12))
-#         _P = model.keras_model.predict(X_val[-5:])
-#         if config.probabilistic:
-#             _P = _P[..., :(_P.shape[-1] // 2)]
-#         plot_some(X_val[-5:], Y_val[-5:], _P, pmax=99.5)
-#         plt.suptitle('5 example validation patches\n'
-#                      'top row: input (source),  '
-#                      'middle row: target (ground truth),  '
-#                      'bottom row: predicted from source')
-#         plt.show()
-#         return model_dir, mdl_path
-#
-#     def predict(self, X, model_dir, Y= None, plot =False):
-#
-#         axes = 'YX'
-#
-#         model = CARE(config=None, name='my_model', basedir='models')
-#         restored = model.predict(X, axes)
-#
-#         if not(Y is None) and plot:
-#             plt.figure(figsize=(15, 10))
-#             plot_some(np.stack([X, restored, Y]),
-#                       title_list=[['low', 'CARE', 'GT']],
-#                       pmin=2, pmax=99.8)
-#
-#             plt.figure(figsize=(10, 5))
-#             for _x, _name in zip((X, restored, Y), ('low', 'CARE', 'GT')):
-#                 plt.plot(normalize(_x, 1, 99.7)[180], label=_name, lw=2)
-#             plt.legend()
-#             plt.show()
-#         return restored
+class CAREDeconv(Deconvolver):
+    def __init__(self, args):
+        super().__init__(args)
+        self.train_flag = args['train']
+
+    def preprocess(self):
+        pass
+
+    def train(self, data_dir, validation_split =0.1, epochs =10, batch_size=8, train_steps=50):
+        (X, Y), (X_val, Y_val), axes = load_training_data(data_dir,
+                                                          validation_split=validation_split, verbose=True)
+
+
+        c = axes_dict(axes)['C']
+        n_channel_in, n_channel_out = X.shape[c], Y.shape[c]
+
+        config = Config(axes, n_channel_in, n_channel_out, train_batch_size=batch_size,
+                        train_steps_per_epoch=train_steps, train_epochs=epochs)
+        model_dir = os.path.join(self.res_path,'models')
+        model = CARE(config, 'my_model', basedir=model_dir)
+        print(model.keras_model.summary())
+
+        history = model.train(X, Y, validation_data=(X_val, Y_val))
+
+        # Save training history
+        history.history['lr'] = [float(f) for f in history.history['lr']]
+        res_dict = dict(history.history, **history.params)
+        # r = os.path.join(self.res_path,'result.json')
+        # json.dump(res_dict, open(r, 'w'))
+
+        with open(os.path.join(self.res_path, f'results_care.pkl'), 'wb') \
+                as outfile:
+            pickle.dump(res_dict, outfile, pickle.HIGHEST_PROTOCOL)
+
+        #Save model
+        mdl_path = os.path.join(self.res_path, 'TF_SavedModel.zip')
+        model.export_TF(mdl_path)
+
+        # Plot training metrics
+        plt.figure(figsize=(16, 5))
+        plot_history(history, ['loss', 'val_loss'], ['mse', 'val_mse', 'mae', 'val_mae'])
+
+        # # Plot exemplary results
+        # plt.figure(figsize=(20, 12))
+        # _P = model.keras_model.predict(X_val[-5:])
+        # if config.probabilistic:
+        #     _P = _P[..., :(_P.shape[-1] // 2)]
+        # plot_some(X_val[-5:], Y_val[-5:], _P, pmax=99.5)
+        # plt.suptitle('5 example validation patches\n'
+        #              'top row: input (source),  '
+        #              'middle row: target (ground truth),  '
+        #              'bottom row: predicted from source')
+        # plt.show()
+        return model_dir, mdl_path
+
+    def predict(self, X, model_dir, name, save_as= None):
+
+        axes = 'ZYX'
+        model = CARE(config=None, name=name, basedir=model_dir)
+        restored = model.predict(X, axes)
+
+        if save_as is not None:
+            tif.imsave(save_as, restored)
+
+        # if not(Y is None) and plot:
+        #     plt.figure(figsize=(15, 10))
+        #     plot_some(np.stack([X, restored, Y]),
+        #               title_list=[['low', 'CARE', 'GT']],
+        #               pmin=2, pmax=99.8)
+        #
+        #     plt.figure(figsize=(10, 5))
+        #     for _x, _name in zip((X, restored, Y), ('low', 'CARE', 'GT')):
+        #         plt.plot(normalize(_x, 1, 99.7)[180], label=_name, lw=2)
+        #     plt.legend()
+        #     plt.show()
+        return restored
+
 
 class Mu_Net(Deconvolver):
     def __init__(self, args):
@@ -503,46 +512,34 @@ class Mu_Net(Deconvolver):
         self.denoiser = den.Denoiser(args)
 
     def preprocess(self):
-        return NotImplementedError
+        pass
 
     def train(self, data_dir, validation_split=0.1, epochs=10, batch_size=8, train_steps=50):
         self.denoiser.train(train_steps=train_steps)
 
-    def predict(self, X, model_dir, Y=None, plot=False):
+    def predict(self, X, model_dir, save_as=None):
+        """
+
+        :param X: Input image
+        :param model_dir:
+        :param save_as: If not None, result is saved as file with the name specified (e.g. 'denoised_img.tif')
+        :return:
+        """
         batch_sz = 1
         self.denoiser.load_model(batch_sz)
 
-        # read image
-        # dir_path = './example_data/small/'
-        # noise_level = 1 # from 1 to 4
-        # img_name = '%s/n%d_000001.tif' % (dir_path,noise_level)
-
         # denoising process
-        L0_pred, L1_pred, L2_pred, denoised_img = self.denoiser.denoising_patch(X)
-        tif.imsave('L0_pred.tif', L0_pred.astype('uint16'))
-        tif.imsave('L1_pred.tif', L1_pred.astype('uint16'))
-        tif.imsave('L2_pred.tif', L2_pred.astype('uint16'))
-        tif.imsave('denoised_img.tif', denoised_img.astype('uint16'))
+        denoised_img = self.denoiser.denoising_img(X)
 
+        if save_as is not None:
+            tif.imsave(save_as, denoised_img.astype('uint16'))
+        return denoised_img
 
-# class FBP_ConvNet(Deconvolver):
-#     def __init__(self, args):
-#         super().__init__(args)
-#
-#     def preprocess(self):
-#         return self.data_path
-#
-#     def train(self, data_dir, validation_split=0.1, epochs =10, batch_size=8, train_steps=50):
-#         fbp.train.main(config)
-#         return 0
-#
-#     def predict(self, X, model_dir, Y= None, plot =False):
-#         return 0
 
 
 REGISTRY = {}
 REGISTRY['BlindRL'] = BlindRL
-# REGISTRY['csbdeep'] = CAREDeconv
-# REGISTRY['mu-net'] = Mu_Net
+REGISTRY['csbdeep'] = CAREDeconv
+REGISTRY['mu-net'] = Mu_Net
 # REGISTRY['fbpconvnet'] =FBP_ConvNet
 

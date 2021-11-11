@@ -5,13 +5,14 @@ from csbdeep.data import RawData, create_patches
 import tifffile as tif
 from random import shuffle
 
+
 class DataAugmenter():
     def __init__(self, args):
         self.z_shape = args['z_shape']
         self.xy_shape = args['xy_shape']
         self.n_patches = args['n_patches']
 
-    def augment(self, data_path, source, target, care=False, data_dir = None):
+    def augment(self, data_path, source, target, care=False, data_dir = None, save_file_name='my_data.npz'):
         """
 
         :param data_path:
@@ -23,7 +24,7 @@ class DataAugmenter():
         """
         # If data_dir is None, result is not saved to file
         if data_dir is not None:
-            data_dir = os.path.join(data_dir,'my_data.npz')
+            data_dir = os.path.join(data_dir,save_file_name)
 
         augmented_raw, augmented_gt, axes = [],[],[]
         if not care:
@@ -83,8 +84,8 @@ class DataProvider():
         args['n_patches'] = 8
         da = DataAugmenter(args)
         (augmented_raw, augmented_gt, _), _ = da.augment(data_dir, 'Raw', 'GT', care=True)
-        self.augmented_raw = augmented_raw[:,0,:,:,:]
-        self.augmented_gt = augmented_gt[:, 0, :, :, :]
+        self.augmented_raw = np.float32(augmented_raw[:,0,:,:,:])
+        self.augmented_gt = np.float32(augmented_gt[:, 0, :, :, :])
         self._reset_idx()
         self.size = self.augmented_raw.shape[0]
         # self.seed = 0

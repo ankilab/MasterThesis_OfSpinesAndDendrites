@@ -4,6 +4,8 @@ import os
 from csbdeep.data import RawData, create_patches
 import tifffile as tif
 from random import shuffle
+import flammkuchen as fl
+from csbdeep.io import load_training_data
 
 
 class DataAugmenter():
@@ -12,7 +14,7 @@ class DataAugmenter():
         self.xy_shape = args['xy_shape']
         self.n_patches = args['n_patches']
 
-    def augment(self, data_path, source, target, care=False, data_dir = None, save_file_name='my_data.npz'):
+    def augment(self, data_path, source, target, care=False, data_dir = None, save_file_name='my_data.npz', save_h5=None):
         """
 
         :param data_path:
@@ -53,6 +55,8 @@ class DataAugmenter():
                 patch_size=(self.z_shape, self.xy_shape, self.xy_shape),
                 n_patches_per_image=self.n_patches,
                 save_file=data_dir)
+            if save_h5 != '':
+                fl.save(save_h5, {'raw': np.float32(augmented_raw[:,0,:,:,:]), 'gt':np.float32(augmented_gt[:,0,:,:,:])})
 
         return (augmented_raw, augmented_gt, axes), data_dir
 
@@ -76,35 +80,43 @@ class DataAugmenter():
 
 
 class DataProvider():
-    def __init__(self, size, data_dir):
+    def __init__(self, size, data_dir, source_dir, target_dir, n_patches=50):
         (sz_z, sz_xy) = size
         args = {}
         args['z_shape'] = sz_z
         args['xy_shape'] = sz_xy
-        args['n_patches'] = 8
+        args['n_patches'] = n_patches
+        self.data_h5 = 'data.h5'
         da = DataAugmenter(args)
-        (augmented_raw, augmented_gt, _), _ = da.augment(data_dir, 'Raw', 'GT', care=True)
-        self.augmented_raw = np.float32(augmented_raw[:,0,:,:,:])
-        self.augmented_gt = np.float32(augmented_gt[:, 0, :, :, :])
+        da.augment(data_dir, source_dir, target_dir, care=True, data_dir=None,
+                                                  save_h5=self.data_h5)
+        # (self.X, self.Y), (self.X_val, self.Y_val), axes = load_training_data(data_dir,
+        #                                                   validation_split=0.1, verbose=True)
+        # self.X = np.float32(self.X[:,0,:,:,:])
+        # self.Y = np.float32(self.Y[:, 0, :, :, :])
+        # self.X_val = np.float32(self.X_val[:,0,:,:,:])
+        # self.Y_val = np.float32(self.Y_val[:, 0, :, :, :])
+
         self._reset_idx()
-        self.size = self.augmented_raw.shape[0]
+        self.size = fl.meta(self.data_h5, "raw").shape
+        self.draw_order= np.arange(self.size[0])
         # self.seed = 0
 
     def shuffle(self):
+        self.draw_order=np.random.choice(np.arange(self.size[0]), self.size[0] , replace=False)
         self._reset_idx()
-        ind_list = [i for i in range(self.augmented_raw.shape[0])]
-        shuffle(ind_list)
-        self.augmented_raw = self.augmented_raw[ind_list, :, :, :]
-        self.augmented_gt = self.augmented_gt[ind_list,:,:,:]
 
     def _reset_idx(self):
         self.idx=0
 
     def get(self, batch_size):
         end_idx = self.idx+batch_size
-        end_idx = end_idx if end_idx <= self.size else self.size
-        raw = self.augmented_raw[self.idx:end_idx,:,:,:]
-        gt = self.augmented_gt[self.idx:end_idx,:,:,:]
+        end_idx = end_idx if end_idx <= self.size[0] else self.size[0]
+        raw = fl.load(self.data_h5, "/raw", sel=fl.aslice[self.draw_order[self.idx:end_idx],:,:,:])
+        gt = fl.load(self.data_h5, "/gt", sel=fl.aslice[self.draw_order[self.idx:end_idx],:,:,:])
+
+        # raw = self.X[self.idx:end_idx,:,:,:]
+        # gt = self.Y[self.idx:end_idx,:,:,:]
         self.idx += batch_size
         return raw, gt
 

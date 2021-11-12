@@ -9,11 +9,17 @@ import tensorflow as tf
 from mu_net1.cnn_models import *
 from mu_net1.utils import *
 from data_augmentation import DataProvider
+import os
+from tqdm import tqdm
+from csbdeep.internals import nets, train
 
 
 physical_devices = tf.config.experimental.list_physical_devices('GPU')
-assert len(physical_devices) > 0, "Not enough GPU hardware devices available"
-config = tf.config.experimental.set_memory_growth(physical_devices[0], True)
+if len(physical_devices) > 0:
+    config = tf.config.experimental.set_memory_growth(physical_devices[0], True)
+
+else:
+    print("Not enough GPU hardware devices available")
 
 
 class Denoiser():
@@ -24,7 +30,7 @@ class Denoiser():
         self.batch_sz = 1 if 'batch_size' not in args.keys() else args['batch_size']
         self.sz = 128
         self.sz_z = 32
-        self.max_value = 5000.0  # we set maximum value to 5,000 of microscope output
+        self.max_value = 8191  # we set maximum value to 5,000 of microscope output
         self.learning_rate = None
         self.model_path = './model'
         self.model_setup()
@@ -62,14 +68,14 @@ class Denoiser():
         L1_L2, self.L1_pred = munet_cnn_level_1(self.L1_img, L0_L1, name='gen_l1')
         L2_L3, self.L2_pred = munet_cnn_level_2(self.L2_img, L1_L2, name='gen_l2')
         self.L3_pred = munet_cnn_level_3(self.img, L2_L3, name='gen_l3')
-        ### Anki testet
-        # self.model = tf.keras.Model(self.img, self.L3_pred)
+
         self.model = tf.keras.Model(inputs=self.img, outputs=[self.L0_pred, self.L1_pred, self.L2_pred, self.L3_pred])
         self.gt=tf.keras.Model(inputs=self.label, outputs=[self.L0_label, self.L1_label, self.L2_label])
         self.gt.compile(loss='mse', optimizer='adam')
 
     def data_setup(self):
-        self.data_provider = DataProvider((self.sz_z, self.sz), self.args['source_folder'])
+        self.data_provider = DataProvider((self.sz_z, self.sz), self.args['data_path'], self.args['source_folder'],
+                                          self.args['target_folder'], self.args['n_patches'])
 
     def loss_setup(self):
         self.loss_func = {'L0_pred': self._gen_loss, 'L1_pred': self._gen_loss,
@@ -92,18 +98,25 @@ class Denoiser():
         self.learning_rate = curr_lr
         return curr_lr
 
-    def train(self, train_steps=30):
-        num_batch_samples = np.ceil(self.data_provider.size/self.batch_sz).astype(int)
-        training_epochs = train_steps
+    def train(self, epochs=30):
+        num_batch_samples = np.ceil(self.data_provider.size[0]/self.batch_sz).astype(int)
         self.learning_rate = 0.0001
 
-        for epoch in range(0, training_epochs):
+        for epoch in range(0, epochs):
             self.data_provider.shuffle()
 
             # Set up optimizers
             g_optimizer = tf.keras.optimizers.Adam(learning_rate=self.lr_schedule(epoch) * 2, beta_1=0.5)
+            self.model.compile(optimizer=g_optimizer, loss=self.loss_func)
 
-            for i in range(0, num_batch_samples):
+            # ###test
+            # training_data=train.DataWrapper(self.data_provider.X, self.data_provider.Y, self.batch_sz,
+            #                                 length=epochs*num_batch_samples)
+            # self.model.fit(iter(training_data),[L0_label, L1_label, L2_label, sample_label])
+            #
+            # self.data_provider
+
+            for _ in tqdm(range(0, num_batch_samples)):
                 sample_patch, sample_label = self.data_provider.get(self.batch_sz)
                 sample_patch = sample_patch[:, :, :, :, np.newaxis]
                 sample_label = sample_label[:, :, :, :, np.newaxis]
@@ -111,12 +124,10 @@ class Denoiser():
                 L0_label, L1_label, L2_label = self.gt.predict(sample_label)
 
                 # Compile and fit models
-                self.model.compile(optimizer=g_optimizer, loss=self.loss_func)
                 self.model.fit(sample_patch, [L0_label, L1_label, L2_label, sample_label])
 
             self.model.save_weights(self.model_path)
 
-    # TODO: TF 2 Syntax
     def load_model(self, batch_size=4, path='./model'):
         self.model.load_weights(path)
 

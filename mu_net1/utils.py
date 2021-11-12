@@ -21,6 +21,7 @@ def read_patches(batch_sz, size, data_dir):
 
     return augmented_raw[:,0,:, :,:], augmented_gt[:,0,:, :,:]
 
+
 def get_resized_patches(patch, max_value):
     patch = patch.astype('float32')
     sc = max_value/2.0

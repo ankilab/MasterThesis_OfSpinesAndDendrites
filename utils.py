@@ -9,6 +9,7 @@ import glob
 from pystackreg import StackReg
 from skimage import transform, io, exposure
 import pandas as pd
+from shutil import copy2
 
 
 def display(im3d, cmap="gray", step=1):
@@ -105,7 +106,16 @@ def load_stack_from_drive(path, mouse, required_string=''):
     for (idx, i) in enumerate(img_dirs):
         files = [f for f in os.listdir(os.path.join(path,i)) if f.endswith('.tif')]
         f_name = [f for f in files if required_string in f]
-        f = tif.imread(os.path.join(path, i, f_name[0]))
+
+        # Weird error: in some folders of TIm's mice there is an additional file name which doe snot correspond to a
+        # tif-file e.g ['._117_ArcCre_A1_zoom10_power8_gain500_z1_resgalvo-027-011_Cycle00001_Ch3_000001.ome.tif',
+        # '117_ArcCre_A1_zoom10_power8_gain500_z1_resgalvo-027-011_Cycle00001_Ch3_000001.ome.tif']
+        if f_name[0][0:2] == '._' and len(f_name)>1:
+            fx = f_name[1]
+        else:
+            fx=f_name[0]
+
+        f = tif.imread(os.path.join(path, i, fx))
         if len(f.shape) ==3:
             f = f[0,:,:]
         f = f[np.newaxis,:,:]
@@ -141,7 +151,31 @@ def find_all_img_with_min_z(path, min_z, result_folder):
         if x.shape[0] >=min_z:
             tif.imsave(os.path.join(result_folder, f), x)
 
-find_all_img_with_min_z('D:/jo77pihe/Registered/Raw', 32, 'D:/jo77pihe/Registered/Raw_32')
+
+def split_train_test(csv_file, path):
+    train_path = os.path.join(path, 'Train')
+    test_path = os.path.join(path, 'Test')
+    if not os.path.exists(train_path):
+        os.makedirs(train_path)
+    if not os.path.exists(test_path):
+        os.makedirs(test_path)
+
+    df = pd.read_csv(csv_file, sep = ';')
+    reg_files = df[df['Train']=='X']
+    for (idx, row) in reg_files.iterrows():
+        name = row['Researcher'] +'_' + row['Mouse']+'_'+ row['Date'] +'_' +row['Region'] +'.tif'
+        if os.path.isfile(os.path.join(path, name)):
+            copy2(os.path.join(path, name), train_path)
+
+    reg_files = df[df['Test']=='X']
+    for (idx, row) in reg_files.iterrows():
+        name = row['Researcher'] +'_' + row['Mouse']+'_'+ row['Date'] +'_' +row['Region'] +'.tif'
+        if os.path.isfile(os.path.join(path, name)):
+            copy2(os.path.join(path, name), test_path)
+
+
+split_train_test('C:/Users/jo77pihe/Documents/MasterThesis_OfSpinesAndDendrites/Train_Test.csv', 'D:/jo77pihe/Registered/Raw_32')
+# find_all_img_with_min_z('D:/jo77pihe/Registered/Raw', 32, 'D:/jo77pihe/Registered/Raw_32')
 
 
 # def predict_img_by_patches(img, predictor, patchsize=(32,128,128)):

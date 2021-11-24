@@ -27,10 +27,10 @@ def display(im3d, cmap="gray", step=1):
     plt.show()
 
 
-def save_tif_stack_to_2d(im3d, save_path, start_val = 0):
+def save_tif_stack_to_2d(im3d, save_path, start_val = 0, name='f'):
     Path(save_path).mkdir(parents=True, exist_ok=True)
     n_images = im3d.shape[0]
-    names = [f'f_{i}.tif' for i in range(start_val, start_val+n_images)]
+    names = [f'{name}_{i}.tif' for i in range(start_val, start_val+n_images)]
     p = save_path+'/'
     names = [p + name for name in names]
     for name, image in zip(names,im3d):
@@ -142,6 +142,34 @@ def register_stacks_from_drive(csv_file, result_folder):
         tif.imsave(save_name, reg_stack)
 
 
+def register_autoquant_images(path, result_folder):
+    if not os.path.exists(result_folder):
+        os.makedirs(result_folder)
+
+    mice = os.listdir(path)
+    for mouse in mice:
+        dates = os.listdir(os.path.join(path, mouse))
+        date= dates[0]
+        # for date in dates:
+        regions = os.listdir(os.path.join(path, mouse, date))
+        for region in regions:
+            stack =np.array([])
+            files = [f for f in os.listdir(os.path.join(path, mouse, date, region)) if f.endswith('.tif')]
+            files.sort()
+            for (idx,fx) in enumerate(files):
+                f = tif.imread(os.path.join(path, mouse, date, region, fx))
+                if len(f.shape) == 3:
+                    f = f[0, :, :]
+                f = f[np.newaxis, :, :]
+                if idx == 0:
+                    stack = f
+                else:
+                    stack = np.concatenate((stack, f), axis=0)
+            # reg_stack = register_3d_stack_from_middle(stack, ['affine'])
+            save_name = os.path.join(result_folder, 'Alessandro_' + mouse + '_' + date+ '_' + region+ '.tif')
+            tif.imsave(save_name, stack)
+
+
 def find_all_img_with_min_z(path, min_z, result_folder):
     if not os.path.exists(result_folder):
         os.makedirs(result_folder)
@@ -174,9 +202,14 @@ def split_train_test(csv_file, path):
             copy2(os.path.join(path, name), test_path)
 
 
-split_train_test('C:/Users/jo77pihe/Documents/MasterThesis_OfSpinesAndDendrites/Train_Test.csv', 'D:/jo77pihe/Registered/Raw_32')
+# split_train_test('C:/Users/jo77pihe/Documents/MasterThesis_OfSpinesAndDendrites/Train_Test.csv', 'D:/jo77pihe/Registered/Raw_32')
 # find_all_img_with_min_z('D:/jo77pihe/Registered/Raw', 32, 'D:/jo77pihe/Registered/Raw_32')
+# register_autoquant_images('D:/jo77pihe/Registered/Deconved_AutoQuant', 'D:/jo77pihe/Registered/Deconved_AutoQuant_R2')
+files = [f for f in os.listdir('D:/jo77pihe/Registered/Raw_32') if f.endswith('.tif')]
 
+for f in files:
+    img = tif.imread(os.path.join('D:/jo77pihe/Registered/Raw_32', f))
+    save_tif_stack_to_2d(img,'D:/jo77pihe/Registered/Raw_32/2D', name=f[:-4])
 
 # def predict_img_by_patches(img, predictor, patchsize=(32,128,128)):
 #     assert len(patchsize) == 3, 'Please specify a 3-D patch size'

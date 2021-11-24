@@ -78,7 +78,7 @@ class ImageQualityMetrics:
         return  m / sd if sd != 0 else np.nan
 
     def _rescale(self,img):
-        img = (img - img.min()) if img.min()>=0 else (img + img.min())
+        img = (img - img.min())
         return img/img.max()
 
 

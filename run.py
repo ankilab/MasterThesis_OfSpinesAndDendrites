@@ -12,8 +12,7 @@ def run(config):
                                                                            data_dir=runner.res_path)
 
     runner.preprocess()
-    model_dir, mdl_path = runner.train(data_dir, config['validation_split'],config['epochs'], config['batch_size'],
-                                       config['train_steps'])
+    model_dir, mdl_path = runner.train(data_dir, config['validation_split'],config['epochs'], config['batch_size'])
 
     y_test = imread(config['test_file_y'])
     x_test = imread(config['test_file_x'])

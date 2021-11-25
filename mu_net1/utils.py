@@ -38,14 +38,18 @@ def get_batch(patch, tensor, x,y,z, x_loc, y_loc, z_loc, count):
     return patch, tensor, x_loc, y_loc, z_loc
 
 
-def window_sliding(self, img, sampling_step, max_value, patch_sz, batch_sz):
+def window_sliding(self, img, sampling_step, max_value, patch_sz, batch_sz, n_levels=3):
     img_sz = img.shape
     sc = max_value/2.0
-    cnn_input_sz = [batch_sz, patch_sz, patch_sz, patch_sz, 1]
+    cnn_input_sz = [batch_sz, sampling_step[0], sampling_step[1], sampling_step[2], 1]
     input_tensor = np.zeros(cnn_input_sz, 'float32')
+    patch_sz = int(patch_sz)
+
+    # the network has several outputs as a list, at which index is the final result?
+    level_idx = n_levels - 1
     
-    wz = [patch_sz, patch_sz, patch_sz]
-    wz = np.int_(wz)    
+    wz = [patch_sz[0], patch_sz[1], patch_sz[2]]
+    wz = np.int_(wz)
     
     x_loc = np.zeros(batch_sz, 'int32')
     y_loc = np.zeros(batch_sz, 'int32')
@@ -80,7 +84,7 @@ def window_sliding(self, img, sampling_step, max_value, patch_sz, batch_sz):
                                 input_patch, input_tensor, x_loc, y_loc, z_loc = get_batch(patch, input_tensor, x, y, z, x_loc, y_loc, z_loc, count)
                                 count = count + 1
                                 if count % batch_sz == 0 :
-                                    pred_patch = self.sess.run(self.L3_pred, feed_dict = {self.img: input_tensor} )
+                                    pred_patch = self.model.predict(input_tensor)[level_idx] # self.sess.run(self.L3_pred, feed_dict = {self.img: input_tensor} )
                                     pred_patch = np.clip(pred_patch, -1, 1)
                                     pred_patch = np.reshape((pred_patch+1)*sc, cnn_input_sz[0:4])
                                     for k in range(0, count):
@@ -96,7 +100,7 @@ def window_sliding(self, img, sampling_step, max_value, patch_sz, batch_sz):
                                 input_patch, input_tensor, x_loc, y_loc, z_loc = get_batch(patch, input_tensor, x, y, z, x_loc, y_loc, z_loc, count)
                                 count = count + 1
                                 if count % batch_sz == 0 :
-                                    pred_patch = self.sess.run(self.L3_pred, feed_dict = {self.img: input_tensor} )
+                                    pred_patch = self.model.predict(input_tensor)[level_idx] #self.sess.run(self.L3_pred, feed_dict = {self.img: input_tensor} )
                                     pred_patch = np.clip(pred_patch, -1, 1)
                                     pred_patch = np.reshape((pred_patch+1)*sc, cnn_input_sz[0:4])
                                     for k in range(0, count):
@@ -113,7 +117,7 @@ def window_sliding(self, img, sampling_step, max_value, patch_sz, batch_sz):
                                 input_patch, input_tensor, x_loc, y_loc, z_loc = get_batch(patch, input_tensor, x, y, z, x_loc, y_loc, z_loc, count)
                                 count = count + 1
                                 if count % batch_sz == 0 :
-                                    pred_patch = self.sess.run(self.L3_pred, feed_dict = {self.img: input_tensor} )
+                                    pred_patch = self.model.predict(input_tensor)[level_idx] # self.sess.run(self.L3_pred, feed_dict = {self.img: input_tensor} )
                                     pred_patch = np.clip(pred_patch, -1, 1)
                                     pred_patch = np.reshape((pred_patch+1)*sc, cnn_input_sz[0:4])
                                     for k in range(0, count):
@@ -128,7 +132,7 @@ def window_sliding(self, img, sampling_step, max_value, patch_sz, batch_sz):
                                 input_patch, input_tensor, x_loc, y_loc, z_loc = get_batch(patch, input_tensor, x, y, z, x_loc, y_loc, z_loc, count)
                                 count = count + 1
                                 if count % batch_sz == 0 :
-                                    pred_patch = self.sess.run(self.L3_pred, feed_dict = {self.img: input_tensor} )
+                                    pred_patch = self.model.predict(input_tensor)[level_idx]# self.sess.run(self.L3_pred, feed_dict = {self.img: input_tensor} )
                                     pred_patch = np.clip(pred_patch, -1, 1)
                                     pred_patch = np.reshape((pred_patch+1)*sc, cnn_input_sz[0:4])
                                     for k in range(0, count):
@@ -147,7 +151,7 @@ def window_sliding(self, img, sampling_step, max_value, patch_sz, batch_sz):
                                 input_patch, input_tensor, x_loc, y_loc, z_loc = get_batch(patch, input_tensor, x, y, z, x_loc, y_loc, z_loc, count)
                                 count = count + 1
                                 if count % batch_sz == 0 :
-                                    pred_patch = self.sess.run(self.L3_pred, feed_dict = {self.img: input_tensor} )
+                                    pred_patch = self.model.predict(input_tensor)[level_idx] #self.sess.run(self.L3_pred, feed_dict = {self.img: input_tensor} )
                                     pred_patch = np.clip(pred_patch, -1, 1)
                                     pred_patch = np.reshape((pred_patch+1)*sc, cnn_input_sz[0:4])
                                     for k in range(0, count):
@@ -162,7 +166,7 @@ def window_sliding(self, img, sampling_step, max_value, patch_sz, batch_sz):
                                 input_patch, input_tensor, x_loc, y_loc, z_loc = get_batch(patch, input_tensor, x, y, z, x_loc, y_loc, z_loc, count)
                                 count = count + 1
                                 if count % batch_sz == 0 :
-                                    pred_patch = self.sess.run(self.L3_pred, feed_dict = {self.img: input_tensor} )
+                                    pred_patch = self.model.predict(input_tensor)[level_idx]# self.sess.run(self.L3_pred, feed_dict = {self.img: input_tensor} )
                                     pred_patch = np.clip(pred_patch, -1, 1)
                                     pred_patch = np.reshape((pred_patch+1)*sc, cnn_input_sz[0:4])
                                     for k in range(0, count):
@@ -179,7 +183,7 @@ def window_sliding(self, img, sampling_step, max_value, patch_sz, batch_sz):
                                 input_patch, input_tensor, x_loc, y_loc, z_loc = get_batch(patch, input_tensor, x, y, z, x_loc, y_loc, z_loc, count)
                                 count = count + 1
                                 if count % batch_sz == 0 :
-                                    pred_patch = self.sess.run(self.L3_pred, feed_dict = {self.img: input_tensor} )
+                                    pred_patch = self.model.predict(input_tensor)[level_idx] # self.sess.run(self.L3_pred, feed_dict = {self.img: input_tensor} )
                                     pred_patch = np.clip(pred_patch, -1, 1)
                                     pred_patch = np.reshape((pred_patch+1)*sc, cnn_input_sz[0:4])
                                     for k in range(0, count):
@@ -194,7 +198,7 @@ def window_sliding(self, img, sampling_step, max_value, patch_sz, batch_sz):
                                 input_patch, input_tensor, x_loc, y_loc, z_loc = get_batch(patch, input_tensor, x, y, z, x_loc, y_loc, z_loc, count)
                                 count = count + 1
                                 if count % batch_sz == 0 :
-                                    pred_patch = self.sess.run(self.L3_pred, feed_dict = {self.img: input_tensor} )
+                                    pred_patch = self.model.predict(input_tensor)[level_idx] #self.sess.run(self.L3_pred, feed_dict = {self.img: input_tensor} )
                                     pred_patch = np.clip(pred_patch, -1, 1)
                                     pred_patch = np.reshape((pred_patch+1)*sc, cnn_input_sz[0:4])
                                     for k in range(0, count):
@@ -204,7 +208,7 @@ def window_sliding(self, img, sampling_step, max_value, patch_sz, batch_sz):
                                         count = 0
                                         
                                         
-    pred_patch = self.sess.run(self.L3_pred, feed_dict = {self.img: input_tensor} )
+    pred_patch = self.model.predict(input_tensor)[level_idx] # self.sess.run(self.L3_pred, feed_dict = {self.img: input_tensor} )
     pred_patch = np.clip(pred_patch, -1, 1)
     pred_patch = np.reshape((pred_patch+1)*sc, cnn_input_sz[0:4])
     for k in range(0, count):

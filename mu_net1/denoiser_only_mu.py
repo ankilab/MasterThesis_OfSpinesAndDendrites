@@ -7,11 +7,14 @@ Created on Tue Jul 17 19:09:56 2018
 
 import tensorflow as tf
 from mu_net1.cnn_models import *
-from mu_net1.utils import *
+from mu_net1.utils2 import *
 from data_augmentation import DataProvider
-import os
+import gc
 from tqdm import tqdm
-from csbdeep.internals import nets, train
+import os
+import pickle
+
+tf.compat.v1.enable_v2_behavior()
 
 
 physical_devices = tf.config.experimental.list_physical_devices('GPU')
@@ -28,10 +31,13 @@ class Denoiser():
         self.args = args
         # basic parameters
         self.batch_sz = 1 if 'batch_size' not in args.keys() else args['batch_size']
-        self.sz = 128
-        self.sz_z = 32
+        self.sz = args['xy_shape']
+        self.sz_z = args['z_shape']
         self.max_value = 8191  # we set maximum value to 5,000 of microscope output
         self.learning_rate = None
+        self.train_history_setup()
+        self.data_provider = None
+        self.n_levels=2
         self.model_path = './model'
         self.model_setup()
         print(self.model.summary)
@@ -48,88 +54,97 @@ class Denoiser():
                                              use_bias=False, padding='same')(self.img)
         self.L1_img = tf.keras.layers.Conv3D(1, 1, strides=(4, 4, 4), kernel_initializer=tf.keras.initializers.Ones(),
                                              use_bias=False, padding='same')(self.img)
-        self.L0_img = tf.keras.layers.Conv3D(1, 1, strides=(8, 8, 8), kernel_initializer=tf.keras.initializers.Ones(),
-                                             use_bias=False, padding='same')(self.img)
+        # self.L0_img = tf.keras.layers.Conv3D(1, 1, strides=(8, 8, 8), kernel_initializer=tf.keras.initializers.Ones(),
+        #                                      use_bias=False, padding='same')(self.img)
 
         self.L2_label = tf.nn.conv3d(self.label, tf.constant(1.0, shape=(1, 1, 1, 1, 1)), strides=[1, 2, 2, 2, 1],
                                 padding='SAME')
         self.L1_label = tf.nn.conv3d(self.label, tf.constant(1.0, shape=(1, 1, 1, 1, 1)), strides=[1, 4, 4, 4, 1],
                                 padding='SAME')
-        self.L0_label = tf.nn.conv3d(self.label, tf.constant(1.0, shape=(1, 1, 1, 1, 1)), strides=[1, 8, 8, 8, 1],
-                                padding='SAME')
-        # self.L2_label = tf.keras.layers.Conv3D(1, 1, strides=(2, 2, 2), kernel_initializer=tf.keras.initializers.Ones(),
-        #                                      use_bias=False, padding='same')(self.label)
-        # self.L1_label = tf.keras.layers.Conv3D(1, 1, strides=(4, 4, 4), kernel_initializer=tf.keras.initializers.Ones(),
-        #                                      use_bias=False, padding='same')(self.label)
-        # self.L0_label = tf.keras.layers.Conv3D(1, 1, strides=(8, 8, 8), kernel_initializer=tf.keras.initializers.Ones(),
-        #                                      use_bias=False, padding='same')(self.label)
+        # self.L0_label = tf.nn.conv3d(self.label, tf.constant(1.0, shape=(1, 1, 1, 1, 1)), strides=[1, 8, 8, 8, 1],
+        #                         padding='SAME')
 
-        L0_L1, self.L0_pred = munet_cnn_level_0(self.L0_img, name='gen_l0')
-        L1_L2, self.L1_pred = munet_cnn_level_1(self.L1_img, L0_L1, name='gen_l1')
+        # L0_L1, self.L0_pred = munet_cnn_level_0(self.L0_img, name='gen_l0')
+        # L1_L2, self.L1_pred = munet_cnn_level_1(self.L1_img, L0_L1, name='gen_l1')
+        L1_L2, self.L1_pred = munet_cnn_level_1(self.L1_img, name='gen_l1')
         L2_L3, self.L2_pred = munet_cnn_level_2(self.L2_img, L1_L2, name='gen_l2')
         self.L3_pred = munet_cnn_level_3(self.img, L2_L3, name='gen_l3')
 
-        self.model = tf.keras.Model(inputs=self.img, outputs=[self.L0_pred, self.L1_pred, self.L2_pred, self.L3_pred])
-        self.gt=tf.keras.Model(inputs=self.label, outputs=[self.L0_label, self.L1_label, self.L2_label])
+        # self.model = tf.keras.Model(inputs=self.img, outputs=[self.L0_pred, self.L1_pred, self.L2_pred, self.L3_pred])
+        # self.gt=tf.keras.Model(inputs=self.label, outputs=[self.L0_label, self.L1_label, self.L2_label])
+        self.model = tf.keras.Model(inputs=self.img, outputs=[self.L1_pred, self.L2_pred, self.L3_pred])
+        self.gt=tf.keras.Model(inputs=self.label, outputs=[self.L1_label, self.L2_label])
         self.gt.compile(loss='mse', optimizer='adam')
 
+    def train_history_setup(self):
+        self.train_hist = {}
+        self.train_hist['loss']=[]
+        # self.train_hist['L0_pred_loss']=[]
+        self.train_hist['L1_pred_loss']=[]
+        self.train_hist['L2_pred_loss']=[]
+        self.train_hist['L3_pred_loss']=[]
+
     def data_setup(self):
-        self.data_provider = DataProvider((self.sz_z, self.sz), self.args['data_path'], self.args['source_folder'],
+        if self.data_provider is None:
+            self.data_provider = DataProvider((self.sz_z, self.sz), self.args['data_path'], self.args['source_folder'],
                                           self.args['target_folder'], self.args['n_patches'])
 
     def loss_setup(self):
-        self.loss_func = {'L0_pred': self._gen_loss, 'L1_pred': self._gen_loss,
+        # self.loss_func = {'L0_pred': self._gen_loss, 'L1_pred': self._gen_loss,
+        #              'L2_pred': self._gen_loss, 'L3_pred': self._gen_loss}
+        self.loss_func = {'L1_pred': self._gen_loss,
                      'L2_pred': self._gen_loss, 'L3_pred': self._gen_loss}
 
     def _gen_loss(self, y_true, y_pred):
         gen_loss = tf.reduce_mean(tf.abs(y_true - y_pred))
         return gen_loss
 
-    def lr_schedule(self, epoch, curr_lr=0.0001):
-        curr_lr = self.learning_rate
-        if epoch == 10:
-            curr_lr = curr_lr / 2
-        if epoch == 15:
-            curr_lr = curr_lr / 2
-        if epoch == 20:
-            curr_lr = curr_lr / 2
-        if epoch == 25:
-            curr_lr = curr_lr / 2
-        self.learning_rate = curr_lr
-        return curr_lr
-
-    def train(self, epochs=30):
+    def train(self, data_provider, epochs=30):
+        self.data_provider = data_provider
         num_batch_samples = np.ceil(self.data_provider.size[0]/self.batch_sz).astype(int)
+        self.train_history_setup()
         self.learning_rate = 0.0001
+        # Set up optimizers
+        lr_schedule = tf.keras.optimizers.schedules.ExponentialDecay(initial_learning_rate=self.learning_rate,
+            decay_steps=5*num_batch_samples, decay_rate=0.5, staircase=True)
 
-        for epoch in range(0, epochs):
+        g_optimizer = tf.keras.optimizers.Adam(learning_rate=lr_schedule, beta_1=0.5)
+        self.model.compile(optimizer=g_optimizer, loss=self.loss_func, run_eagerly=True)
+
+        for _ in tqdm(range(0, epochs)):
             self.data_provider.shuffle()
 
-            # Set up optimizers
-            g_optimizer = tf.keras.optimizers.Adam(learning_rate=self.lr_schedule(epoch) * 2, beta_1=0.5)
-            self.model.compile(optimizer=g_optimizer, loss=self.loss_func)
-
-            # ###test
-            # training_data=train.DataWrapper(self.data_provider.X, self.data_provider.Y, self.batch_sz,
-            #                                 length=epochs*num_batch_samples)
-            # self.model.fit(iter(training_data),[L0_label, L1_label, L2_label, sample_label])
-            #
-            # self.data_provider
-
-            for _ in tqdm(range(0, num_batch_samples)):
+            for _ in range(0, num_batch_samples):
                 sample_patch, sample_label = self.data_provider.get(self.batch_sz)
                 sample_patch = sample_patch[:, :, :, :, np.newaxis]
                 sample_label = sample_label[:, :, :, :, np.newaxis]
 
-                L0_label, L1_label, L2_label = self.gt.predict(sample_label)
+                # L0_label, L1_label, L2_label = self.gt.predict(sample_label
+                L1_label, L2_label = self.gt.predict(sample_label)
+
 
                 # Compile and fit models
-                self.model.fit(sample_patch, [L0_label, L1_label, L2_label, sample_label])
+                # history = self.model.fit(sample_patch, [L0_label, L1_label, L2_label, sample_label],
+                #                          batch_size=self.batch_sz, callbacks=[MyCustomCallback()])
+                history = self.model.fit(sample_patch, [L1_label, L2_label, sample_label],
+                                         batch_size=self.batch_sz, callbacks=[MyCustomCallback()])
+                self.train_hist['loss'].append(history.history['loss'][0])
+                # self.train_hist['L0_pred_loss'].append(history.history['L0_pred_loss'][0])
+                self.train_hist['L2_pred_loss'].append(history.history['L2_pred_loss'][0])
+                self.train_hist['L1_pred_loss'].append(history.history['L1_pred_loss'][0])
+                self.train_hist['L3_pred_loss'].append(history.history['L3_pred_loss'][0])
 
-            self.model.save_weights(self.model_path)
+            self.model.save(self.model_path)
+        self.model.save(self.model_path + '/gt')
+        with open(os.path.join(self.model_path, 'train_history.pkl'), 'wb') as outfile:
+            pickle.dump(self.train_hist, outfile, pickle.HIGHEST_PROTOCOL)
+
+        return self.model_path, self.train_hist
 
     def load_model(self, batch_size=4, path='./model'):
-        self.model.load_weights(path)
+        self.model = tf.keras.models.load_model(path, compile=False)
+        self.n_levels = len(self.model.output)
+        # self.gt = tf.keras.models.load_model(path+'/gt', compile=False)
 
     def denoising_patch(self, img):
         img = img.astype('float32')
@@ -160,7 +175,41 @@ class Denoiser():
         return L0_pred, L1_pred, L2_pred, denoised_img
 
     def denoising_img(self, img):
-        sliding_step = [32, 128, 128]
-        denoised_img = window_sliding(self, img, sliding_step, self.max_value, self.sz, self.batch_sz)
-
+        sliding_step = np.array([8, 32, 32])
+        denoised_img = window_sliding(self, img, sliding_step, patch_sz= np.array([self.sz_z, self.sz, self.sz]),
+                                      max_value=self.max_value,batch_sz=self.batch_sz, n_levels=self.n_levels)
         return denoised_img
+
+
+class MyCustomCallback(tf.keras.callbacks.Callback):
+    def on_epoch_end(self, epoch, logs=None):
+        gc.collect()
+        tf.keras.backend.clear_session()
+
+
+class MyLRSchedule(tf.keras.optimizers.schedules.LearningRateSchedule):
+
+  def __init__(self, initial_learning_rate, num_steps_p_epoch):
+    self.initial_learning_rate = initial_learning_rate
+    self.n_steps = num_steps_p_epoch
+
+  def __call__(self, step):
+      if step == 10*self.n_steps:
+          self.initial_learning_rate = self.initial_learning_rate / 2
+      if step == 15*self.n_steps:
+          self.initial_learning_rate = self.initial_learning_rate / 2
+      if step == 20*self.n_steps:
+          self.initial_learning_rate = self.initial_learning_rate / 2
+      if step == 25*self.n_steps:
+          self.initial_learning_rate = self.initial_learning_rate / 2
+      return self.initial_learning_rate
+
+  def get_config(self):
+    config = {
+    'initial_learning_rate': self.initial_learning_rate,
+    'n_steps': self.n_steps,
+
+     }
+    return config
+
+

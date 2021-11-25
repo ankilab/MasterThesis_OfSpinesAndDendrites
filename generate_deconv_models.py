@@ -40,28 +40,28 @@ with open('.\\config.yaml', "r") as stream:
 #                                      data_dir=args['data_augmented_path'])
 
 ########################################Mu-Net##########################################################################
-# Train model
+# # Train model
 # data_provider= DataProvider((args['z_shape'],args['xy_shape']), args['data_path'], args['source_folder'], args['target_folder'],  # data_file='C:/Users/jo77pihe/Documents/MasterThesis_OfSpinesAndDendrites/data.h5')
 #                             data_file='C:/Users/jo77pihe/Documents/MasterThesis_OfSpinesAndDendrites/data32_128.h5')
-# deconvolver = REGISTRY['mu-net'](args)
+deconvolver = REGISTRY['mu-net'](args)
 #
 # model_dir, train_history=deconvolver.train(data_provider, args['epochs'], args['batch_size'])
 # # train_history = 'C:/Users/jo77pihe/Documents/MasterThesis_OfSpinesAndDendrites/model/train_history.npy'
 # deconvolver.plot_training(train_history)
-#
-# # predict image
-# # X=io.imread('D:/jo77pihe/Registered/Raw_32/Test/Alessandro_427_ArcCreERT2_Thy1GFP_Ai9_TRAP_2019-08-31_A4.tif')
-# test_data='D:/jo77pihe/Registered/Raw_32/Test'
-# # model_dir ='C:/Users/jo77pihe/Documents/MasterThesis_OfSpinesAndDendrites/model'
-# deconvolver.predict(test_data, model_dir)
+
+# predict image
+# X=io.imread('D:/jo77pihe/Registered/Raw_32/Test/Alessandro_427_ArcCreERT2_Thy1GFP_Ai9_TRAP_2019-08-31_A4.tif')
+test_data='D:/jo77pihe/Registered/Raw_32/Test'
+model_dir ='C:/Users/jo77pihe/Documents/MasterThesis_OfSpinesAndDendrites/model'
+deconvolver.predict(test_data, model_dir)
 
 
 ###############################################Auto-Encoder#############################################################
-denoiser = REGISTRY['autoencoder'](args)
-model_dir, train_history = denoiser.train(args['epochs'], args['batch_size'])
-X=io.imread('D:/jo77pihe/Registered/Raw_32/Test/Alessandro_427_ArcCreERT2_Thy1GFP_Ai9_TRAP_2019-08-31_A4.tif')
-img = denoiser.predict_img(X,(32,64,64), 8192, 1)
-tifffile.imsave('denoiser.tif', img)
-
-with open('trainj_hist_den.pkl', 'wb') as outfile:
-    pickle.dump(train_history, outfile, pickle.HIGHEST_PROTOCOL)
+# denoiser = REGISTRY['autoencoder'](args)
+# model_dir, train_history = denoiser.train(args['epochs'], args['batch_size'])
+# X=io.imread('D:/jo77pihe/Registered/Raw_32/Test/Alessandro_427_ArcCreERT2_Thy1GFP_Ai9_TRAP_2019-08-31_A4.tif')
+# img = denoiser.predict_img(X,(32,64,64), 8192, 1)
+# tifffile.imsave('denoiser.tif', img)
+#
+# with open('trainj_hist_den.pkl', 'wb') as outfile:
+#     pickle.dump(train_history, outfile, pickle.HIGHEST_PROTOCOL)

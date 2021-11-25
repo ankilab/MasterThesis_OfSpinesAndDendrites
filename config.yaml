@@ -1,0 +1,15 @@
+data_path: d:/jo77pihe/Registered
+source_folder: Raw_32/Train
+target_folder: Deconved
+test_folder: D:/jo77pihe/Registered/Raw_32/Test
+result_path: ./Mu_net_res
+psf: C:/Users/Johan/Documents/FAU_Masterarbeit/Implementation/Data/PSF
+train: True
+z_shape: 32
+xy_shape: 128
+n_patches: 50
+data_augmented_path: ./Registered/Data_npz
+validation_split: 0.1
+epochs: 30
+batch_size: 4
+learning_rate: 0.001

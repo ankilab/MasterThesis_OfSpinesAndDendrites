@@ -161,7 +161,6 @@ class BlindRL(Deconvolver):
     #             as outfile:
     #         pickle.dump(self.res_dict, outfile, pickle.HIGHEST_PROTOCOL)
 
-
     def _init_res_dict(self):
         self.res_dict = {}
 
@@ -238,11 +237,11 @@ class BlindRL(Deconvolver):
                 self._save_res(f, psf, k, file_name, sigma)
 
             for i in range(n_iter_psf):  # m RL iterations, refining PSF
-                psf = convolve((X_smoothed / (convolve(psf, f, mode='same') + epsilon)), f[::-1, ::-1, ::-1],
+                psf = fftconvolve((X_smoothed / (fftconvolve(psf, f, mode='same') + epsilon)), f[::-1, ::-1, ::-1],
                                mode='same') * psf
                 # psf = self._convolution_step(X_smoothed, psf, f)
             for i in range(n_iter_image):  # m RL iterations, refining reconstruction
-                f = convolve((X_smoothed / (convolve(f, psf, mode='same') + epsilon)), psf[::-1, ::-1, ::-1],
+                f = fftconvolve((X_smoothed / (fftconvolve(f, psf, mode='same') + epsilon)), psf[::-1, ::-1, ::-1],
                              mode='same') * f
                 # f = self._convolution_step(X_smoothed, f, psf)
 

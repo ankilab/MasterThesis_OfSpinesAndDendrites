@@ -25,7 +25,8 @@ class CAREDeconv(Deconvolver):
 
         (X, Y), (X_val, Y_val), axes = load_training_data(data_dir,
                                                           validation_split=validation_split, verbose=True)
-        train_steps = X.shape[0]//2 +X.shape[0]%2
+        train_steps = X.shape[0]//batch_size
+        train_steps= train_steps+1 if X.shape[0]%batch_size!=0 else train_steps
 
         c = axes_dict(axes)['C']
         n_channel_in, n_channel_out = X.shape[c], Y.shape[c]

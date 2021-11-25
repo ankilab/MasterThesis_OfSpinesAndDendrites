@@ -1,2 +1,4 @@
 /deconvolve.py
-
+*.tif
+*.png
+Archiv/

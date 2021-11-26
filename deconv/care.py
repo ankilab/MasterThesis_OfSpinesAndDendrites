@@ -56,6 +56,8 @@ class CAREDeconv(Deconvolver):
         # Plot training metrics
         plt.figure(figsize=(16, 5))
         plot_history(history, ['loss', 'val_loss'], ['mse', 'val_mse', 'mae', 'val_mae'])
+        with open(os.path.join(self.res_path, 'history_care.pkl'), 'wb') as outfile:
+            pickle.dump(history, outfile, pickle.HIGHEST_PROTOCOL)
 
         # # Plot exemplary results
         # plt.figure(figsize=(20, 12))

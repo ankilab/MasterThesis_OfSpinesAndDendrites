@@ -5,6 +5,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 import os
 from skimage import io
+import pickle
 
 
 class Mu_Net(Deconvolver):
@@ -19,6 +20,8 @@ class Mu_Net(Deconvolver):
 
     def train(self, data_provider, epochs=10, batch_size=8):
         model_dir, train_hist= self.denoiser.train(data_provider, epochs=epochs)
+        with open(os.path.join(self.res_path, 'history_mu_net.pkl'), 'wb') as outfile:
+            pickle.dump(train_hist, outfile, pickle.HIGHEST_PROTOCOL)
         return model_dir, train_hist
 
     def plot_training(self, train_history):
@@ -45,8 +48,6 @@ class Mu_Net(Deconvolver):
         for f in files:
             X = np.float32(io.imread(os.path.join(data_dir, f)))
             self.predict_img(X, model_dir, f)
-
-        pass
 
     def predict_img(self,X, model_dir, save_as='Mu_Net_res.tif'):
         batch_sz = 1

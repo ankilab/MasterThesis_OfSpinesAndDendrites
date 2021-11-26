@@ -1,54 +1,85 @@
-# Based on https://debuggercafe.com/autoencoder-neural-network-application-to-image-denoising/
+import tensorflow as tf
+from tensorflow.keras.layers import Input
+from tensorflow.keras.layers import Conv3D, MaxPool3D, UpSampling3D, Concatenate
+from tensorflow.keras.models import Model
 import numpy as np
-import torch.nn.functional as F
-from torch import nn
-import torch
+from tqdm import tqdm
+import gc
+import os
+import pickle
+from mu_net1 import utils2
 
 
-class Autoencoder(nn.Module):
+# config = tf.ConfigProto()
+# config.gpu_options.allow_growth = True
+# session = tf.Session(config=config)
+
+class Autoencoder:
     def __init__(self, args):
-        super(Autoencoder, self).__init__()
-        self.device = 'cuda:0' if torch.cuda.is_available() else 'cpu'
+        self.z_shape = 32
+        self.xy_shape =128
+        self.layer = 4
+        self.filter_base = 64
+        self.train_hist = []
+        self.model_path = './model_auto_enc'
+        self.create_model()
 
-        # encoder layers
-        # self.enc1 = nn.Conv3d(1, 128, kernel_size=(3, 3, 3), padding=1).to(self.device)
-        self.enc2 = nn.Conv3d(1, 64, kernel_size=(3, 3, 3), padding=1).to(self.device)
-        self.enc3 = nn.Conv3d(64, 32, kernel_size=(3, 3, 3), padding=1).to(self.device)
-        # self.enc4 = nn.Conv3d(32, 16, kernel_size=(3, 3, 3), padding=1).to(self.device)
-        # self.enc5 = nn.Conv3d(16, 8, kernel_size=(3, 3, 3), padding=1).to(self.device)
-        self.pool = nn.MaxPool3d(2, 2).to(self.device)
+    def create_model(self):
+        input_layer = Input((self.z_shape, self.xy_shape, self.xy_shape, 1))
 
-        # decoder layers
-        # self.dec1 = nn.ConvTranspose3d(8, 8, kernel_size=2, stride=(2, 2, 2)).to(self.device)
-        # self.dec2 = nn.ConvTranspose3d(16, 16, kernel_size=(2, 2, 2), stride=(2, 2, 2)).to(self.device)
-        self.dec3 = nn.ConvTranspose3d(16, 32, kernel_size=(2, 2, 2), stride=(2, 2, 2)).to(self.device)
-        self.dec4 = nn.ConvTranspose3d(32, 64, kernel_size=(2, 2, 2), stride=(2, 2, 2)).to(self.device)
-        # self.dec5 = nn.ConvTranspose3d(64, 128, kernel_size=2, stride=2).to(self.device)
-        self.out = nn.Conv3d(64, 1, kernel_size=(3, 3, 3), padding=1).to(self.device)
+        x = input_layer
+        for i in range(self.layer):
+            x = Conv3D(self.filter_base * 2 ** i, (3, 3, 3), activation='relu', padding='same')(x)
+            x = Conv3D(self.filter_base * 2 ** i, (3, 3, 3), activation='relu', padding='same')(x)
+            x = MaxPool3D()(x)
 
-    def forward(self, x):
-        if not torch.is_tensor(x):
-            x = x[:,:,:,:,0]
-            x = x[np.newaxis,:,:,:,:]
-            x = torch.Tensor(x).to(self.device)
+        x = Conv3D(self.filter_base * 2 ** 4, 3, activation='relu', padding='same', name='bottleneck')(x)
 
-        # encode
-        # x = F.relu(self.enc1(x))
-        # x = self.pool(x)
-        x = F.relu(self.enc2(x))
-        x = self.pool(x)
-        x = F.relu(self.enc3(x))
-        x = self.pool(x)
-        x = F.relu(self.enc4(x))
-        # x = self.pool(x)
-        # x = F.relu(self.enc5(x))
-        x = self.pool(x)  # the latent space representation
+        for i in range(self.layer):
+            x = UpSampling3D()(x)
+            x = Conv3D(self.filter_base * 2 ** (self.layer - i - 1), (3, 3, 3), activation='relu', padding='same')(x)
+            x = Conv3D(self.filter_base * 2 ** (self.layer - i - 1), (3, 3, 3), activation='relu', padding='same')(x)
 
-        # decode
-        # x = F.relu(self.dec1(x))
-        x = F.relu(self.dec2(x))
-        x = F.relu(self.dec3(x))
-        x = F.relu(self.dec4(x))
-        # x = F.relu(self.dec5(x))
-        x = torch.sigmoid(self.out(x))
-        return x
+        # Point convolution (kernel=1) und einem Filter ==> 1 Klasse (bspw. Glottis, Oder Katze)
+        x = Conv3D(filters=1, kernel_size=1, activation='sigmoid', padding='same')(x)
+
+        self.model = Model(input_layer, x)
+        # lr_schedule = tf.keras.optimizers.schedules.ExponentialDecay(initial_learning_rate=0.001,
+        #     decay_steps=5*num_batch_samples, decay_rate=0.5, staircase=True)
+        g_optimizer = tf.keras.optimizers.Adam(learning_rate=0.001, beta_1=0.5)
+        self.model.compile(optimizer=g_optimizer, loss='mse')
+
+    def train(self, data_provider, epochs=30, batch_size = 4):
+        self.data_provider = data_provider
+        num_batch_samples = np.ceil(self.data_provider.size[0] / batch_size).astype(int)
+
+        for _ in tqdm(range(0, epochs)):
+            self.data_provider.shuffle()
+
+            for _ in range(0, num_batch_samples):
+                sample_patch, sample_label = self.data_provider.get(batch_size)
+                sample_patch = sample_patch[:, :, :, :, np.newaxis]
+                sample_label = sample_label[:, :, :, :, np.newaxis]
+
+                history = self.model.fit(sample_patch, [sample_label],
+                                         batch_size=batch_size, callbacks=[MyCustomCallback()])
+                self.train_hist.append(history.history['loss'][0])
+            self.model.save(self.model_path)
+        with open(os.path.join(self.model_path, 'train_history_auto_enc.pkl'), 'wb') as outfile:
+            pickle.dump(self.train_hist, outfile, pickle.HIGHEST_PROTOCOL)
+
+        return self.model_path, self.train_hist
+
+    def predict(self,img, sampling_step = np.array([8,32,32])):
+        pred_img=utils2.window_sliding(self,img,sampling_step, (self.z_shape, self.xy_shape, self.xy_shape), 8192)
+        return pred_img
+
+    def load_model(self, path):
+        self.model = tf.keras.models.load_model(path, compile=False)
+        return self.model
+
+
+class MyCustomCallback(tf.keras.callbacks.Callback):
+    def on_epoch_end(self, epoch, logs=None):
+        gc.collect()
+        tf.keras.backend.clear_session()

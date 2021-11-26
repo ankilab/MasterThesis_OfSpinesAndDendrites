@@ -210,8 +210,12 @@ def munet_cnn_level_1(L1_img, L0_L1= None, name = 'l1'):
     return L1_L2, L1_pred
 
 
-def munet_cnn_level_2(L2_img, L1_L2, name = 'l2'):
-    conv1 = build_conv_layer(tf.concat([L2_img, L1_L2], 4), num_filters=nf, filter_sz=fz, stride=1, padding='VALID',
+def munet_cnn_level_2(L2_img, L1_L2= None, name = 'l2'):
+    if L1_L2 is None:
+        conv1 = build_conv_layer(tf.concat(L2_img, 4), num_filters=nf, filter_sz=fz, stride=1, padding='VALID',
+                             relu_op=True, norm=False)
+    else:
+        conv1 = build_conv_layer(tf.concat([L2_img, L1_L2], 4), num_filters=nf, filter_sz=fz, stride=1, padding='VALID',
                              relu_op=True, norm=False)
     if conv1.shape[1] == 1:
         if conv1.shape[2]==1:
@@ -273,8 +277,12 @@ def munet_cnn_level_2(L2_img, L1_L2, name = 'l2'):
     return L2_L3, L2_pred
 
 
-def munet_cnn_level_3(L3_img, L2_L3, name = 'l3'):
-    conv1 = build_conv_layer(tf.concat([L3_img, L2_L3], 4), num_filters=nf, filter_sz=fz, stride=1, padding='VALID',
+def munet_cnn_level_3(L3_img, L2_L3=None, name = 'l3'):
+    if L2_L3 is None:
+        conv1 = build_conv_layer(tf.concat(L3_img, 4), num_filters=nf, filter_sz=fz, stride=1, padding='VALID',
+                             relu_op=True, norm=False)
+    else:
+        conv1 = build_conv_layer(tf.concat([L3_img, L2_L3], 4), num_filters=nf, filter_sz=fz, stride=1, padding='VALID',
                              relu_op=True, norm=False)
     if conv1.shape[1] == 1:
         if conv1.shape[2]==1:

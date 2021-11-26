@@ -37,7 +37,7 @@ class Denoiser():
         self.learning_rate = None
         self.train_history_setup()
         self.data_provider = None
-        self.n_levels=2
+        self.n_levels=args['n_levels'] if 'n_levels' in args.keys() else 2
         self.model_path = './model'
         self.model_setup()
         print(self.model.summary)
@@ -54,35 +54,54 @@ class Denoiser():
                                              use_bias=False, padding='same')(self.img)
         self.L1_img = tf.keras.layers.Conv3D(1, 1, strides=(4, 4, 4), kernel_initializer=tf.keras.initializers.Ones(),
                                              use_bias=False, padding='same')(self.img)
-        # self.L0_img = tf.keras.layers.Conv3D(1, 1, strides=(8, 8, 8), kernel_initializer=tf.keras.initializers.Ones(),
-        #                                      use_bias=False, padding='same')(self.img)
-
+        self.L0_img = tf.keras.layers.Conv3D(1, 1, strides=(8, 8, 8), kernel_initializer=tf.keras.initializers.Ones(),
+                                              use_bias=False, padding='same')(self.img)
         self.L2_label = tf.nn.conv3d(self.label, tf.constant(1.0, shape=(1, 1, 1, 1, 1)), strides=[1, 2, 2, 2, 1],
                                 padding='SAME')
         self.L1_label = tf.nn.conv3d(self.label, tf.constant(1.0, shape=(1, 1, 1, 1, 1)), strides=[1, 4, 4, 4, 1],
                                 padding='SAME')
-        # self.L0_label = tf.nn.conv3d(self.label, tf.constant(1.0, shape=(1, 1, 1, 1, 1)), strides=[1, 8, 8, 8, 1],
-        #                         padding='SAME')
+        self.L0_label = tf.nn.conv3d(self.label, tf.constant(1.0, shape=(1, 1, 1, 1, 1)), strides=[1, 8, 8, 8, 1],
+                                 padding='SAME')
+        if self.n_levels>3 or self.n_levels<0:
+            print("Specified number of levels is not implemented. Falls back to 3 Levels.")
+            self.n_levels=3
 
-        # L0_L1, self.L0_pred = munet_cnn_level_0(self.L0_img, name='gen_l0')
-        # L1_L2, self.L1_pred = munet_cnn_level_1(self.L1_img, L0_L1, name='gen_l1')
-        L1_L2, self.L1_pred = munet_cnn_level_1(self.L1_img, name='gen_l1')
-        L2_L3, self.L2_pred = munet_cnn_level_2(self.L2_img, L1_L2, name='gen_l2')
-        self.L3_pred = munet_cnn_level_3(self.img, L2_L3, name='gen_l3')
+        if self.n_levels == 3:
+            L0_L1, self.L0_pred = munet_cnn_level_0(self.L0_img, name='gen_l0')
+            L1_L2, self.L1_pred = munet_cnn_level_1(self.L1_img, L0_L1, name='gen_l1')
+            L2_L3, self.L2_pred = munet_cnn_level_2(self.L2_img, L1_L2, name='gen_l2')
+            self.L3_pred = munet_cnn_level_3(self.img, L2_L3, name='gen_l3')
+            self.model = tf.keras.Model(inputs=self.img, outputs=[self.L0_pred, self.L1_pred, self.L2_pred, self.L3_pred])
+            self.gt=tf.keras.Model(inputs=self.label, outputs=[self.L0_label, self.L1_label, self.L2_label])
 
-        # self.model = tf.keras.Model(inputs=self.img, outputs=[self.L0_pred, self.L1_pred, self.L2_pred, self.L3_pred])
-        # self.gt=tf.keras.Model(inputs=self.label, outputs=[self.L0_label, self.L1_label, self.L2_label])
-        self.model = tf.keras.Model(inputs=self.img, outputs=[self.L1_pred, self.L2_pred, self.L3_pred])
-        self.gt=tf.keras.Model(inputs=self.label, outputs=[self.L1_label, self.L2_label])
-        self.gt.compile(loss='mse', optimizer='adam')
+        elif self.n_levels == 2:
+            L1_L2, self.L1_pred = munet_cnn_level_1(self.L1_img, name='gen_l1')
+            L2_L3, self.L2_pred = munet_cnn_level_2(self.L2_img, L1_L2, name='gen_l2')
+            self.L3_pred = munet_cnn_level_3(self.img, L2_L3, name='gen_l3')
+            self.model = tf.keras.Model(inputs=self.img, outputs=[self.L1_pred, self.L2_pred, self.L3_pred])
+            self.gt = tf.keras.Model(inputs=self.label, outputs=[self.L1_label, self.L2_label])
+            self.gt.compile(loss='mse', optimizer='adam')
+
+        elif self.n_levels == 1:
+            L2_L3, self.L2_pred = munet_cnn_level_2(self.L2_img, name='gen_l2')
+            self.L3_pred = munet_cnn_level_3(self.img, L2_L3, name='gen_l3')
+            self.model = tf.keras.Model(inputs=self.img, outputs=[self.L2_pred, self.L3_pred])
+            self.gt = tf.keras.Model(inputs=self.label, outputs=[self.L2_label])
+            self.gt.compile(loss='mse', optimizer='adam')
+
+        elif self.n_levels == 0:
+            self.L3_pred = munet_cnn_level_3(self.img, name='gen_l3')
+            self.model = tf.keras.Model(inputs=self.img, outputs=[self.L1_pred, self.L2_pred, self.L3_pred])
+            self.gt = None
+
 
     def train_history_setup(self):
-        self.train_hist = {}
-        self.train_hist['loss']=[]
+        self.train_hist = []
+        # self.train_hist['loss']=[]
         # self.train_hist['L0_pred_loss']=[]
-        self.train_hist['L1_pred_loss']=[]
-        self.train_hist['L2_pred_loss']=[]
-        self.train_hist['L3_pred_loss']=[]
+        # self.train_hist['L1_pred_loss']=[]
+        # self.train_hist['L2_pred_loss']=[]
+        # self.train_hist['L3_pred_loss']=[]
 
     def data_setup(self):
         if self.data_provider is None:
@@ -90,10 +109,11 @@ class Denoiser():
                                           self.args['target_folder'], self.args['n_patches'])
 
     def loss_setup(self):
-        # self.loss_func = {'L0_pred': self._gen_loss, 'L1_pred': self._gen_loss,
-        #              'L2_pred': self._gen_loss, 'L3_pred': self._gen_loss}
-        self.loss_func = {'L1_pred': self._gen_loss,
-                     'L2_pred': self._gen_loss, 'L3_pred': self._gen_loss}
+        l = {'L0_pred': self._gen_loss, 'L1_pred': self._gen_loss,
+                      'L2_pred': self._gen_loss, 'L3_pred': self._gen_loss}
+
+        # Extract relevant loss based on amount of levels
+        self.loss_func={key: l[key] for key in list(l.keys())[0+(3-self.n_levels):]}
 
     def _gen_loss(self, y_true, y_pred):
         gen_loss = tf.reduce_mean(tf.abs(y_true - y_pred))
@@ -120,22 +140,19 @@ class Denoiser():
                 sample_label = sample_label[:, :, :, :, np.newaxis]
 
                 # L0_label, L1_label, L2_label = self.gt.predict(sample_label
-                L1_label, L2_label = self.gt.predict(sample_label)
-
+                gt_res = self.gt.predict(sample_label)
+                gt_res.append(sample_label)
 
                 # Compile and fit models
                 # history = self.model.fit(sample_patch, [L0_label, L1_label, L2_label, sample_label],
                 #                          batch_size=self.batch_sz, callbacks=[MyCustomCallback()])
-                history = self.model.fit(sample_patch, [L1_label, L2_label, sample_label],
+                history = self.model.fit(sample_patch, gt_res,
                                          batch_size=self.batch_sz, callbacks=[MyCustomCallback()])
-                self.train_hist['loss'].append(history.history['loss'][0])
-                # self.train_hist['L0_pred_loss'].append(history.history['L0_pred_loss'][0])
-                self.train_hist['L2_pred_loss'].append(history.history['L2_pred_loss'][0])
-                self.train_hist['L1_pred_loss'].append(history.history['L1_pred_loss'][0])
-                self.train_hist['L3_pred_loss'].append(history.history['L3_pred_loss'][0])
-
+                self.train_hist.append(history.history)
             self.model.save(self.model_path)
-        self.model.save(self.model_path + '/gt')
+        self.gt.save(self.model_path + '/gt')
+        self.train_hist = {k: [d.get(k) for d in self.train_hist]
+            for k in set().union(*self.train_hist)}
         with open(os.path.join(self.model_path, 'train_history.pkl'), 'wb') as outfile:
             pickle.dump(self.train_hist, outfile, pickle.HIGHEST_PROTOCOL)
 

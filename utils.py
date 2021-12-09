@@ -10,6 +10,7 @@ from pystackreg import StackReg
 from skimage import transform, io, exposure
 import pandas as pd
 from shutil import copy2
+from pathlib import Path
 
 
 def display(im3d, cmap="gray", step=1):
@@ -202,14 +203,33 @@ def split_train_test(csv_file, path):
             copy2(os.path.join(path, name), test_path)
 
 
+def get_extrem_val(path):
+    files = []
+    for p in Path(path).rglob('*.tif'):
+        files.append(p)
+    min_val = 1000
+    max_val = 0
+    for f in files:
+        img = tif.imread(os.path.join(path, f))
+        if img.max()>max_val:
+            max_val=img.max()
+        if img.min() < min_val:
+            min_val = img.min()
+    print('Max Value: ' + str(max_val))
+    print('Min Value: ' + str(min_val))
+
+
+
+get_extrem_val('D:/jo77pihe/Registered/Raw')
+
 # split_train_test('C:/Users/jo77pihe/Documents/MasterThesis_OfSpinesAndDendrites/Train_Test.csv', 'D:/jo77pihe/Registered/Raw_32')
 # find_all_img_with_min_z('D:/jo77pihe/Registered/Raw', 32, 'D:/jo77pihe/Registered/Raw_32')
 # register_autoquant_images('D:/jo77pihe/Registered/Deconved_AutoQuant', 'D:/jo77pihe/Registered/Deconved_AutoQuant_R2')
-files = [f for f in os.listdir('D:/jo77pihe/Registered/Raw_32') if f.endswith('.tif')]
-
-for f in files:
-    img = tif.imread(os.path.join('D:/jo77pihe/Registered/Raw_32', f))
-    save_tif_stack_to_2d(img,'D:/jo77pihe/Registered/Raw_32/2D', name=f[:-4])
+# files = [f for f in os.listdir('D:/jo77pihe/Registered/Raw_32') if f.endswith('.tif')]
+#
+# for f in files:
+#     img = tif.imread(os.path.join('D:/jo77pihe/Registered/Raw_32', f))
+#     save_tif_stack_to_2d(img,'D:/jo77pihe/Registered/Raw_32/2D', name=f[:-4])
 
 # def predict_img_by_patches(img, predictor, patchsize=(32,128,128)):
 #     assert len(patchsize) == 3, 'Please specify a 3-D patch size'

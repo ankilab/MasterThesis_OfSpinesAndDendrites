@@ -20,9 +20,50 @@ import deconv
 # from matplotlib.colors import LogNorm
 # import pylustrator
 from skimage import io
-# from imagequalitymetrics import ImageQualityMetrics
+from imagequalitymetrics import ImageQualityMetrics
 from data_augmentation import DataAugmenter
+import numpy as np
 
+MAX_VAL = 12870
+MIN_VAL = -2327
+
+
+def _rescale_mu_net(img):
+    img=(img/MAX_VAL)*(MAX_VAL-MIN_VAL)
+    img = img + MIN_VAL
+    return img
+
+def _rescale_gt(img, max_val, min_val):
+    img = (img/np.max(img))*(max_val-min_val)
+    img = img + MIN_VAL
+    return img
+
+
+metrics = ImageQualityMetrics()
+files = [f for f in os.listdir('D:/jo77pihe/Registered/Raw_32/Test') if f.endswith('.tif')]
+gt_path='D:/jo77pihe/Registered/Deconved'
+auto_qu_path = 'D:/jo77pihe/Registered/Deconved_AutoQuant_R2'
+care_path = 'D:/jo77pihe/Registered/CARE_res/Predictions'
+mu_0 = 'D:/jo77pihe/Registered/Mu_Net_res_0_levels50'
+mu_1 = 'D:/jo77pihe/Registered/Mu_Net_res_1_levels50'
+mu_2 = 'D:/jo77pihe/Registered/Mu_Net_res_2_levels50'
+mu_3 = 'D:/jo77pihe/Registered/Mu_Net_res_3_levels50'
+
+pred_list = [auto_qu_path, care_path, mu_0,mu_1,mu_2,mu_3]
+# shape[1] -> Care Img, Mu-Net, Autoquant Img, shape[2] -> Metrics: MSE, SSIM, MSSIM, PSNR, NIQE,BRISQUE, SNR
+res=np.zeros((len(files),6, 7))
+for (i,f) in enumerate(files):
+    gt_img=np.float32(io.imread(os.path.join(gt_path, f)))
+    for (j, p) in enumerate(pred_list):
+        predicted = np.float32(io.imread(os.path.join(p, f)))
+        if j>=2:
+            predicted=_rescale_mu_net(predicted)
+        if j == 0:
+            predicted += MIN_VAL
+        gt_img = _rescale_gt(gt_img,max_val=np.max(predicted), min_val=np.min(predicted))
+        m=metrics.compute_all(predicted,gt_img)
+        res[i,j,:] = np.array([m[y] for y in m.keys()])
+########################################################################################################################
 
 # X = io.imread(os.path.join('C:\\Users\\Johan\\Documents\\FAU_Masterarbeit\\Implementation\\Registered\\GT','Alessandro_427_ArcCreERT2_Thy1GFP_Ai9_TRAP_2019-08-31_A2.tif'), as_gray=True)
 # X = np.double(X)

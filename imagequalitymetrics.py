@@ -7,6 +7,8 @@ import sewar
 import numpy as np
 # import matlab.engine
 
+MAX_VAL = 12870
+MIN_VAL = -2327
 
 class ImageQualityMetrics:
     def __init__(self):
@@ -28,21 +30,21 @@ class ImageQualityMetrics:
         return res
 
     def mse(self, img, gt_img):
-        img = self._rescale(img)
-        gt_img = self._rescale(gt_img)
+        # img = self._rescale(img)
+        # gt_img = self._rescale(gt_img)
         val = np.sum((gt_img.astype("float") - img.astype("float")) ** 2)
         val /= float(gt_img.shape[0] * gt_img.shape[1])
         return val
 
     def ssim(self, img, gt_img):
-        img = self._rescale(img)
-        gt_img = self._rescale(gt_img)
+        # img = self._rescale(img)
+        # gt_img = self._rescale(gt_img)
         val = sk_ssim(img, gt_img)
         return val
 
     def mssim(self, img, gt_img):
-        img = self._rescale(img)
-        gt_img = self._rescale(gt_img)
+        # img = self._rescale(img)
+        # gt_img = self._rescale(gt_img)
         return sewar.msssim(gt_img, img)
 
     def niqe(self, img):
@@ -55,10 +57,15 @@ class ImageQualityMetrics:
         img = self._rescale(img)
         return 0 #brisque.score(img)
 
-    def psnr(self, img, gt_img):
-        img = self._rescale(img)
-        gt_img = self._rescale(gt_img)
-        return sk_psnr(gt_img, img)
+    def psnr(self, img, gt_img, data_range = 15197):
+        # img = self._rescale(img)
+        # gt_img = self._rescale(gt_img)
+        print('x')
+        if img.min() <0:
+            img -= MIN_VAL
+        if gt_img.min()<0:
+            gt_img -=MIN_VAL
+        return sk_psnr(gt_img, img,data_range =data_range)
 
     def uqi(self, img, gt_img):
         img = self._rescale(img)
@@ -78,8 +85,8 @@ class ImageQualityMetrics:
         return  m / sd if sd != 0 else np.nan
 
     def _rescale(self,img):
-        img = (img - img.min())
-        return img/img.max()
+        img = (img - MIN_VAL)
+        return img/MAX_VAL
 
 
 

@@ -8,6 +8,9 @@ import flammkuchen as fl
 from csbdeep.io import load_training_data
 import gc
 
+MAX_VAL = 12870
+MIN_VAL = -2327
+
 
 class DataAugmenter():
     def __init__(self, args):
@@ -59,10 +62,13 @@ class DataAugmenter():
                 n_patches_per_image=self.n_patches,
                 save_file=data_dir)
             if save_h5 != '':
-                max_d=np.maximum(np.max(augmented_raw), np.max(augmented_gt))
-                min_d=np.minimum(np.min(augmented_raw), np.min(augmented_gt))
-                augmented_raw = (augmented_raw-min_d)/max_d
-                augmented_gt = (augmented_gt-min_d)/max_d
+                augmented_raw = ((augmented_raw-MIN_VAL)/MAX_VAL)*2
+                augmented_gt = ((augmented_gt-MIN_VAL)/MAX_VAL)*2
+                augmented_raw -= 1.0
+                augmented_gt -= 1.0
+                augmented_raw = np.clip(augmented_raw, -1, 1)
+                augmented_gt = np.clip(augmented_gt, -1, 1)
+
                 fl.save(save_h5, {'raw': np.float32(augmented_raw[:, 0, :, :, :]),
                                   'gt': np.float32(augmented_gt[:, 0, :, :, :])})
 
@@ -106,13 +112,6 @@ class DataProvider():
         else:
             self.data_h5 = data_file
 
-        # (self.X, self.Y), (self.X_val, self.Y_val), axes = load_training_data(data_dir,
-        #                                                   validation_split=0.1, verbose=True)
-        # self.X = np.float32(self.X[:,0,:,:,:])
-        # self.Y = np.float32(self.Y[:, 0, :, :, :])
-        # self.X_val = np.float32(self.X_val[:,0,:,:,:])
-        # self.Y_val = np.float32(self.Y_val[:, 0, :, :, :])
-
         self._reset_idx()
         self.size = fl.meta(self.data_h5, "raw").shape
         self.draw_order = np.arange(self.size[0])
@@ -133,5 +132,43 @@ class DataProvider():
 
         # raw = self.X[self.idx:end_idx,:,:,:]
         # gt = self.Y[self.idx:end_idx,:,:,:]
+        self.idx += batch_size
+        return raw, gt
+
+
+class DataProvider_CompleteImg():
+    def __init__(self, data_path='', source='', target=''):
+        self._reset_idx()
+        self.files =[f for f in os.listdir(os.path.join(data_path, source)) if f.endswith('.tif')]
+        self.draw_order = np.arange(len(self.files))
+        self.data_path = data_path
+        self.source = source
+        self.target = target
+        self.size = [len(self.files), 1]
+        # self.seed = 0
+
+    def shuffle(self):
+        self.draw_order = np.random.choice(np.arange(len(self.files)), len(self.files), replace=False)
+        self._reset_idx()
+
+    def _reset_idx(self):
+        self.idx = 0
+
+    def get(self, batch_size):
+        end_idx = self.idx + batch_size
+        end_idx = end_idx if end_idx <= len(self.files) else len(self.files)
+        raw = []
+        gt= []
+        for x in range(self.idx, end_idx):
+            idx = self.draw_order[x]
+            if x == self.idx:
+                raw=tif.imread(os.path.join(self.data_path,self.source, self.files[idx]))[np.newaxis,...]
+                gt = tif.imread(os.path.join(self.data_path,self.target, self.files[idx]))[np.newaxis,...]
+            else:
+                img=tif.imread(os.path.join(self.data_path,self.source, self.files[idx]))[np.newaxis,...]
+                raw=np.concatenate((raw, img), axis=0)
+                img = tif.imread(os.path.join(self.data_path,self.target, self.files[idx]))[np.newaxis,...]
+                gt=np.concatenate((gt, img), axis=0)
+
         self.idx += batch_size
         return raw, gt

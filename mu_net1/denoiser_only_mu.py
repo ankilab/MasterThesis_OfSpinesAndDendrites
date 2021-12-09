@@ -8,7 +8,7 @@ Created on Tue Jul 17 19:09:56 2018
 import tensorflow as tf
 from mu_net1.cnn_models import *
 from mu_net1.utils2 import *
-from data_augmentation import DataProvider
+from data_augmentation import DataProvider as dp
 import gc
 from tqdm import tqdm
 import os
@@ -33,12 +33,13 @@ class Denoiser():
         self.batch_sz = 1 if 'batch_size' not in args.keys() else args['batch_size']
         self.sz = args['xy_shape']
         self.sz_z = args['z_shape']
-        self.max_value = 8191  # we set maximum value to 5,000 of microscope output
+        self.max_value = 12870  # we set maximum value to 5,000 of microscope output
+        self.min_value = -2327
         self.learning_rate = None
         self.train_history_setup()
         self.data_provider = None
         self.n_levels=args['n_levels'] if 'n_levels' in args.keys() else 2
-        self.model_path = './model'
+        self.model_path = os.path.join(args['res_path'],'model')
         self.model_setup()
         print(self.model.summary)
         self.loss_setup()
@@ -47,6 +48,8 @@ class Denoiser():
     def model_setup(self):
         self.img = tf.keras.layers.Input(shape=(self.sz_z, self.sz, self.sz, 1), batch_size=self.batch_sz, name='img',
                                          dtype=tf.float32)
+        # self.img = tf.keras.layers.Input(shape=(None, None, None, 1), batch_size=self.batch_sz, name='img',
+        #                                  dtype=tf.float32)
         self.label = tf.keras.layers.Input(shape=(self.sz_z, self.sz, self.sz, 1), batch_size=self.batch_sz,
                                            name='label', dtype=tf.float32)
 
@@ -91,7 +94,7 @@ class Denoiser():
 
         elif self.n_levels == 0:
             self.L3_pred = munet_cnn_level_3(self.img, name='gen_l3')
-            self.model = tf.keras.Model(inputs=self.img, outputs=[self.L1_pred, self.L2_pred, self.L3_pred])
+            self.model = tf.keras.Model(inputs=self.img, outputs=[self.L3_pred])
             self.gt = None
 
 
@@ -105,8 +108,10 @@ class Denoiser():
 
     def data_setup(self):
         if self.data_provider is None:
-            self.data_provider = DataProvider((self.sz_z, self.sz), self.args['data_path'], self.args['source_folder'],
+            self.data_provider = dp((self.sz_z, self.sz), self.args['data_path'], self.args['source_folder'],
                                           self.args['target_folder'], self.args['n_patches'])
+            # self.data_provider = dp(data_path=self.args['data_path'], source=self.args['source_folder'],
+            #                               target=self.args['target_folder'])
 
     def loss_setup(self):
         l = {'L0_pred': self._gen_loss, 'L1_pred': self._gen_loss,
@@ -140,8 +145,13 @@ class Denoiser():
                 sample_label = sample_label[:, :, :, :, np.newaxis]
 
                 # L0_label, L1_label, L2_label = self.gt.predict(sample_label
-                gt_res = self.gt.predict(sample_label)
-                gt_res.append(sample_label)
+                if self.n_levels>0:
+                    gt_res = self.gt.predict(sample_label)
+                    if not isinstance(gt_res, list):
+                        gt_res = [gt_res]
+                    gt_res.append(sample_label)
+                else:
+                    gt_res = sample_label
 
                 # Compile and fit models
                 # history = self.model.fit(sample_patch, [L0_label, L1_label, L2_label, sample_label],
@@ -150,7 +160,8 @@ class Denoiser():
                                          batch_size=self.batch_sz, callbacks=[MyCustomCallback()])
                 self.train_hist.append(history.history)
             self.model.save(self.model_path)
-        self.gt.save(self.model_path + '/gt')
+        if not self.n_levels == 0:
+            self.gt.save(self.model_path + '/gt')
         self.train_hist = {k: [d.get(k) for d in self.train_hist]
             for k in set().union(*self.train_hist)}
         with open(os.path.join(self.model_path, 'train_history.pkl'), 'wb') as outfile:
@@ -160,11 +171,14 @@ class Denoiser():
 
     def load_model(self, batch_size=4, path='./model'):
         self.model = tf.keras.models.load_model(path, compile=False)
-        self.n_levels = len(self.model.output)
+        if not tf.is_tensor(self.model.output):
+            self.n_levels = len(self.model.output)
+        else:
+            self.n_levels = 1
         # self.gt = tf.keras.models.load_model(path+'/gt', compile=False)
 
     def denoising_patch(self, img):
-        img = img.astype('float32')
+        img = img.astype('float32') - self.min_value
         sc = self.max_value / 2.0
         img = img / sc - 1.0
         img = np.clip(img, -1, 1)
@@ -194,7 +208,7 @@ class Denoiser():
     def denoising_img(self, img):
         sliding_step = np.array([8, 32, 32])
         denoised_img = window_sliding(self, img, sliding_step, patch_sz= np.array([self.sz_z, self.sz, self.sz]),
-                                      max_value=self.max_value,batch_sz=self.batch_sz, n_levels=self.n_levels)
+                                      max_value=self.max_value,min_value= self.min_value, batch_sz=self.batch_sz, n_levels=self.n_levels)
         return denoised_img
 
 

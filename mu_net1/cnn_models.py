@@ -16,11 +16,15 @@ N = 0
 def build_conv_layer(input_conv, num_filters=32, filter_sz=3, stride=1, padding='SAME', relu_op=False, norm=False,
                      name=''):
     if padding == 'VALID':
-        if (input_conv.shape[1] <=1):
-            if not (input_conv.shape[2] <=1):
-                input_conv = tf.pad(input_conv, paddings=tf.constant([[0,0], [0,0], [1, 1], [1, 1], [0,0]]), mode="REFLECT")
+        if input_conv.shape[1] is not None:
+            if (input_conv.shape[1] <=1):
+                if not (input_conv.shape[2] <=1):
+                    input_conv = tf.pad(input_conv, paddings=tf.constant([[0,0], [0,0], [1, 1], [1, 1], [0,0]]), mode="REFLECT")
+            else:
+                input_conv = tf.pad(input_conv, paddings=tf.constant([[0,0], [1, 1], [1, 1], [1, 1], [0,0]]), mode="REFLECT")
         else:
-            input_conv = tf.pad(input_conv, paddings=tf.constant([[0,0], [1, 1], [1, 1], [1, 1], [0,0]]), mode="REFLECT")
+            input_conv = tf.pad(input_conv, paddings=tf.constant([[0, 0], [1, 1], [1, 1], [1, 1], [0, 0]]),
+                                mode="REFLECT")
 
 
         # input_conv = input_conv[1:-1,:,:,:,1:-1]
@@ -28,7 +32,7 @@ def build_conv_layer(input_conv, num_filters=32, filter_sz=3, stride=1, padding=
     nx = N
     N = nx+1
     name = name if name != '' else 'conv'+str(nx)
-    if (input_conv.shape[1] <= 1):
+    if input_conv.shape[1] is not None and (input_conv.shape[1] <= 1):
         if (input_conv.shape[2] <= 1):
             filter_sz_x = (1,1,1)
         else:
@@ -51,7 +55,7 @@ def build_upconv_layer(input_conv, num_filters=16, filter_sz=3, stride=(2, 2, 2)
                        norm=False, name=''):
     up_sample = tf.keras.layers.UpSampling3D(size=stride)(input_conv)
     if padding == 'VALID':
-        if (up_sample.shape[1] <= 1):
+        if input_conv.shape[1] is not None and (up_sample.shape[1] <= 1):
             if not (up_sample.shape[2] <= 1):
                 up_sample = tf.pad(up_sample, paddings=tf.constant([[0, 0], [0, 0], [1, 1], [1, 1], [0, 0]]),
                                mode="REFLECT")
@@ -66,7 +70,7 @@ def build_upconv_layer(input_conv, num_filters=16, filter_sz=3, stride=(2, 2, 2)
     # conv = tf.keras.layers.Conv3D(num_filters, filter_sz, 1, 'valid', activation=None, name='conv'+str(nx))(up_sample)
     name = name if name != '' else 'conv'+str(nx)
 
-    if up_sample.shape[1] <= filter_sz:
+    if up_sample.shape[1] is not None and up_sample.shape[1] <= filter_sz:
         if up_sample.shape[2] <= filter_sz:
             filter_sz_x = (1,1,1)
         else:

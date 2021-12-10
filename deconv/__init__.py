@@ -1,6 +1,6 @@
 REGISTRY = {}
 
-from .blind_rl import BlindRL
+from .blind_richardson_lucy import BlindRL
 REGISTRY['BlindRL'] = BlindRL
 
 from .auto_encoder import AE

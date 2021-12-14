@@ -8,14 +8,14 @@ np.import_array()
 @cython.boundscheck(False)
 @cython.wraparound(False)
 @cython.embedsignature(True)
-def myconvolve(np.ndarray[np.float64_t, ndim=3] A,
-               np.ndarray[np.float64_t, ndim=3] B):
+def myconvolve(np.ndarray[np.float32_t, ndim=3] A,
+               np.ndarray[np.float32_t, ndim=3] B):
     cdef:
         int n, m, i, j
         int NAx = A.shape[0], NAy = A.shape[1], NAz = A.shape[2]
         int NBx = A.shape[0], NBy = A.shape[1], NBz = A.shape[2]
         int Deg = NAz + NBz - 1;
-        np.ndarray[np.float64_t, ndim=3] C = np.zeros((NAx, NBy, Deg));
+        np.ndarray[np.float32_t, ndim=3] C = np.zeros((NAx, NBy, NAz), dtype=np.float32);
     assert((NAx == NBx) and (NAy == NBy))
 
     for n in range(0, (Deg)):

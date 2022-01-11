@@ -51,16 +51,6 @@ class SIREN:
         self.model = tf.keras.models.Model(in_layer, final_layer)
         self.model.compile("adam","mse")
 
-
-    def get_mgrid3(self, shape, x=1, y=1, z=.1):
-        '''Generates a flattened grid of (x,y,...) coordinates in a range of -1 to 1.
-        sidelen: int
-        dim: int'''
-        tensors = (np.linspace(-z, z, num=shape[0]), np.linspace(-y, y, num=shape[1]), np.linspace(-x, x, num=shape[2]))
-        xx, yy, zz = np.meshgrid(*tensors, indexing='ij')
-        M = np.concatenate((xx[..., None], yy[..., None], zz[..., None]), axis=3)
-        return M.reshape(-1, len(shape))
-
     def train(self, steps, X, y, step_to_plot, orig_shape):
         loss = []
         for i in tqdm(range(steps)):

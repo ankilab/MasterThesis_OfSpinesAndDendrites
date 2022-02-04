@@ -13,7 +13,7 @@ import tifffile as tif
 import pickle
 import torch
 import torch.nn.functional as F
-from .utils import c_convolve
+# from .utils import c_convolve
 
 MAX_VAL = 12870
 MIN_VAL = -2327
@@ -97,6 +97,44 @@ class BlindRL(Deconvolver):
 
         with multiprocessing.Pool(processes=n_processes) as p:
             p.map(f_x, files)
+
+        # Save results
+        with open(
+                os.path.join(self.res_path, f'results_blind_rl_{n_iter_outer}_{n_iter_image}_{n_iter_psf}_{sigma}.pkl'),
+                'wb') \
+                as outfile:
+            pickle.dump(self.res_dict, outfile, pickle.HIGHEST_PROTOCOL)
+
+    def predict_seq(self, data_dir, n_iter_outer=10, n_iter_image=5, n_iter_psf=5, sigma=1, plot_frequency=100,
+                eval_img_steps=False, save_intermediate_res=False, parallel=True, preprocess=False):
+        """
+        Iterate through folder and deconvolve all tif-images found.
+
+        :param data_dir: Directory with tif-files
+        :param n_iter_outer: RL-iterations
+        :param n_iter_image: Convolution iterations on image
+        :param n_iter_psf: Convolution iterations on psf
+        :param sigma: Gaussian-smoothing parameter
+        :param plot_frequency: How often should intermdeiate results be plotted? If 1, after every iteration
+        :param eval_img_steps: Calculate image quality metrics after each iteration
+        :param save_intermediate_res: True, if results should be stored after each iteration
+        :param parallel: True, if as many processes as available cores should be launched
+        :return:
+        """
+
+        self.data_path = data_dir
+        self._init_res_dict()
+
+        files = [f for f in os.listdir(data_dir) if f.endswith('.tif')]
+        self.res_dict['n_iter_outer'] = n_iter_outer
+        self.res_dict['n_iter_image'] = n_iter_image
+        self.res_dict['n_iter_psf'] = n_iter_psf
+        self.res_dict['sigma'] = sigma
+
+        for f in files:
+            self._process_img(f, n_iter_outer=n_iter_outer, n_iter_image=n_iter_image, n_iter_psf=n_iter_psf,
+                      sigma=sigma, eval_img_steps=eval_img_steps, save_intermediate_res=save_intermediate_res,
+                      plot_frequency=plot_frequency, preprocess=preprocess)
 
         # Save results
         with open(
@@ -339,30 +377,16 @@ class BlindRL(Deconvolver):
         f[(f < 1e-100)] = 0
         psf[(psf < 1e-100)] = 0
 
-        if torch.is_tensor(f):
-            # psf=torch.clamp(psf,0,1)
-            # f=torch.clamp(f,0,1)
 
-        #     s = torch.cat((f,psf))
-        #     m = s.min()
-        #     p = s.max() - s.min()
-        #     f = (f - m) / p
-        #
-            # Unit summation of PSF
-            psf /= torch.sum(psf)
-        #
-        # else:
+        # psf = np.clip(psf, 0, 1)
+        # f = np.clip(f, 0, 1)
+        s = np.append(f, psf)
+        m = np.min(s)
+        p = np.ptp(s)
+        f = (f - m) / p
 
-        else:
-            # psf = np.clip(psf, 0, 1)
-            # f = np.clip(f, 0, 1)
-            s = np.append(f, psf)
-            m = np.min(s)
-            p = np.ptp(s)
-            f = (f - m) / p
-
-            # Unit summation of PSF
-            psf /= np.sum(psf)
+        # Unit summation of PSF
+        psf /= np.sum(psf)
 
         return f, psf
 

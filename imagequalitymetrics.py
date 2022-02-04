@@ -3,12 +3,10 @@ from skimage.metrics import peak_signal_noise_ratio as sk_psnr
 # from skvideo.measure import niqe as sk_niqe
 # import imquality.brisque as brisque
 # Doku: https://sewar.readthedocs.io/en/latest/
-import sewar
+# import sewar
 import numpy as np
 # import matlab.engine
 
-MAX_VAL = 12870
-MIN_VAL = -2327
 
 class ImageQualityMetrics:
     def __init__(self):
@@ -45,7 +43,7 @@ class ImageQualityMetrics:
     def mssim(self, img, gt_img):
         # img = self._rescale(img)
         # gt_img = self._rescale(gt_img)
-        return sewar.msssim(gt_img, img)
+        return 0#sewar.msssim(gt_img, img)
 
     def niqe(self, img):
         # eng = matlab.engine.start_matlab()
@@ -54,39 +52,33 @@ class ImageQualityMetrics:
         return 0 #sk_niqe(img)
 
     def brisque(self, img):
-        img = self._rescale(img)
         return 0 #brisque.score(img)
 
     def psnr(self, img, gt_img, data_range = 15197):
         # img = self._rescale(img)
         # gt_img = self._rescale(gt_img)
-        print('x')
-        if img.min() <0:
-            img -= MIN_VAL
-        if gt_img.min()<0:
-            gt_img -=MIN_VAL
+        # print('x')
+        # if img.min() <0:
+        #     img -= MIN_VAL
+        # if gt_img.min()<0:
+        #     gt_img -=MIN_VAL
         return sk_psnr(gt_img, img,data_range =data_range)
 
     def uqi(self, img, gt_img):
-        img = self._rescale(img)
-        gt_img = self._rescale(gt_img)
-        return sewar.uqi(gt_img, img)
+
+        return 0 #sewar.uqi(gt_img, img)
 
     def vifp(self, img, gt_img):
         # Pixel Based Visual Information Fidelity
-        img = self._rescale(img)
-        gt_img = self._rescale(gt_img)
-        return sewar.vifp(gt_img, img)
+
+        return 0 #sewar.vifp(gt_img, img)
 
     def snr(self, img):
-        img = self._rescale(img)
         m = img.mean()
         sd = img.std()
         return  m / sd if sd != 0 else np.nan
 
-    def _rescale(self,img):
-        img = (img - MIN_VAL)
-        return img/MAX_VAL
+
 
 
 

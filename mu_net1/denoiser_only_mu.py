@@ -39,7 +39,7 @@ class Denoiser():
         self.train_history_setup()
         self.data_provider = None
         self.n_levels=args['n_levels'] if 'n_levels' in args.keys() else 2
-        self.model_path = os.path.join(args['res_path'],'model')
+        self.model_path = os.path.join(args['result_path'],'model')
         self.model_setup()
         print(self.model.summary)
         self.loss_setup()

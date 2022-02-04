@@ -39,6 +39,25 @@ def save_tif_stack_to_2d(im3d, save_path, start_val = 0, name='f'):
         im.save(name)
 
 
+def restore_3d_stack_from_2d_images(source_folder, result_folder):
+    files = [f for f in os.listdir(source_folder) if f.endswith('.tif')]
+    unique_files = [f for f in files if f.endswith('_0.tif')]
+    Path(result_folder).mkdir(parents=True, exist_ok=True)
+
+    for cur_f in unique_files:
+        names = [f for f in files if f.split('.tif')[0]==cur_f.split('.tif')[0]]
+        # ensure right order (avoid 10 being after 1)
+        names.sort(key=lambda x:int(x.split('.tif_')[1].split('.tif')[0]))
+        im3d = []
+        for (i,name) in enumerate(names):
+            img = tif.imread(os.path.join(source_folder, name))
+            if i ==0:
+                im3d = img[np.newaxis,:,:]
+            else:
+                im3d = np.append(im3d, img[np.newaxis,:,:], axis=0)
+        tif.imsave(os.path.join(result_folder,names[0].split('.tif')[0] +'.tif'),im3d)
+
+
 def save_reduced_tif_stack(search_path, save_path, start_idx,end_idx):
     Path(save_path).mkdir(parents=True, exist_ok=True)
     p = save_path+'/'
@@ -111,24 +130,25 @@ def load_stack_from_drive(path, mouse, required_string=''):
         # Weird error: in some folders of TIm's mice there is an additional file name which doe snot correspond to a
         # tif-file e.g ['._117_ArcCre_A1_zoom10_power8_gain500_z1_resgalvo-027-011_Cycle00001_Ch3_000001.ome.tif',
         # '117_ArcCre_A1_zoom10_power8_gain500_z1_resgalvo-027-011_Cycle00001_Ch3_000001.ome.tif']
-        if f_name[0][0:2] == '._' and len(f_name)>1:
-            fx = f_name[1]
-        else:
-            fx=f_name[0]
+        if len(f_name) >0:
+            if f_name[0][0:2] == '._' and len(f_name)>1:
+                fx = f_name[1]
+            else:
+                fx=f_name[0]
 
-        f = tif.imread(os.path.join(path, i, fx))
-        if len(f.shape) ==3:
-            f = f[0,:,:]
-        f = f[np.newaxis,:,:]
-        if idx == 0:
-            stack = f
-        else:
-            stack = np.concatenate((stack, f), axis = 0)
+            f = tif.imread(os.path.join(path, i, fx))
+            if len(f.shape) ==3:
+                f = f[0,:,:]
+            f = f[np.newaxis,:,:]
+            if idx == 0:
+                stack = f
+            else:
+                stack = np.concatenate((stack, f), axis = 0)
 
     return stack
 
 
-def register_stacks_from_drive(csv_file, result_folder):
+def register_stacks_from_drive(csv_file, result_folder, required_string='000001.ome', save_name_id=''):
     if not os.path.exists(result_folder):
         os.makedirs(result_folder)
 
@@ -136,11 +156,19 @@ def register_stacks_from_drive(csv_file, result_folder):
     reg_files = df[df['Train']=='X']
     for (idx, row) in reg_files.iterrows():
         path = 'G:/' + row['Researcher'] + '/25x_1NA_Raw/' + row['Mouse'] + '/' + row['Date'] +'/' +row['Region']
-        stack = load_stack_from_drive(path, row['Mouse'], required_string='000001.ome')
-        reg_stack = register_3d_stack_from_middle(stack, ['affine'])
-        save_name = os.path.join(result_folder, row['Researcher'] +'_'+ row['Mouse'] + '_' + row['Date']
-                                 +'_' +row['Region'] +'.tif')
-        tif.imsave(save_name, reg_stack)
+        stack = load_stack_from_drive(path, row['Mouse'], required_string=required_string)
+        if stack.size>0:
+            reg_stack = register_3d_stack_from_middle(stack, ['affine'])
+            save_name = os.path.join(result_folder, row['Researcher'] +'_'+ row['Mouse'] + '_' + row['Date']
+                                     +'_' +row['Region'] +save_name_id+'.tif')
+            tif.imsave(save_name, reg_stack)
+
+
+def register_all_repetitions(csv_file, result_folder):
+    required_strings=['000001.ome','000002.ome','000003.ome','000004.ome','000005.ome','000006.ome','000007.ome']
+    save_name_ids= [str(x) for x in np.arange(1,8)]
+    for i in range(4,len(required_strings)):
+        register_stacks_from_drive(csv_file, result_folder, required_strings[i], save_name_ids[i])
 
 
 def register_autoquant_images(path, result_folder):
@@ -219,8 +247,9 @@ def get_extrem_val(path):
     print('Min Value: ' + str(min_val))
 
 
-
-get_extrem_val('D:/jo77pihe/Registered/Raw')
+# restore_3d_stack_from_2d_images('D:/jo77pihe/Registered/20220203_Raw_2D/test_test', 'D:/jo77pihe/Registered/20220203_Raw_2D/test_test/res')
+# register_all_repetitions('C:/Users/jo77pihe/Documents/MasterThesis_OfSpinesAndDendrites/Train_Test.csv', 'D:/jo77pihe/Registered/Repetitions')
+# get_extrem_val('D:/jo77pihe/Registered/Raw')
 
 # split_train_test('C:/Users/jo77pihe/Documents/MasterThesis_OfSpinesAndDendrites/Train_Test.csv', 'D:/jo77pihe/Registered/Raw_32')
 # find_all_img_with_min_z('D:/jo77pihe/Registered/Raw', 32, 'D:/jo77pihe/Registered/Raw_32')
@@ -248,7 +277,7 @@ get_extrem_val('D:/jo77pihe/Registered/Raw')
 
 
 
-# register_stacks_from_drive('C:/Users/jo77pihe/Documents/MasterThesis_OfSpinesAndDendrites/Train_Test.csv', './Registered')
+# register_stacks_from_drive('C:/Users/jo77pihe/Documents/MasterThesis_OfSpinesAndDendrites/Train_Test.csv', './Registered/20220203_Raw')
 
 # register_stacks_from_drive('C:/Users/Johan/Documents/FAU_Masterarbeit/Implementation/Train_Test.csv', './Registered')
 

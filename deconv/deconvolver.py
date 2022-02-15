@@ -1,14 +1,17 @@
 import os
+from datetime import datetime
 
 class Deconvolver:
     def __init__(self, args):
         self.args= args
-        self.data_path = os.path.join(os.getcwd(), args['data_path'])
-        dir = os.path.join(os.getcwd(), self.data_path, args['result_path'])
-        self.res_path = dir
+        self.data_path = args.get('data_path', './')
+        self.data_path=os.path.join(os.getcwd(), self.data_path)
+        self.timestamp_created = str(datetime.now()).replace(' ', '_')
+        dir =  args.get('result_path', 'Results'+ self.timestamp_created)
+        self.res_path = os.path.join(os.getcwd(), self.data_path, dir)
 
-        if not os.path.exists(dir):
-            os.makedirs(dir)
+        if not os.path.exists(self.res_path):
+            os.makedirs(self.res_path)
 
     def preprocess(self, **kwargs):
         return NotImplementedError

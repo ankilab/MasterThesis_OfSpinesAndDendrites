@@ -12,7 +12,7 @@ class Mu_Net(Deconvolver):
     def __init__(self, args):
 
         super().__init__(args)
-        self.train_flag = args['train']
+        self.train_flag = args.get('train', True)
         self.denoiser = den.Denoiser(args)
 
     def preprocess(self):

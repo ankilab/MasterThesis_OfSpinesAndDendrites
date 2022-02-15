@@ -13,7 +13,7 @@ MIN_VAL = -2327
 class SIREN_application:
     def __init__(self, args):
         hidden_features = args.get('hidden_features', 256)
-        hidden_layers = args.get('hidden_layers', 3)
+        hidden_layers = args.get('hidden_layers', 1)
 
         self.model = SIREN(in_features=3,
                       out_features=1,
@@ -29,7 +29,8 @@ class SIREN_application:
         if batch_size is None:
             batch_size = len(X['y'])
         self.model.preprocess(X['grid'].astype(np.float32), X['y'])
-        self.model.train(n_steps, X['grid'], X['y'], steps_to_plot, X['original_shape'], batch_size=batch_size)
+        loss =self.model.train(n_steps, X['grid'], X['y'], steps_to_plot, X['original_shape'], batch_size=batch_size)
+        return loss
 
     def test(self, X):
         return self.model.predict(X['grid'], batchsize=len(X['y'])).reshape(X['original_shape'])
@@ -83,7 +84,8 @@ class Motion_Correction(SIREN_application):
     def preprocess(self, data_path, img_name):
         files = [f for f in os.listdir(data_path) if (os.path.isfile(os.path.join(data_path, f)) and (img_name in f))]
         ids = [str(x) for x in np.arange(1, len(files) + 1)]
-        y_x, grid_x = np.array([]), np.array([])
+        print(ids)
+        y_x, grid_x, stack = np.array([]), np.array([]), np.array([])
         batch_size =0
         for i in range(len(ids)):
             stack = np.asarray(io.mimread(os.path.join(data_path, img_name + ids[i] + ".tif")), dtype=np.float32)[:10, ::2, ::2]
@@ -100,10 +102,11 @@ class Motion_Correction(SIREN_application):
             else:
                 y_x = np.concatenate((y_x, y), axis=0)
                 grid_x = np.concatenate((grid_x, grid), axis=0)
+            print(i)
         X={}
         X['grid'] = grid_x
         X['y'] =y_x
-        X['original_shape']=xx.shape
+        X['original_shape']=stack.shape
         return X, batch_size
 
     def train(self, X, n_steps=1000, steps_to_plot=1000, batch_size=None):

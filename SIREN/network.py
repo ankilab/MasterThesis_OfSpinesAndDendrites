@@ -2,6 +2,8 @@ import numpy as np
 import tensorflow as tf
 import os
 import matplotlib.pyplot as plt
+import time
+from tqdm import tqdm
 
 class SIREN:
     def __init__(self, in_features, hidden_features, hidden_layers, out_features, outermost_linear=False,
@@ -21,19 +23,26 @@ class SIREN:
         return tf.sin(omega_0 * x)
 
     def SineLayer(self, x, in_features, out_features, bias=True, is_first=False, omega_0=30.):
+
         if is_first:
             init = tf.keras.initializers.RandomUniform(-1 / in_features,
                                                        1 / in_features)
         else:
             init = tf.keras.initializers.RandomUniform(-np.sqrt(6 / in_features) / omega_0,
                                                        np.sqrt(6 / in_features) / omega_0)
+        # print('Sine 1')
+        # time.sleep(10)
 
         x = tf.keras.layers.Dense(out_features, kernel_initializer=init, use_bias=bias, dtype=tf.float32)(x)
+        # print('sine 2')
+        # time.sleep(10)
         x = self.SineActivation(x, omega_0) if self.sine else tf.nn.relu(x)
+
         return x
 
     def model_setup(self):
         in_layer = tf.keras.layers.Input((self.in_features,),dtype=tf.float32)
+
         # feature_names = ['x1', 'x2', 'x3']
         # columns = [tf.feature_column.numeric_column(header) for header in feature_names]
         # in_layer = tf.keras.layers.DenseFeatures(columns)
@@ -60,19 +69,21 @@ class SIREN:
 
     def train(self, steps, X, y, step_to_plot, orig_shape, batch_size=128):
         loss = []
-        dataset = get_dataset(self.data_path)
-        dataset = dataset.shuffle(len(y), reshuffle_each_iteration=True)
-        dataset = dataset.prefetch(buffer_size=tf.data.AUTOTUNE)
-        dataset = dataset.batch(batch_size)
+        # dataset = get_dataset(self.data_path)
+        # dataset = dataset.shuffle(len(y), reshuffle_each_iteration=True)
+        # dataset = dataset.prefetch(buffer_size=tf.data.AUTOTUNE)
+        # dataset = dataset.batch(batch_size)
+
         # shuffled = dataset.shuffle(buffer_size=len(y)).batch(batch_size)
 
-        # for i in tqdm(range(steps)):
-        #     p = np.random.permutation(len(y))
-        #     Xs, ys= X[p], y[p]
-        #     h = self.model.fit(Xs,ys, epochs=1, verbose=1, batch_size=batch_size)
-        h=self.model.fit(dataset, epochs=steps, verbose=1, batch_size=batch_size)
-        loss = h.history['loss']
-            # loss.append(h.history['loss'])
+        for i in tqdm(range(steps)):
+            p = np.random.permutation(len(y))
+            Xs, ys= X[p], y[p]
+            h = self.model.fit(Xs,ys, epochs=1, verbose=1, batch_size=len(y))
+            loss.append(h.history['loss'])
+
+        # h=self.model.fit(dataset, epochs=steps, verbose=1, batch_size=batch_size)
+        # loss = h.history['loss']
 
             # if step_to_plot!=0 and i % step_to_plot == 0:
             #     plt.figure()
@@ -83,9 +94,10 @@ class SIREN:
         plt.figure()
         plt.plot(loss)
         plt.show()
+        return loss
 
     def predict(self, X, batchsize):
-        return self.model.predict(X, batchsize=batchsize)
+        return self.model.predict(X, batch_size=batchsize)
 
 
 
@@ -136,11 +148,11 @@ def read_element(element):
 
 def get_dataset(filename):
     # create the dataset
-    dataset = tf.data.TFRecordDataset(filename)
+    dataset = tf.data.TFRecordDataset(filename, num_parallel_reads=tf.data.experimental.AUTOTUNE)
 
     # pass every single feature through our mapping function
     dataset = dataset.map(
-        read_element
+        read_element, num_parallel_calls=tf.data.experimental.AUTOTUNE
     )
     return dataset
 

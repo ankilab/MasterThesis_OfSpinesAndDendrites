@@ -5,7 +5,6 @@ Created on Tue Jul 17 19:09:56 2018
 @author: sehyung
 """
 
-import tensorflow as tf
 from mu_net1.cnn_models import *
 from mu_net1.utils2 import *
 from data_augmentation import DataProvider as dp
@@ -35,7 +34,7 @@ class Denoiser():
         self.sz_z = args['z_shape']
         self.max_value = 12870  # we set maximum value to 5,000 of microscope output
         self.min_value = -2327
-        self.learning_rate = None
+        self.learning_rate = args.get('lr', 0.0001)
         self.train_history_setup()
         self.data_provider = None
         self.n_levels=args['n_levels'] if 'n_levels' in args.keys() else 2
@@ -128,7 +127,7 @@ class Denoiser():
         self.data_provider = data_provider
         num_batch_samples = np.ceil(self.data_provider.size[0]/self.batch_sz).astype(int)
         self.train_history_setup()
-        self.learning_rate = 0.0001
+
         # Set up optimizers
         lr_schedule = tf.keras.optimizers.schedules.ExponentialDecay(initial_learning_rate=self.learning_rate,
             decay_steps=5*num_batch_samples, decay_rate=0.5, staircase=True)

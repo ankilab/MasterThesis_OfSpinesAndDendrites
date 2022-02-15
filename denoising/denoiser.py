@@ -1,11 +1,8 @@
 from skimage.filters import gaussian
 from skimage.restoration import denoise_bilateral
-from Neighbor2Neighbor import neighbor2neighbor as n2n
-from Neighbor2Neighbor import utils
-import os
 from skimage.restoration import denoise_nl_means, estimate_sigma
 import numpy as np
-import bm3d
+# import bm3d
 
 
 class Denoiser:
@@ -37,7 +34,10 @@ class BilateralFilter(Denoiser):
 
 
 class Neighbor2Neighbor(Denoiser):
+
     def __init__(self):
+        from Neighbor2Neighbor import neighbor2neighbor as n2n
+
         super().__init__()
         self.model_path= None
         self.n2n = n2n.Neighbor2Neighbor()
@@ -55,30 +55,30 @@ class Neighbor2Neighbor(Denoiser):
         return res
 
 
-class NLMeans(Denoiser):
-    #not tested
-    def __init__(self):
-        super().__init__()
-
-    def denoise(self, img):
-        patch_kw = dict(patch_size=50,  # 5x5 patches
-                        patch_distance=60)  # 13x13 search area
-        sigma_est = np.mean(estimate_sigma(img))
-        res = denoise_nl_means(img, h=0.8 * sigma_est, fast_mode=True,
-                                        **patch_kw)
-        return res
-
-
-class BM3D(Denoiser):
-    # not tested
-    def __init__(self):
-        super().__init__()
-
-    def denoise(self, img):
-        sigma_est = np.mean(estimate_sigma(img))
-        print(sigma_est)
-        res = bm3d.bm3d(img, 1) #, stage_arg=bm3d.BM3DStages.ALL_STAGES)
-        return res
+# class NLMeans(Denoiser):
+#     #not tested
+#     def __init__(self):
+#         super().__init__()
+#
+#     def denoise(self, img):
+#         patch_kw = dict(patch_size=50,  # 5x5 patches
+#                         patch_distance=60)  # 13x13 search area
+#         sigma_est = np.mean(estimate_sigma(img))
+#         res = denoise_nl_means(img, h=0.8 * sigma_est, fast_mode=True,
+#                                         **patch_kw)
+#         return res
+#
+#
+# class BM3D(Denoiser):
+#     # not tested
+#     def __init__(self):
+#         super().__init__()
+#
+#     def denoise(self, img):
+#         sigma_est = np.mean(estimate_sigma(img))
+#         print(sigma_est)
+#         res = bm3d.bm3d(img, 1) #, stage_arg=bm3d.BM3DStages.ALL_STAGES)
+#         return res
 
 
 

@@ -8,7 +8,13 @@ import os
 import tifffile as tif
 import matplotlib.pyplot as plt
 from skimage import io
+import tensorflow as tf
 from tqdm import tqdm
+import time
+
+#os.environ["CUDA_VISIBLE_DEVICES"] = "-1"
+print("Num GPUs Available: ", len(tf.config.list_physical_devices('GPU')))
+#os.environ['TF_FORCE_GPU_ALLOW_GROWTH'] = 'true'
 
 
 class CAREDeconv(Deconvolver):
@@ -16,12 +22,13 @@ class CAREDeconv(Deconvolver):
     def __init__(self, args):
 
         super().__init__(args)
-        self.train_flag = args['train']
+        self.model= None
 
     def preprocess(self):
         pass
 
-    def train(self, data_dir, validation_split =0.1, epochs =10, batch_size=8):
+    def train(self, data_dir, validation_split =0.1, epochs =10, batch_size=8, learning_rate = 0.0004, unet_residual=False,
+              unet_n_depth=2):
 
         (X, Y), (X_val, Y_val), axes = load_training_data(data_dir,
                                                           validation_split=validation_split, verbose=True)
@@ -32,9 +39,12 @@ class CAREDeconv(Deconvolver):
         n_channel_in, n_channel_out = X.shape[c], Y.shape[c]
 
         config = Config(axes, n_channel_in, n_channel_out, train_batch_size=batch_size,
-                        train_steps_per_epoch=train_steps, train_epochs=epochs)
+                        train_steps_per_epoch=train_steps, train_epochs=epochs, train_learning_rate=learning_rate,
+                        unet_residual=unet_residual, unet_n_depth=unet_n_depth)
         model_dir = os.path.join(self.res_path,'models')
+
         model = CARE(config, 'my_model', basedir=model_dir)
+        model_dir = os.path.join(model_dir, 'my_model')
         print(model.keras_model.summary())
 
         history = model.train(X, Y, validation_data=(X_val, Y_val))
@@ -57,7 +67,7 @@ class CAREDeconv(Deconvolver):
         plt.figure(figsize=(16, 5))
         plot_history(history, ['loss', 'val_loss'], ['mse', 'val_mse', 'mae', 'val_mae'])
         with open(os.path.join(self.res_path, 'history_care.pkl'), 'wb') as outfile:
-            pickle.dump(history, outfile, pickle.HIGHEST_PROTOCOL)
+            pickle.dump(history.history, outfile, pickle.HIGHEST_PROTOCOL)
 
         # # Plot exemplary results
         # plt.figure(figsize=(20, 12))
@@ -72,7 +82,7 @@ class CAREDeconv(Deconvolver):
         # plt.show()
         return model_dir, mdl_path
 
-    def predict(self, data_dir, model_dir, name, save_res=True):
+    def predict(self, data_dir, model_dir, name, save_res=True, res_folder='./'):
         p = os.path.join(self.res_path, 'Predictions')
         if not os.path.exists(p):
             os.makedirs(p)
@@ -80,12 +90,14 @@ class CAREDeconv(Deconvolver):
         files = [f for f in os.listdir(data_dir) if f.endswith('.tif')]
         for f in files:
             X = io.imread(os.path.join(data_dir,f))
-            self.predict_img(X, model_dir, name, f)
+            self.predict_img(X, model_dir, name, os.path.join(res_folder,f))
+        self.model = None
 
     def predict_img(self, X, model_dir, name, save_as=None):
         axes = 'ZYX'
-        model = CARE(config=None, name=name, basedir=model_dir)
-        restored = model.predict(X, axes)
+        if self.model is None:
+            self.model = CARE(config=None, name=name, basedir=model_dir)
+        restored = self.model.predict(X, axes)
 
         if save_as is not None:
             tif.imsave(save_as, restored)

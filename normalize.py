@@ -1,7 +1,15 @@
 # Source: https://github.com/CSBDeep/CSBDeep/blob/fc4479f74d04eebcf871e2957e0ed9dff65a03a4/csbdeep/data/prepare.py
 import numpy as np
 
-class PercentileNormalizer:
+class Normalizer:
+
+    def __init__(self):
+        pass
+
+    def normalize(self, **kwargs):
+        return NotImplementedError
+
+class PercentileNormalizer(Normalizer):
     """Percentile-based image normalization.
     Parameters
     ----------
@@ -19,6 +27,7 @@ class PercentileNormalizer:
 
     def __init__(self, pmin=2, pmax=99.9, do_after=True, dtype=np.float32, **kwargs):
         """TODO."""
+        super().__init__()
         assert (np.isscalar(pmin) and np.isscalar(pmax) and 0 <= pmin < pmax <= 100)
         self.pmin = pmin
         self.pmax = pmax
@@ -59,4 +68,20 @@ class PercentileNormalizer:
         alpha = cov[0, 1] / (cov[0, 0] + 1e-10)
         beta = target.mean() - alpha * x.mean()
         return alpha * x + beta
+
+
+class MinMaxNormalizer(Normalizer):
+    def __init__(self):
+        super().__init__()
+
+    def normalize(self, img, min=None, max=None):
+        if min is None:
+            min = img.min()
+        img = img-min
+        if max is None:
+            max= img.max()
+
+        return img/max
+
+
 

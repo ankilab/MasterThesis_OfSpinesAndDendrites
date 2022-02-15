@@ -3,10 +3,8 @@ import numpy as np
 import os
 from csbdeep.data import RawData, create_patches
 import tifffile as tif
-from random import shuffle
 import flammkuchen as fl
-from csbdeep.io import load_training_data
-import gc
+
 
 MAX_VAL = 12870
 MIN_VAL = -2327
@@ -61,7 +59,7 @@ class DataAugmenter():
                 patch_size=(self.z_shape, self.xy_shape, self.xy_shape),
                 n_patches_per_image=self.n_patches,
                 save_file=data_dir)
-            if save_h5 != '':
+            if save_h5 is not None:
                 augmented_raw = ((augmented_raw-MIN_VAL)/MAX_VAL)*2
                 augmented_gt = ((augmented_gt-MIN_VAL)/MAX_VAL)*2
                 augmented_raw -= 1.0

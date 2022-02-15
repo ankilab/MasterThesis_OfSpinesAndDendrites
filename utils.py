@@ -1,3 +1,5 @@
+import shutil
+
 from skimage import io
 import numpy as np
 import matplotlib.pyplot as plt
@@ -40,6 +42,11 @@ def save_tif_stack_to_2d(im3d, save_path, start_val = 0, name='f'):
 
 
 def restore_3d_stack_from_2d_images(source_folder, result_folder):
+    """
+    Stacks that were previously splitted by save_tif_stack_to_2d() are restored to stacks
+    :param source_folder: Folder with 2D images
+    :param result_folder: Folder were restored stackes should be stored in
+    """
     files = [f for f in os.listdir(source_folder) if f.endswith('.tif')]
     unique_files = [f for f in files if f.endswith('_0.tif')]
     Path(result_folder).mkdir(parents=True, exist_ok=True)
@@ -196,7 +203,7 @@ def register_autoquant_images(path, result_folder):
                     stack = np.concatenate((stack, f), axis=0)
             # reg_stack = register_3d_stack_from_middle(stack, ['affine'])
             save_name = os.path.join(result_folder, 'Alessandro_' + mouse + '_' + date+ '_' + region+ '.tif')
-            tif.imsave(save_name, stack)
+            tif.imwrite(save_name, stack)
 
 
 def find_all_img_with_min_z(path, min_z, result_folder):
@@ -246,6 +253,35 @@ def get_extrem_val(path):
     print('Max Value: ' + str(max_val))
     print('Min Value: ' + str(min_val))
 
+
+def copy_rename_matching_autoquant_images(raw_data, result_folder):
+    files = [f for f in os.listdir(raw_data) if f.endswith('.tif')]
+    for f in files:
+        parts=f.split('_')
+        path = 'G:/'
+        path = os.path.join(path, parts[0])
+        deconved_dir = [d for d in os.listdir(path) if '1NA_Deconvolved' in d][0]
+        path = os.path.join(path, deconved_dir)
+        mouse = parts[1] +'_'+parts[2] if parts[0] !='Ghabiba' else parts[1]
+        mouse_dir = [d for d in os.listdir(path) if mouse in d][0]
+        path = os.path.join(path, mouse_dir)
+        date_dir = [d for d in os.listdir(path) if parts[len(parts)-2] in d]
+        if len(date_dir) >=1:
+            date_dir = date_dir[0]
+            # append data directory and region
+            path = os.path.join(path, date_dir)
+            x=os.listdir(path)
+            if parts[-1][:-4] in x and os.path.isdir(os.path.join(path,parts[-1][:-4])):
+                path = os.path.join(path,parts[-1][:-4])
+            f_d = [f for f in os.listdir(path) if f ==parts[-1]]
+            if len(f_d) >=1:
+                shutil.copy2(os.path.join(path,f_d[0]), os.path.join(result_folder,f))
+            else:
+                print(f)
+        else:
+            print(f)
+
+# copy_rename_matching_autoquant_images('D:/jo77pihe/Registered/20220203_Raw', 'D:/jo77pihe/Registered/20220203_AutoQuant_Averaged')
 
 # restore_3d_stack_from_2d_images('D:/jo77pihe/Registered/20220203_Raw_2D/test_test', 'D:/jo77pihe/Registered/20220203_Raw_2D/test_test/res')
 # register_all_repetitions('C:/Users/jo77pihe/Documents/MasterThesis_OfSpinesAndDendrites/Train_Test.csv', 'D:/jo77pihe/Registered/Repetitions')

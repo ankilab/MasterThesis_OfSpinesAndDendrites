@@ -49,7 +49,7 @@ def window_sliding(self, img, sampling_step, patch_sz, max_value, min_value, bat
     level_idx = n_levels - 1
 
     num_total_bars = 50
-    num_total_iters = int(img_sz[0] / patch_sz[0]) * int(img_sz[1] / patch_sz[1]) * int(img_sz[2] / patch_sz[2]) * 8
+    num_total_iters = int(img_sz[0] / sampling_step[0]) * int(img_sz[1] / sampling_step[1]) * int(img_sz[2] / sampling_step[2])
     iter_count = 0
 
     for z in range(0, img_sz[0] - patch_sz[0] + 1, sampling_step[0]):

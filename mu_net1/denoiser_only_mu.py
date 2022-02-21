@@ -20,6 +20,7 @@ physical_devices = tf.config.experimental.list_physical_devices('GPU')
 if len(physical_devices) > 0:
     config = tf.config.experimental.set_memory_growth(physical_devices[0], True)
 
+
 else:
     print("Not enough GPU hardware devices available")
 
@@ -30,9 +31,9 @@ class Denoiser():
         self.args = args
         # basic parameters
         self.batch_sz = 1 if 'batch_size' not in args.keys() else args['batch_size']
-        self.sz = args['xy_shape']
-        self.sz_z = args['z_shape']
-        self.max_value = 12870  # we set maximum value to 5,000 of microscope output
+        self.sz = args.get('xy_shape', 64)
+        self.sz_z = args.get('z_shape',16)
+        self.max_value = 12870
         self.min_value = -2327
         self.learning_rate = args.get('lr', 0.0001)
         self.train_history_setup()
@@ -204,8 +205,10 @@ class Denoiser():
 
         return L0_pred, L1_pred, L2_pred, denoised_img
 
-    def denoising_img(self, img):
-        sliding_step = np.array([8, 32, 32])
+    def denoising_img(self, img, sliding_step=None):
+        if sliding_step is None:
+            sliding_step = [8, 32, 32]
+        sliding_step = np.array(sliding_step)
         denoised_img = window_sliding(self, img, sliding_step, patch_sz= np.array([self.sz_z, self.sz, self.sz]),
                                       max_value=self.max_value,min_value= self.min_value, batch_sz=self.batch_sz, n_levels=self.n_levels)
         return denoised_img

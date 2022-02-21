@@ -35,9 +35,9 @@ l = timeit.default_timer() -start
 print(l)
 timing[0,0] = l
 np.save('timing.npy', timing)
-
 #
-# ######################### 2 Levels #####################################################################################
+# #
+# # ######################### 2 Levels #####################################################################################
 # # Train model
 args['n_levels'] = 2
 args['result_path'] = './Mu_Net_res_2_levels100'
@@ -89,41 +89,41 @@ deconvolver = REGISTRY['mu-net'](args)
 # # model_dir, _ = deconvolver.train(data_provider, args['epochs'], args['batch_size'])
 #
 # # predict image
-test_data='D:/jo77pihe/Registered/Deconved_AutoQuant_R2/Test_Raw'
+test_data='D:/jo77pihe/Registered/20220203_AutoQuant_NotAveraged/Test_Raw'
 model_dir = 'C:/Users/jo77pihe/Documents/MasterThesis_OfSpinesAndDendrites/Mu_Net_res_0_levels100_AQ/model'
 start = timeit.default_timer()
 deconvolver.predict(test_data, model_dir)
 l = timeit.default_timer() -start
 print(l)
 timing[3,0] = l
-
-np.save('timing.npy', timing)
+#
+# np.save('timing.npy', timing)
 ######################### CARE #########################################################################################
 
 ########################################################################################################################
 
-args['result_path'] = './CARE_res_x100'
-args['learning_rate'] = 0.0004
-
-# # Generate training data
-data_augmenter = DataAugmenter(args)
-_, data_dir = data_augmenter.augment(args['data_path'], args['source_folder'], args['target_folder'], care=True,
-                                     data_dir=args['data_augmented_path'])
-# # Train CARE model
-deconvolver = REGISTRY['csbdeep'](args)
-#data_dir = './Registered/Data_npz/my_data.npz'
-model_dir, mdl_path = deconvolver.train(data_dir, args['validation_split'], args['epochs'], args['batch_size'])
-
-# predict image
-test_data='D:/jo77pihe/Registered/Deconved_AutoQuant_R2/Test_Raw'
-res_path = 'D:/jo77pihe/Registered/CARE_res_x100'
-start = timeit.default_timer()
-
-deconvolver.predict(test_data, model_dir= res_path, name=model_dir, save_res=True)
-l = timeit.default_timer() -start
-print(l)
-timing[4,0] = l
-np.save('timing.npy', timing)
+# args['result_path'] = './CARE_res_x100xx'
+# args['learning_rate'] = 0.0004
+#
+# # # Generate training data
+# data_augmenter = DataAugmenter(args)
+# _, data_dir = data_augmenter.augment(args['data_path'], args['source_folder'], args['target_folder'], care=True,
+#                                      data_dir=args['data_augmented_path'])
+# # # Train CARE model
+# deconvolver = REGISTRY['csbdeep'](args)
+# #data_dir = './Registered/Data_npz/my_data.npz'
+# model_dir, mdl_path = deconvolver.train(data_dir, args['validation_split'], args['epochs'], args['batch_size'],args['learning_rate'])
+#
+# # predict image
+# test_data='D:/jo77pihe/Registered/Deconved_AutoQuant_R2/Test_Raw'
+# res_path = 'D:/jo77pihe/Registered/CARE_res_x100'
+# start = timeit.default_timer()
+#
+# deconvolver.predict(test_data, model_dir= res_path, name=model_dir, save_res=True)
+# l = timeit.default_timer() -start
+# print(l)
+# timing[4,0] = l
+# np.save('timing.npy', timing)
 
 ###############################################Auto-Encoder#############################################################
 

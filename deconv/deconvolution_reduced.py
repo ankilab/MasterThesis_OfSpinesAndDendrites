@@ -222,10 +222,10 @@ class BlindRL(Deconvolver):
         f[(f < 1e-100)] = 0
         psf[(psf < 1e-100)] = 0
 
-        # s = np.append(f, psf)
-        # m = np.min(s)
-        # p = np.ptp(s)
-        # f = (f - m) / p
+        s = np.append(f, psf)
+        m = np.min(s)
+        p = np.ptp(s)
+        f = (f - m) / p
 
         # Unit summation of PSF
         psf /= np.sum(psf)

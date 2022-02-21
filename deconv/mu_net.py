@@ -47,7 +47,8 @@ class Mu_Net(Deconvolver):
         files = [f for f in os.listdir(data_dir) if f.endswith('.tif')]
         for f in files:
             X = np.float32(io.imread(os.path.join(data_dir, f)))
-            self.predict_img(X, model_dir, f)
+            if f not in os.listdir(self.res_path):
+                self.predict_img(X, model_dir, f)
 
     def predict_img(self,X, model_dir, save_as='Mu_Net_res.tif'):
         batch_sz = 1

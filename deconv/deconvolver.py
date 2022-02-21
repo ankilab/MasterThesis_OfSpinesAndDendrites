@@ -8,7 +8,7 @@ class Deconvolver:
         self.data_path=os.path.join(os.getcwd(), self.data_path)
         self.timestamp_created = str(datetime.now()).replace(' ', '_')
         dir =  args.get('result_path', 'Results'+ self.timestamp_created)
-        self.res_path = os.path.join(os.getcwd(), self.data_path, dir)
+        self.res_path = os.path.join(os.getcwd(), dir)
 
         if not os.path.exists(self.res_path):
             os.makedirs(self.res_path)

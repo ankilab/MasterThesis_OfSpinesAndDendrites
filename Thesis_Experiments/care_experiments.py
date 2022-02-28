@@ -82,13 +82,6 @@ def train():
                             model_dir, mdl_path = deconvolver.train(data_dir, validation_split, epochs, bz, lr, ur, unet_n_depth=ly)
                             with open(os.path.join(deconvolver.res_path, "config_run.json"),'w') as outfile:
                                 json.dump(args, outfile)
-                            # gc.collect()
-                            # # predict image
-                            # start = timeit.default_timer()
-                            # deconvolver.predict(test_path_r, model_dir=deconvolver.res_path, name=model_dir, save_res=True,
-                            #                     res_folder=os.path.join(result_path, folder))
-                            # l = timeit.default_timer() - start
-                            # print(l)
 
 def post_prediction(dir):
     d = os.path.join(p,dir)
@@ -122,6 +115,7 @@ def post_prediction(dir):
     sess.close()
 
     gc.collect()
+
 
 if __name__ == '__main__':
     multiprocessing.freeze_support()

@@ -13,8 +13,8 @@ test_data_dir = 'D:/jo77pihe/Registered/20220203_AutoQuant_NotAveraged/Test_data
 
 levels =[0,1,2,3]
 z_shapes=[16]#,32,64]
-xy_shapes =[128] #[64
-lr = [0.0001, 0.001]
+xy_shapes =[64,128] #[64
+lr = [0.01]
 bzs = [4, 8]#, 16]
 
 
@@ -44,6 +44,7 @@ def main():
 
 
 def post_prediction(dir):
+    # runs in PyCharm debugger, but not in console
     path=os.path.join(res_path, dir)
     parts = dir.split('_')
     args = {}
@@ -65,13 +66,13 @@ def post_prediction(dir):
 
 
 if __name__ == '__main__':
-    #main()
+    main()
 
-    multiprocessing.freeze_support()
-    dirs = os.listdir(res_path)
-    dirs = [dir for dir in dirs if dir.startswith('Trial')]
-    for dir in dirs:
-        if 'history_mu_net.pkl' in os.listdir(os.path.join(res_path,dir)):
-            p = multiprocessing.Process(target=post_prediction, args=(dir,))
-            p.start()
-            p.join()
+    # multiprocessing.freeze_support()
+    # dirs = os.listdir(res_path)
+    # dirs = [dir for dir in dirs if dir.startswith('Trial')]
+    # for dir in dirs:
+    #     if 'history_mu_net.pkl' in os.listdir(os.path.join(res_path,dir)):
+    #         p = multiprocessing.Process(target=post_prediction, args=(dir,))
+    #         p.start()
+    #         p.join()

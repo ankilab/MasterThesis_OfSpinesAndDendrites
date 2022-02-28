@@ -1,4 +1,7 @@
 from __future__ import print_function, unicode_literals, absolute_import, division
+
+# import keras.backend
+import multiprocessing
 from .deconvolver import Deconvolver
 from csbdeep.utils import axes_dict, plot_some, plot_history
 from csbdeep.io import load_training_data
@@ -9,12 +12,21 @@ import tifffile as tif
 import matplotlib.pyplot as plt
 from skimage import io
 import tensorflow as tf
-from tqdm import tqdm
-import time
+import gc
+
 
 #os.environ["CUDA_VISIBLE_DEVICES"] = "-1"
 print("Num GPUs Available: ", len(tf.config.list_physical_devices('GPU')))
-#os.environ['TF_FORCE_GPU_ALLOW_GROWTH'] = 'true'
+os.environ['TF_FORCE_GPU_ALLOW_GROWTH'] = 'true'
+# config = tf.compat.v1.ConfigProto(
+#     inter_op_parallelism_threads=1)
+# sess = tf.compat.v1.Session(config=config)
+#
+# print(sess._config)
+# tf.compat.v1.keras.backend.set_session(sess)
+# os.environ["CUDA_DEVICE_ORDER"]="PCI_BUS_ID"   # see issue #152
+# os.environ["CUDA_VISIBLE_DEVICES"]="0"
+#from numba import cuda
 
 
 class CAREDeconv(Deconvolver):
@@ -22,12 +34,11 @@ class CAREDeconv(Deconvolver):
     def __init__(self, args):
 
         super().__init__(args)
-        self.model= None
 
     def preprocess(self):
         pass
 
-    def train(self, data_dir, validation_split =0.1, epochs =10, batch_size=8, learning_rate = 0.0004, unet_residual=False,
+    def train(self, data_dir, validation_split =0.1, epochs =10, batch_size=8, learning_rate = 0.0004, unet_residual=True,
               unet_n_depth=2):
 
         (X, Y), (X_val, Y_val), axes = load_training_data(data_dir,
@@ -91,15 +102,37 @@ class CAREDeconv(Deconvolver):
         for f in files:
             X = io.imread(os.path.join(data_dir,f))
             self.predict_img(X, model_dir, name, os.path.join(res_folder,f))
-        self.model = None
+            p = multiprocessing.Process(target=self.predict_img, args=(X, model_dir, name, os.path.join(res_folder,f)),)
+            p.start()
+            p.join()
+            del X
+            # cuda.get_current_device().reset()
+            # cuda.close()
+            # # cuda.select_device(0)
+            # # cuda.close()
+            tf.keras.backend.clear_session()
+            # keras.backend.clear_session()
+            # tf.compat.v1.reset_default_graph()
+            # sess = tf.compat.v1.keras.backend.get_session()
+            # # tf.keras.backend.
+            # sess.close()
+
+            gc.collect()
 
     def predict_img(self, X, model_dir, name, save_as=None):
         axes = 'ZYX'
-        if self.model is None:
-            self.model = CARE(config=None, name=name, basedir=model_dir)
-        restored = self.model.predict(X, axes)
+        # X = tf.convert_to_tensor(X)
+        # if self.model is None:
+        model = CARE(config=None, name=name, basedir=model_dir)
+        restored = model.predict(X, axes)
 
         if save_as is not None:
             tif.imsave(save_as, restored)
+            print(save_as)
+        del model
+        # device = cuda.get_current_device()
+        # device.reset()
+        # cuda.close()
+        gc.collect()
         return restored
 

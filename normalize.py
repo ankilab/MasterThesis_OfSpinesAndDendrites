@@ -84,4 +84,17 @@ class MinMaxNormalizer(Normalizer):
         return img/max
 
 
+class Rescaler(Normalizer):
+    def __init__(self):
+        super().__init__()
+
+    def normalize(self, img, new_min=0, new_max=1):
+        img -= np.min(img)
+        img /= np.max(img)
+        img /= np.max(img)
+        img *= (new_max-new_min)
+        img += new_min
+        return img
+
+
 

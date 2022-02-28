@@ -37,6 +37,7 @@ class BlindRL(Deconvolver):
     Blind deconvolution based on:
     Fish, D. A., et al. "Blind deconvolution by means of the Richardson–Lucy algorithm." JOSA A 12.1 (1995): 58-65.
     """
+
     def __init__(self, args):
         super().__init__(args)
         self.psf_dir = args['psf']
@@ -92,6 +93,33 @@ class BlindRL(Deconvolver):
         # Launch processes
         with multiprocessing.Pool(processes=n_processes) as p:
             p.map(f_x, files)
+
+    def predict_seq(self, data_dir, n_iter_outer=10, n_iter_image=5, n_iter_psf=5, sigma=1, plot_frequency=100,
+                    eval_img_steps=False, save_intermediate_res=False, parallel=True, preprocess=False):
+        """
+        Iterate through folder and deconvolve all tif-images found.
+
+        :param data_dir: Directory with tif-files
+        :param n_iter_outer: RL-iterations
+        :param n_iter_image: Convolution iterations on image
+        :param n_iter_psf: Convolution iterations on psf
+        :param sigma: Gaussian-smoothing parameter
+        :param plot_frequency: How often should intermdeiate results be plotted? If 1, after every iteration
+        :param eval_img_steps: Calculate image quality metrics after each iteration
+        :param save_intermediate_res: True, if results should be stored after each iteration
+        :param parallel: True, if as many processes as available cores should be launched
+        :return:
+        """
+
+        self.data_path = data_dir
+        self._init_res_dict()
+
+        files = [f for f in os.listdir(data_dir) if f.endswith('.tif')]
+
+        for f in files:
+            self._process_img(f, n_iter_outer=n_iter_outer, n_iter_image=n_iter_image, n_iter_psf=n_iter_psf,
+                              sigma=sigma, eval_img_steps=eval_img_steps, save_intermediate_res=save_intermediate_res,
+                              plot_frequency=plot_frequency)
 
     def _init_res_dict(self):
         self.res_dict = {}
@@ -161,7 +189,7 @@ class BlindRL(Deconvolver):
 
             # Save intermediate result
             if save_intermediate_res:
-                self._save_res(f, psf, str(k)+str(n_iter_psf)+ str(n_iter_image), file_name)
+                self._save_res(f, psf, str(k) + str(n_iter_psf) + str(n_iter_image), file_name)
 
             for i in range(n_iter_psf):  # m RL iterations, refining PSF
                 psf = convolve((X_smoothed / (convolve(psf, f, mode='same') + epsilon)), f[::-1, ::-1, ::-1],
@@ -173,7 +201,7 @@ class BlindRL(Deconvolver):
             f, psf = self._constraints(f, psf)
 
             print(f'Image {file_name}, Iteration {k} completed.')
-        f_unpad, psf_unpad = self._save_res(f, psf, str(n_iter_outer)+str(n_iter_psf)+ str(n_iter_image), file_name)
+        f_unpad, psf_unpad = self._save_res(f, psf, str(n_iter_outer) + str(n_iter_psf) + str(n_iter_image), file_name)
         return f_unpad, psf_unpad, None
 
     def _get_psf(self, size_xy, size_z):
@@ -192,10 +220,9 @@ class BlindRL(Deconvolver):
         offset_xy = int((xy - size_xy) / 2)
         psf = g[offset:g.shape[0] - offset, offset_xy:g.shape[1] - offset_xy, offset_xy:g.shape[2] - offset_xy] \
             if size_z % 2 == 0 else \
-            g[offset+1:g.shape[0] - offset, offset_xy:g.shape[1] - offset_xy, offset_xy:g.shape[2] - offset_xy]
+            g[offset + 1:g.shape[0] - offset, offset_xy:g.shape[1] - offset_xy, offset_xy:g.shape[2] - offset_xy]
         # psf= psf**2
         return psf
-
 
     def _save_res(self, f, psf, iteration, f_name='x.tif'):
         f_unpad = self._unpad(f, self.pixels_padding, self.planes_padding)
@@ -255,6 +282,3 @@ class BlindRL(Deconvolver):
         planes = int(planes)
         (z, x, y) = img.shape
         return img[planes:z - planes, pixels:x - pixels, pixels:y - pixels]
-
-
-

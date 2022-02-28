@@ -1,5 +1,5 @@
 from .deconvolver import Deconvolver
-from mu_net1 import denoiser_only_mu as den
+from .mu_net1 import denoiser_only_mu as den
 import tifffile as tif
 import matplotlib.pyplot as plt
 import numpy as np

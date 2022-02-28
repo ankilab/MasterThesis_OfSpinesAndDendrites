@@ -1,6 +1,5 @@
 from skimage.metrics import structural_similarity as sk_ssim
 from skimage.metrics import peak_signal_noise_ratio as sk_psnr
-# from skvideo.measure import niqe as sk_niqe
 # import imquality.brisque as brisque
 # Doku: https://sewar.readthedocs.io/en/latest/
 # import sewar
@@ -34,10 +33,10 @@ class ImageQualityMetrics:
         val /= float(gt_img.shape[0] * gt_img.shape[1])
         return val
 
-    def ssim(self, img, gt_img):
+    def ssim(self, img, gt_img, win_size=None):
         # img = self._rescale(img)
         # gt_img = self._rescale(gt_img)
-        val = sk_ssim(img, gt_img)
+        val = sk_ssim(img, gt_img, win_size=win_size)
         return val
 
     def mssim(self, img, gt_img):
@@ -49,7 +48,9 @@ class ImageQualityMetrics:
         # eng = matlab.engine.start_matlab()
         # eng.niqe(matlab.double(img.tolist()))
         # eng.quit()
-        return 0 #sk_niqe(img)
+        import skvideo
+	    #from skvideo.measure import niqe as sk_niqe
+        return np.min(skvideo.measure.niqe(img))
 
     def brisque(self, img):
         return 0 #brisque.score(img)
@@ -77,9 +78,3 @@ class ImageQualityMetrics:
         m = img.mean()
         sd = img.std()
         return  m / sd if sd != 0 else np.nan
-
-
-
-
-
-

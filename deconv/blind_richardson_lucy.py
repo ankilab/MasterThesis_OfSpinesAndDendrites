@@ -11,7 +11,7 @@ import timeit
 import imagequalitymetrics
 import tifffile as tif
 import pickle
-from deconv.wb_backprojector import get_BackProjector
+#from deconv.wb_backprojector import get_BackProjector
 # from wb_backprojector import _get_psf_x
 # from .utils import c_convolve
 

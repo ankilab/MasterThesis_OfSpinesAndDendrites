@@ -13,6 +13,7 @@ from skimage import transform, io, exposure
 import pandas as pd
 from shutil import copy2
 from pathlib import Path
+import cv2
 
 
 def display(im3d, cmap="gray", step=1):
@@ -125,32 +126,37 @@ def overlay_images(imgs, equalize=False, aggregator=np.mean):
     return aggregator(imgs, axis=0)
 
 
-def load_stack_from_drive(path, mouse, required_string=''):
+def load_stack_from_drive(path, mouse, required_string='', aq=False):
     sub_dirs = [x for x in os.listdir(path)]
     img_dirs= [k for k in sub_dirs if mouse[0:4] in k]
 
     stack = np.array([])
     for (idx, i) in enumerate(img_dirs):
-        files = [f for f in os.listdir(os.path.join(path,i)) if f.endswith('.tif')]
-        f_name = [f for f in files if required_string in f]
+        if aq:
+            f = tif.imread(os.path.join(path, i))
+            f = f[np.newaxis, :, :]
 
-        # Weird error: in some folders of TIm's mice there is an additional file name which doe snot correspond to a
-        # tif-file e.g ['._117_ArcCre_A1_zoom10_power8_gain500_z1_resgalvo-027-011_Cycle00001_Ch3_000001.ome.tif',
-        # '117_ArcCre_A1_zoom10_power8_gain500_z1_resgalvo-027-011_Cycle00001_Ch3_000001.ome.tif']
-        if len(f_name) >0:
-            if f_name[0][0:2] == '._' and len(f_name)>1:
-                fx = f_name[1]
-            else:
-                fx=f_name[0]
+        else:
+            files = [f for f in os.listdir(os.path.join(path,i)) if f.endswith('.tif')]
+            f_name = [f for f in files if required_string in f]
 
-            f = tif.imread(os.path.join(path, i, fx))
-            if len(f.shape) ==3:
-                f = f[0,:,:]
-            f = f[np.newaxis,:,:]
-            if idx == 0:
-                stack = f
-            else:
-                stack = np.concatenate((stack, f), axis = 0)
+            # Weird error: in some folders of TIm's mice there is an additional file name which doe snot correspond to a
+            # tif-file e.g ['._117_ArcCre_A1_zoom10_power8_gain500_z1_resgalvo-027-011_Cycle00001_Ch3_000001.ome.tif',
+            # '117_ArcCre_A1_zoom10_power8_gain500_z1_resgalvo-027-011_Cycle00001_Ch3_000001.ome.tif']
+            if len(f_name) >0:
+                if f_name[0][0:2] == '._' and len(f_name)>1:
+                    fx = f_name[1]
+                else:
+                    fx=f_name[0]
+
+                f = tif.imread(os.path.join(path, i, fx))
+                if len(f.shape) ==3:
+                    f = f[0,:,:]
+                f = f[np.newaxis,:,:]
+        if idx == 0:
+            stack = f
+        else:
+            stack = np.concatenate((stack, f), axis = 0)
 
     return stack
 
@@ -174,9 +180,24 @@ def register_stacks_from_drive(csv_file, result_folder, required_string='000001.
 def register_all_repetitions(csv_file, result_folder):
     required_strings=['000001.ome','000002.ome','000003.ome','000004.ome','000005.ome','000006.ome','000007.ome']
     save_name_ids= [str(x) for x in np.arange(1,8)]
-    for i in range(4,len(required_strings)):
+    for i in range(len(required_strings)):
         register_stacks_from_drive(csv_file, result_folder, required_strings[i], save_name_ids[i])
 
+
+# def register_aq_stacks_from_drive(csv_file, result_folder, required_string='000001.ome', save_name_id=''):
+#     if not os.path.exists(result_folder):
+#         os.makedirs(result_folder)
+#
+#     df = pd.read_csv(csv_file, sep = ';')
+#     reg_files = df[df['Train']=='X']
+#     for (idx, row) in reg_files.iterrows():
+#         path = 'G:/Alessandro_Rep1_only_deconvolved_not_averaged/' +  row['Mouse'] + '/' + row['Date'] +'/' +row['Region']
+#         stack = load_stack_from_drive(path, row['Mouse'], required_string=required_string, aq=True)
+#         if stack.size>0:
+#             reg_stack = register_3d_stack_from_middle(stack, ['affine'])
+#             save_name = os.path.join(result_folder, row['Researcher'] +'_'+ row['Mouse'] + '_' + row['Date']
+#                                      +'_' +row['Region'] +save_name_id+'.tif')
+#             tif.imsave(save_name, reg_stack)
 
 def register_autoquant_images(path, result_folder):
     if not os.path.exists(result_folder):
@@ -214,6 +235,15 @@ def find_all_img_with_min_z(path, min_z, result_folder):
         x=tif.imread(os.path.join(path, f))
         if x.shape[0] >=min_z:
             tif.imsave(os.path.join(result_folder, f), x)
+
+def create_subsampled_images(path, result_folder, z_shape=10, xy_factor=4):
+    if not os.path.exists(result_folder):
+        os.makedirs(result_folder)
+    files = [f for f in os.listdir(path) if f.endswith('.tif')]
+    for f in files:
+        x = tif.imread(os.path.join(path, f))
+        subsampled=x[0:z_shape,::xy_factor, ::xy_factor]
+        tif.imsave(os.path.join(result_folder, f), subsampled)
 
 
 def split_train_test(csv_file, path):
@@ -280,11 +310,25 @@ def copy_rename_matching_autoquant_images(raw_data, result_folder):
                 print(f)
         else:
             print(f)
+def generate_axial_psf(file, save_as=None):
+    img =tif.imread(file)
+    img = img[:, ::4, ::4]
+    y = 63
+    n = 512
+    psf_ax = img[:,y,:]
+    psf_ax=cv2.resize(psf_ax, (n, n))
+    if not save_as is None:
+        tif.imwrite(save_as, psf_ax)
+    return psf_ax
 
+#generate_axial_psf('C:/Users/jo77pihe/Documents/MasterThesis_OfSpinesAndDendrites/Blind_RL_Test/PSF_Check/Confocal/131Alessandro_427_ArcCreERT2_Thy1GFP_Ai9_TRAP_2019-08-31_A2_psf.tif',
+#                   'C:/Users/jo77pihe/Documents/MasterThesis_OfSpinesAndDendrites/Blind_RL_Test/PSF_Check/xz.tif')
+#create_subsampled_images('D:/jo77pihe/Registered/20220203_Raw_80', 'D:/jo77pihe/Registered/20220223_Subsampled/10_128', z_shape=10, xy_factor=4)
+#find_all_img_with_min_z('D:/jo77pihe/Registered/20220203_Raw', 80, 'D:/jo77pihe/Registered/20220203_Raw_80')
 # copy_rename_matching_autoquant_images('D:/jo77pihe/Registered/20220203_Raw', 'D:/jo77pihe/Registered/20220203_AutoQuant_Averaged')
 
 # restore_3d_stack_from_2d_images('D:/jo77pihe/Registered/20220203_Raw_2D/test_test', 'D:/jo77pihe/Registered/20220203_Raw_2D/test_test/res')
-# register_all_repetitions('C:/Users/jo77pihe/Documents/MasterThesis_OfSpinesAndDendrites/Train_Test.csv', 'D:/jo77pihe/Registered/Repetitions')
+#register_all_repetitions('C:/Users/jo77pihe/Documents/MasterThesis_OfSpinesAndDendrites/Train_Test.csv', 'D:/jo77pihe/Registered/20220227_Repetitions')
 # get_extrem_val('D:/jo77pihe/Registered/Raw')
 
 # split_train_test('C:/Users/jo77pihe/Documents/MasterThesis_OfSpinesAndDendrites/Train_Test.csv', 'D:/jo77pihe/Registered/Raw_32')

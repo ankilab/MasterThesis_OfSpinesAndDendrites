@@ -65,7 +65,8 @@ class SIREN:
         self.model.compile("adam","mse")
 
     def preprocess(self, X,y):
-        write_to_file(X,y,self.data_path)
+        #write_to_file(X,y,self.data_path)
+        pass
 
     def train(self, steps, X, y, step_to_plot, orig_shape, batch_size=128):
         loss = []
@@ -93,7 +94,7 @@ class SIREN:
 
         plt.figure()
         plt.plot(loss)
-        plt.show()
+        plt.show(block=False)
         return loss
 
     def predict(self, X, batchsize):

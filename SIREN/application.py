@@ -58,6 +58,7 @@ class InterplanePrediction(SIREN_application):
         gt = {}
         xx_gt, yy_gt, zz_gt = xx[mask, :, :], yy[mask, :, :], zz[mask, :, :]
         gt['grid'] = utils.flatten_meshgrid(img3d.shape, xx_gt, yy_gt, zz_gt)
+        gt['grid_test']=gt['grid']
         stack_gt = img3d[mask, :, :]
         gt['y'] = stack_gt.reshape(-1)
         gt['original_shape'] = stack_gt.shape

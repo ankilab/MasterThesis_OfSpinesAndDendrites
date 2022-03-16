@@ -1,4 +1,7 @@
 from __future__ import print_function, unicode_literals, absolute_import, division
+
+import timeit
+
 import numpy as np
 import os
 from functools import partial
@@ -8,28 +11,7 @@ from skimage.filters import gaussian
 from skimage import io
 import tifffile as tif
 import deconv.utils as du
-
-
-class Deconvolver:
-    def __init__(self, args):
-        self.data_path = os.path.join(os.getcwd(), args['data_path'])
-        dir = os.path.join(os.getcwd(), self.data_path, args['result_path'])
-        self.res_path = dir
-
-        if not os.path.exists(dir):
-            os.makedirs(dir)
-
-    def preprocess(self, **kwargs):
-        return NotImplementedError
-
-    def train(self, **kwargs):
-        return NotImplementedError
-
-    def predict(self, **kwargs):
-        return NotImplementedError
-
-    def predict_img(self, **kwargs):
-        return NotImplementedError
+from .deconvolver import Deconvolver
 
 
 class BlindRL(Deconvolver):
@@ -55,8 +37,8 @@ class BlindRL(Deconvolver):
     def train(self, **kwargs):
         pass
 
-    def predict(self, data_dir, n_iter_outer=10, n_iter_image=5, n_iter_psf=5, sigma=1, plot_frequency=100,
-                eval_img_steps=False, save_intermediate_res=False, parallel=True):
+    def predict(self, data_dir, n_iter_outer=5, n_iter_image=1, n_iter_psf=3, sigma=1,
+                save_intermediate_res=False, parallel=True):
         """
         Iterate through folder and deconvolve all tif-images found
         :param data_dir: Directory with tif-files
@@ -64,8 +46,6 @@ class BlindRL(Deconvolver):
         :param n_iter_image: Convolution iterations on image
         :param n_iter_psf: Convolution iterations on psf
         :param sigma: Gaussian-smoothing parameter
-        :param plot_frequency: How often should intermediate results be plotted? If 1, after every iteration
-        :param eval_img_steps: Calculate image quality metrics after each iteration (not relevant here)
         :param save_intermediate_res: True, if results should be stored after each iteration (not relevant here)
         :param parallel: True, if as many processes as available cores should be launched
         :return:
@@ -86,16 +66,17 @@ class BlindRL(Deconvolver):
             else:
                 n_processes = n_cores
 
-        f_x = partial(self._process_img, n_iter_outer=n_iter_outer, n_iter_image=n_iter_image, n_iter_psf=n_iter_psf,
-                      sigma=sigma, eval_img_steps=eval_img_steps, save_intermediate_res=save_intermediate_res,
-                      plot_frequency=plot_frequency)
+        if n_processes ==1:
+            print('Please consider using the sequential implementation. It is most likely faster.')
+
+        f_x = partial(self.process_img, n_iter_outer=n_iter_outer, n_iter_image=n_iter_image, n_iter_psf=n_iter_psf,
+                      sigma=sigma, save_intermediate_res=save_intermediate_res)
 
         # Launch processes
         with multiprocessing.Pool(processes=n_processes) as p:
             p.map(f_x, files)
 
-    def predict_seq(self, data_dir, n_iter_outer=10, n_iter_image=5, n_iter_psf=5, sigma=1, plot_frequency=100,
-                    eval_img_steps=False, save_intermediate_res=False, parallel=True, preprocess=False):
+    def predict_seq(self, data_dir, n_iter_outer=10, n_iter_image=5, n_iter_psf=5, sigma=1, save_intermediate_res=False):
         """
         Iterate through folder and deconvolve all tif-images found.
 
@@ -104,8 +85,6 @@ class BlindRL(Deconvolver):
         :param n_iter_image: Convolution iterations on image
         :param n_iter_psf: Convolution iterations on psf
         :param sigma: Gaussian-smoothing parameter
-        :param plot_frequency: How often should intermdeiate results be plotted? If 1, after every iteration
-        :param eval_img_steps: Calculate image quality metrics after each iteration
         :param save_intermediate_res: True, if results should be stored after each iteration
         :param parallel: True, if as many processes as available cores should be launched
         :return:
@@ -116,10 +95,14 @@ class BlindRL(Deconvolver):
 
         files = [f for f in os.listdir(data_dir) if f.endswith('.tif')]
 
+        timing = []
         for f in files:
-            self._process_img(f, n_iter_outer=n_iter_outer, n_iter_image=n_iter_image, n_iter_psf=n_iter_psf,
-                              sigma=sigma, eval_img_steps=eval_img_steps, save_intermediate_res=save_intermediate_res,
-                              plot_frequency=plot_frequency)
+            start = timeit.default_timer()
+            self.process_img(f, n_iter_outer=n_iter_outer, n_iter_image=n_iter_image, n_iter_psf=n_iter_psf,
+                             sigma=sigma, save_intermediate_res=save_intermediate_res)
+            timing.append(timeit.default_timer()-start)
+        return timing
+
 
     def _init_res_dict(self):
         self.res_dict = {}
@@ -137,8 +120,8 @@ class BlindRL(Deconvolver):
         g = np.float32(self._get_psf(X.shape[1] + self.pixels_padding * 2, X.shape[0] + self.planes_padding * 2))
         return X, g
 
-    def _process_img(self, file_name, n_iter_outer, n_iter_image, n_iter_psf, sigma,
-                     eval_img_steps, save_intermediate_res, plot_frequency=100):
+    def process_img(self, file_name, n_iter_outer, n_iter_image, n_iter_psf, sigma=1, save_intermediate_res=False,
+                    output_name=None):
         """
         Process image: Load and deconvolve
         :param file_name:
@@ -146,18 +129,18 @@ class BlindRL(Deconvolver):
         :param n_iter_image: Convolution iterations on image
         :param n_iter_psf: Convolution iterations on psf
         :param sigma: Gaussian-smoothing parameter
-        :param plot_frequency: How often should intermediate results be plotted? If 1, after every iteration
         :param save_intermediate_res: True, if results should be stored after each iteration (not relevant here)
-        :param plot_frequency: How often should intermediate results be plotted? If 1, after every iteration (not relevant here)
         :return:
         """
         X, g = self._load_img(file_name)
-        self.predict_img(X, g, n_iter_outer, n_iter_image, n_iter_psf, sigma, plot_frequency=plot_frequency,
-                         eval_img_steps=eval_img_steps, save_intermediate_res=save_intermediate_res,
-                         file_name=file_name)
+        if output_name is None:
+            output_name=file_name
+        self.predict_img(X, g, n_iter_outer, n_iter_image, n_iter_psf, sigma,
+                         save_intermediate_res=save_intermediate_res,
+                         file_name=output_name)
 
-    def predict_img(self, X, psf, n_iter_outer=10, n_iter_image=5, n_iter_psf=5, sigma=1, plot_frequency=0,
-                    eval_img_steps=False, save_intermediate_res=False, file_name=''):
+    def predict_img(self, X, psf, n_iter_outer=10, n_iter_image=5, n_iter_psf=5, sigma=1, save_intermediate_res=False,
+                    file_name=''):
         """
         Deconvolve image
         :param X: Image (np.array)
@@ -166,8 +149,6 @@ class BlindRL(Deconvolver):
         :param n_iter_image: Convolution iterations on image
         :param n_iter_psf: Convolution iterations on psf
         :param sigma: Gaussian-smoothing parameter
-        :param plot_frequency: How often should intermediate results be plotted? If 1, after every iteration
-        :param plot_frequency: How often should intermediate results be plotted? If 1, after every iteration (not relevant here)
         :param save_intermediate_res: True, if results should be stored after each iteration (not relevant here)
         :param file_name:
         :return:
@@ -200,7 +181,7 @@ class BlindRL(Deconvolver):
 
             f, psf = self._constraints(f, psf)
 
-            print(f'Image {file_name}, Iteration {k} completed.')
+            print(f'Image {file_name}, Iteration {k+1} completed.')
         f_unpad, psf_unpad = self._save_res(f, psf, str(n_iter_outer) + str(n_iter_psf) + str(n_iter_image), file_name)
         return f_unpad, psf_unpad, None
 

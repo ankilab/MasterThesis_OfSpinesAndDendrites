@@ -5,8 +5,8 @@ Created on Tue Jul 17 19:09:56 2018
 @author: sehyung
 """
 
-from mu_net1.cnn_models import *
-from mu_net1.utils2 import *
+from deconv.mu_net1.cnn_models import *
+from deconv.mu_net1.utils2 import *
 from data_augmentation import DataProvider as dp
 import gc
 from tqdm import tqdm
@@ -43,7 +43,9 @@ class Denoiser():
         self.model_setup()
         print(self.model.summary)
         self.loss_setup()
-        self.data_setup()
+        tx=args.get('train_flag', True)
+        if tx:
+            self.data_setup()
 
     def model_setup(self):
         self.img = tf.keras.layers.Input(shape=(self.sz_z, self.sz, self.sz, 1), batch_size=self.batch_sz, name='img',
@@ -207,7 +209,7 @@ class Denoiser():
 
     def denoising_img(self, img, sliding_step=None):
         if sliding_step is None:
-            sliding_step = [8, 32, 32]
+            sliding_step = [16, 32, 32]
         sliding_step = np.array(sliding_step)
         denoised_img = window_sliding(self, img, sliding_step, patch_sz= np.array([self.sz_z, self.sz, self.sz]),
                                       max_value=self.max_value,min_value= self.min_value, batch_sz=self.batch_sz, n_levels=self.n_levels)

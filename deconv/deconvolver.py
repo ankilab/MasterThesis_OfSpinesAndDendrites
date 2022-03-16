@@ -4,6 +4,7 @@ from datetime import datetime
 class Deconvolver:
     def __init__(self, args):
         self.args= args
+        self.args['source_folder'] = args.get('source_folder', './')
         self.data_path = args.get('data_path', './')
         self.data_path=os.path.join(os.getcwd(), self.data_path)
         self.timestamp_created = str(datetime.now()).replace(' ', '_')

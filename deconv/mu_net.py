@@ -1,3 +1,5 @@
+import timeit
+
 from .deconvolver import Deconvolver
 from .mu_net1 import denoiser_only_mu as den
 import tifffile as tif
@@ -45,18 +47,22 @@ class Mu_Net(Deconvolver):
         :return:
         """
         files = [f for f in os.listdir(data_dir) if f.endswith('.tif')]
+        t = []
         for f in files:
             X = np.float32(io.imread(os.path.join(data_dir, f)))
             if f not in os.listdir(self.res_path):
-                self.predict_img(X, model_dir, f)
+                _,tx =self.predict_img(X, model_dir, f)
+                t.append(tx)
+        return t
 
     def predict_img(self,X, model_dir, save_as='Mu_Net_res.tif'):
         batch_sz = 1
+        start = timeit.default_timer()
         self.denoiser.load_model(batch_sz, model_dir)
 
         # denoising process
         denoised_img = self.denoiser.denoising_img(X)
-
+        t = timeit.default_timer()-start
         if save_as is not None:
             tif.imsave(os.path.join(self.res_path, save_as), denoised_img)
-        return denoised_img
+        return denoised_img,t

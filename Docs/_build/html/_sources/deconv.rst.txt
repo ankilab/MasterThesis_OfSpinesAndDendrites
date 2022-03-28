@@ -4,23 +4,7 @@ deconv package
 Submodules
 ----------
 
-deconv.auto\_encoder
----------------------------
-
-.. automodule:: deconv.auto_encoder
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-deconv.blind\_richardson\_lucy
------------------------
-
-.. automodule:: deconv.blind_richardson_lucy
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-deconv.care
+deconv.care module
 ------------------
 
 .. automodule:: deconv.care
@@ -28,7 +12,15 @@ deconv.care
    :undoc-members:
    :show-inheritance:
 
-deconv.deconvolver
+deconv.deconvolution\_reduced module
+------------------------------------
+
+.. automodule:: deconv.deconvolution_reduced
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+deconv.deconvolver module
 -------------------------
 
 .. automodule:: deconv.deconvolver
@@ -36,10 +28,26 @@ deconv.deconvolver
    :undoc-members:
    :show-inheritance:
 
-deconv.mu\_net
+deconv.mu\_net module
 ---------------------
 
 .. automodule:: deconv.mu_net
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+deconv.utils module
+-------------------
+
+.. automodule:: deconv.utils
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+deconv.wb\_backprojector module
+-------------------------------
+
+.. automodule:: deconv.wb_backprojector
    :members:
    :undoc-members:
    :show-inheritance:

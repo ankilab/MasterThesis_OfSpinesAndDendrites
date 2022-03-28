@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>imagequalitymetrics module &mdash; Master Thesis: Of Spines and Dendrites 1.01 documentation</title>
+  <title>imagequalitymetrics module &mdash; MasterThesis: Of Spines And Dendrites  documentation</title>
       <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
@@ -18,8 +18,8 @@
     <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="main module" href="main.html" />
-    <link rel="prev" title="generate_deconv_models module" href="generate_deconv_models.html" /> 
+    <link rel="next" title="normalize module" href="normalize.html" />
+    <link rel="prev" title="denoising module" href="denoising.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -27,7 +27,7 @@
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
         <div class="wy-side-nav-search" >
-            <a href="index.html" class="icon icon-home"> Master Thesis: Of Spines and Dendrites
+            <a href="index.html" class="icon icon-home"> MasterThesis: Of Spines And Dendrites
           </a>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
@@ -40,20 +40,13 @@
               <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
 <ul class="current">
 <li class="toctree-l1 current"><a class="reference internal" href="modules.html">MasterThesis_OfSpinesAndDendrites</a><ul class="current">
-<li class="toctree-l2"><a class="reference internal" href="Neighbor2Neighbor.html">Neighbor2Neighbor package</a></li>
 <li class="toctree-l2"><a class="reference internal" href="SIREN.html">SIREN package</a></li>
-<li class="toctree-l2"><a class="reference internal" href="blin_rl_test_file.html">blin_rl_test_file module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="convolution_exploration.html">convolution_exploration module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="UI_Test_img.html">UI_Test_img module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="data_augmentation.html">data_augmentation module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="deconv.html">deconv package</a></li>
-<li class="toctree-l2"><a class="reference internal" href="deconv_nets_experiments.html">deconv_nets_experiments module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="denoising.html">denoising module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="generate_deconv_models.html">generate_deconv_models module</a></li>
 <li class="toctree-l2 current"><a class="current reference internal" href="#">imagequalitymetrics module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="main.html">main module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="registration.html">registration module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="run.html">run module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="test_file.html">test_file module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="normalize.html">normalize module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="utils.html">utils module</a></li>
 </ul>
 </li>
@@ -65,7 +58,7 @@
 
     <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
-          <a href="index.html">Master Thesis: Of Spines and Dendrites</a>
+          <a href="index.html">MasterThesis: Of Spines And Dendrites</a>
       </nav>
 
       <div class="wy-nav-content">
@@ -127,7 +120,7 @@
 
 <dl class="py method">
 <dt class="sig sig-object py" id="imagequalitymetrics.ImageQualityMetrics.ssim">
-<span class="sig-name descname"><span class="pre">ssim</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">img</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">gt_img</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#imagequalitymetrics.ImageQualityMetrics.ssim" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">ssim</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">img</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">gt_img</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">win_size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#imagequalitymetrics.ImageQualityMetrics.ssim" title="Permalink to this definition"></a></dt>
 <dd></dd></dl>
 
 <dl class="py method">
@@ -148,14 +141,14 @@
            </div>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="generate_deconv_models.html" class="btn btn-neutral float-left" title="generate_deconv_models module" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="main.html" class="btn btn-neutral float-right" title="main module" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="denoising.html" class="btn btn-neutral float-left" title="denoising module" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="normalize.html" class="btn btn-neutral float-right" title="normalize module" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2021, Johanna Brosig.</p>
+    <p>&#169; Copyright 2022, Johanna Brosig.</p>
   </div>
 
   Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a

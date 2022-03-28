@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>denoising module &mdash; Master Thesis: Of Spines and Dendrites 1.01 documentation</title>
+  <title>denoising module &mdash; MasterThesis: Of Spines And Dendrites  documentation</title>
       <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
@@ -18,8 +18,8 @@
     <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="generate_deconv_models module" href="generate_deconv_models.html" />
-    <link rel="prev" title="deconv_nets_experiments module" href="deconv_nets_experiments.html" /> 
+    <link rel="next" title="imagequalitymetrics module" href="imagequalitymetrics.html" />
+    <link rel="prev" title="deconv package" href="deconv.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -27,7 +27,7 @@
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
         <div class="wy-side-nav-search" >
-            <a href="index.html" class="icon icon-home"> Master Thesis: Of Spines and Dendrites
+            <a href="index.html" class="icon icon-home"> MasterThesis: Of Spines And Dendrites
           </a>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
@@ -40,20 +40,18 @@
               <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
 <ul class="current">
 <li class="toctree-l1 current"><a class="reference internal" href="modules.html">MasterThesis_OfSpinesAndDendrites</a><ul class="current">
-<li class="toctree-l2"><a class="reference internal" href="Neighbor2Neighbor.html">Neighbor2Neighbor package</a></li>
 <li class="toctree-l2"><a class="reference internal" href="SIREN.html">SIREN package</a></li>
-<li class="toctree-l2"><a class="reference internal" href="blin_rl_test_file.html">blin_rl_test_file module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="convolution_exploration.html">convolution_exploration module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="UI_Test_img.html">UI_Test_img module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="data_augmentation.html">data_augmentation module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="deconv.html">deconv package</a></li>
-<li class="toctree-l2"><a class="reference internal" href="deconv_nets_experiments.html">deconv_nets_experiments module</a></li>
-<li class="toctree-l2 current"><a class="current reference internal" href="#">denoising module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="generate_deconv_models.html">generate_deconv_models module</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">denoising module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#module-denoising">Submodules</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#deconv-denoiser-module">deconv.denoiser module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#module-contents">Module contents</a></li>
+</ul>
+</li>
 <li class="toctree-l2"><a class="reference internal" href="imagequalitymetrics.html">imagequalitymetrics module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="main.html">main module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="registration.html">registration module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="run.html">run module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="test_file.html">test_file module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="normalize.html">normalize module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="utils.html">utils module</a></li>
 </ul>
 </li>
@@ -65,7 +63,7 @@
 
     <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
-          <a href="index.html">Master Thesis: Of Spines and Dendrites</a>
+          <a href="index.html">MasterThesis: Of Spines And Dendrites</a>
       </nav>
 
       <div class="wy-nav-content">
@@ -84,27 +82,151 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <section id="module-denoising">
-<span id="denoising-module"></span><h1>denoising module<a class="headerlink" href="#module-denoising" title="Permalink to this headline"></a></h1>
-<dl class="py function">
-<dt class="sig sig-object py" id="denoising.snr">
-<span class="sig-prename descclassname"><span class="pre">denoising.</span></span><span class="sig-name descname"><span class="pre">snr</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">img</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#denoising.snr" title="Permalink to this definition"></a></dt>
+  <section id="denoising-module">
+<h1>denoising module<a class="headerlink" href="#denoising-module" title="Permalink to this headline"></a></h1>
+<section id="module-denoising">
+<span id="submodules"></span><h2>Submodules<a class="headerlink" href="#module-denoising" title="Permalink to this headline"></a></h2>
+</section>
+<section id="deconv-denoiser-module">
+<h2>deconv.denoiser module<a class="headerlink" href="#deconv-denoiser-module" title="Permalink to this headline"></a></h2>
+<span class="target" id="module-denoising.denoiser"></span><dl class="py class">
+<dt class="sig sig-object py" id="denoising.denoiser.BilateralFilter">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">denoising.denoiser.</span></span><span class="sig-name descname"><span class="pre">BilateralFilter</span></span><a class="headerlink" href="#denoising.denoiser.BilateralFilter" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="#denoising.denoiser.Denoiser" title="denoising.denoiser.Denoiser"><code class="xref py py-class docutils literal notranslate"><span class="pre">denoising.denoiser.Denoiser</span></code></a></p>
+<p>Bilateral filter. Based on:
+“Tomasi, Carlo, and Roberto Manduchi. “Bilateral filtering for gray and color images.” Sixth international
+conference on computer vision (IEEE Cat. No. 98CH36271). IEEE, 1998.”</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="denoising.denoiser.BilateralFilter.denoise">
+<span class="sig-name descname"><span class="pre">denoise</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">img</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#denoising.denoiser.BilateralFilter.denoise" title="Permalink to this definition"></a></dt>
+<dd><p>Denoise 2D-image.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>img</strong> (<em>nd.array</em>) – Input image</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Denoised image</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>nd.array</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="denoising.denoiser.Denoiser">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">denoising.denoiser.</span></span><span class="sig-name descname"><span class="pre">Denoiser</span></span><a class="headerlink" href="#denoising.denoiser.Denoiser" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Super-class for all implemented denoising techniques. All derived classes implement a prepare and denoise function.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="denoising.denoiser.Denoiser.denoise">
+<span class="sig-name descname"><span class="pre">denoise</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#denoising.denoiser.Denoiser.denoise" title="Permalink to this definition"></a></dt>
 <dd></dd></dl>
 
+<dl class="py method">
+<dt class="sig sig-object py" id="denoising.denoiser.Denoiser.prepare">
+<span class="sig-name descname"><span class="pre">prepare</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#denoising.denoiser.Denoiser.prepare" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="denoising.denoiser.GaussianFilter">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">denoising.denoiser.</span></span><span class="sig-name descname"><span class="pre">GaussianFilter</span></span><a class="headerlink" href="#denoising.denoiser.GaussianFilter" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="#denoising.denoiser.Denoiser" title="denoising.denoiser.Denoiser"><code class="xref py py-class docutils literal notranslate"><span class="pre">denoising.denoiser.Denoiser</span></code></a></p>
+<p>Gaussian filter.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="denoising.denoiser.GaussianFilter.denoise">
+<span class="sig-name descname"><span class="pre">denoise</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">img</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sigma</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#denoising.denoiser.GaussianFilter.denoise" title="Permalink to this definition"></a></dt>
+<dd><p>Denoise image using Gaussian filter</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>img</strong> (<em>nd.array</em>) – Input image</p></li>
+<li><p><strong>sigma</strong> (<em>float</em>) – Standard deviation of Gaussian filter</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Denoised image</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>nd.array</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="denoising.denoiser.Neighbor2Neighbor">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">denoising.denoiser.</span></span><span class="sig-name descname"><span class="pre">Neighbor2Neighbor</span></span><a class="headerlink" href="#denoising.denoiser.Neighbor2Neighbor" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="#denoising.denoiser.Denoiser" title="denoising.denoiser.Denoiser"><code class="xref py py-class docutils literal notranslate"><span class="pre">denoising.denoiser.Denoiser</span></code></a></p>
+<p>Denoiser using Neighbor2Neighbor approach. Based on:
+“Huang, Tao, et al. “Neighbor2neighbor: Self-supervised denoising from single noisy images.” Proceedings of the
+IEEE/CVF Conference on Computer Vision and Pattern Recognition. 2021.”</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="denoising.denoiser.Neighbor2Neighbor.denoise">
+<span class="sig-name descname"><span class="pre">denoise</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">img</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">model_path</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">''</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#denoising.denoiser.Neighbor2Neighbor.denoise" title="Permalink to this definition"></a></dt>
+<dd><p>Denoise image.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>img</strong> (<em>nd.array</em>) – Input image</p></li>
+<li><p><strong>model_path</strong> (<em>string</em><em>, </em><em>optional</em>) – Denoising model path. If nothing specified, defaults to object object-intern path</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="denoising.denoiser.Neighbor2Neighbor.prepare">
+<span class="sig-name descname"><span class="pre">prepare</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">train_data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">val_data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">res_path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lr</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.0003</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_epochs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">100</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">batch_size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">4</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#denoising.denoiser.Neighbor2Neighbor.prepare" title="Permalink to this definition"></a></dt>
+<dd><p>Train denoising model.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>train_data</strong> – Training data</p></li>
+<li><p><strong>val_data</strong> – Validation data</p></li>
+<li><p><strong>res_path</strong> (<em>string</em>) – Path to store models and interim results</p></li>
+<li><p><strong>lr</strong> (<em>float</em><em>, </em><em>optional</em>) – Leanring rate, defaults to 3e-4</p></li>
+<li><p><strong>n_epochs</strong> (<em>int</em><em>, </em><em>optional</em>) – Nuber of epochs to train, defaults to 100</p></li>
+<li><p><strong>batch_size</strong> (<em>int</em><em>, </em><em>optional</em>) – Training batch size</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Model path</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>string</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="module-contents">
+<h2>Module contents<a class="headerlink" href="#module-contents" title="Permalink to this headline"></a></h2>
+</section>
 </section>
 
 
            </div>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="deconv_nets_experiments.html" class="btn btn-neutral float-left" title="deconv_nets_experiments module" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="generate_deconv_models.html" class="btn btn-neutral float-right" title="generate_deconv_models module" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="deconv.html" class="btn btn-neutral float-left" title="deconv package" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="imagequalitymetrics.html" class="btn btn-neutral float-right" title="imagequalitymetrics module" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2021, Johanna Brosig.</p>
+    <p>&#169; Copyright 2022, Johanna Brosig.</p>
   </div>
 
   Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a

@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>deconv package &mdash; Master Thesis: Of Spines and Dendrites 1.01 documentation</title>
+  <title>deconv package &mdash; MasterThesis: Of Spines And Dendrites  documentation</title>
       <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
@@ -18,7 +18,7 @@
     <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="deconv_nets_experiments module" href="deconv_nets_experiments.html" />
+    <link rel="next" title="denoising module" href="denoising.html" />
     <link rel="prev" title="data_augmentation module" href="data_augmentation.html" /> 
 </head>
 
@@ -27,7 +27,7 @@
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
         <div class="wy-side-nav-search" >
-            <a href="index.html" class="icon icon-home"> Master Thesis: Of Spines and Dendrites
+            <a href="index.html" class="icon icon-home"> MasterThesis: Of Spines And Dendrites
           </a>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
@@ -40,26 +40,23 @@
               <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
 <ul class="current">
 <li class="toctree-l1 current"><a class="reference internal" href="modules.html">MasterThesis_OfSpinesAndDendrites</a><ul class="current">
-<li class="toctree-l2"><a class="reference internal" href="Neighbor2Neighbor.html">Neighbor2Neighbor package</a></li>
 <li class="toctree-l2"><a class="reference internal" href="SIREN.html">SIREN package</a></li>
-<li class="toctree-l2"><a class="reference internal" href="convolution_exploration.html">convolution_exploration module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="UI_Test_img.html">UI_Test_img module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="data_augmentation.html">data_augmentation module</a></li>
 <li class="toctree-l2 current"><a class="current reference internal" href="#">deconv package</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#submodules">Submodules</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#module-deconv.auto_encoder">deconv.auto_encoder</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#deconv-blind-richardson-lucy">deconv.blind_richardson_lucy</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#module-deconv.care">deconv.care</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#module-deconv.deconvolver">deconv.deconvolver</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#deconv-mu-net">deconv.mu_net</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#module-contents">Module contents</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#module-deconv.care">deconv.care module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#module-deconv.deconvolution_reduced">deconv.deconvolution_reduced module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#module-deconv.deconvolver">deconv.deconvolver module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#module-deconv.mu_net">deconv.mu_net module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#module-deconv.utils">deconv.utils module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#module-deconv.wb_backprojector">deconv.wb_backprojector module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#module-deconv">Module contents</a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="deconv_nets_experiments.html">deconv_nets_experiments module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="denoising.html">denoising module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="imagequalitymetrics.html">imagequalitymetrics module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="main.html">main module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="registration.html">registration module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="run.html">run module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="normalize.html">normalize module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="utils.html">utils module</a></li>
 </ul>
 </li>
@@ -71,7 +68,7 @@
 
     <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
-          <a href="index.html">Master Thesis: Of Spines and Dendrites</a>
+          <a href="index.html">MasterThesis: Of Spines And Dendrites</a>
       </nav>
 
       <div class="wy-nav-content">
@@ -95,153 +92,34 @@
 <section id="submodules">
 <h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline"></a></h2>
 </section>
-<section id="module-deconv.auto_encoder">
-<span id="deconv-auto-encoder"></span><h2>deconv.auto_encoder<a class="headerlink" href="#module-deconv.auto_encoder" title="Permalink to this headline"></a></h2>
-<dl class="py class">
-<dt class="sig sig-object py" id="deconv.auto_encoder.AE">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">deconv.auto_encoder.</span></span><span class="sig-name descname"><span class="pre">AE</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">args</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#deconv.auto_encoder.AE" title="Permalink to this definition"></a></dt>
-<dd><p>Bases: <a class="reference internal" href="#deconv.deconvolver.Deconvolver" title="deconv.deconvolver.Deconvolver"><code class="xref py py-class docutils literal notranslate"><span class="pre">deconv.deconvolver.Deconvolver</span></code></a></p>
-<dl class="py method">
-<dt class="sig sig-object py" id="deconv.auto_encoder.AE.predict">
-<span class="sig-name descname"><span class="pre">predict</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data_dir</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">model_dir</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#deconv.auto_encoder.AE.predict" title="Permalink to this definition"></a></dt>
-<dd><dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>X</strong> – Input image</p></li>
-<li><p><strong>model_dir</strong> – </p></li>
-<li><p><strong>save_as</strong> – If not None, result is saved as file with the name specified (e.g. ‘denoised_img.tif’)</p></li>
-</ul>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="deconv.auto_encoder.AE.predict_img">
-<span class="sig-name descname"><span class="pre">predict_img</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">img</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sampling_step</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">file_name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">model_dir</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#deconv.auto_encoder.AE.predict_img" title="Permalink to this definition"></a></dt>
-<dd></dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="deconv.auto_encoder.AE.preprocess">
-<span class="sig-name descname"><span class="pre">preprocess</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#deconv.auto_encoder.AE.preprocess" title="Permalink to this definition"></a></dt>
-<dd></dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="deconv.auto_encoder.AE.train">
-<span class="sig-name descname"><span class="pre">train</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">epochs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">10</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">batch_size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">4</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#deconv.auto_encoder.AE.train" title="Permalink to this definition"></a></dt>
-<dd></dd></dl>
-
-</dd></dl>
-
-</section>
-<section id="deconv-blind-richardson-lucy">
-<h2>deconv.blind_richardson_lucy<a class="headerlink" href="#deconv-blind-richardson-lucy" title="Permalink to this headline"></a></h2>
-<span class="target" id="module-deconv.blind_richardson_lucy"></span><dl class="py class">
-<dt class="sig sig-object py" id="deconv.blind_richardson_lucy.BlindRL">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">deconv.blind_richardson_lucy.</span></span><span class="sig-name descname"><span class="pre">BlindRL</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">args</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#deconv.blind_richardson_lucy.BlindRL" title="Permalink to this definition"></a></dt>
-<dd><p>Bases: <a class="reference internal" href="#deconv.deconvolver.Deconvolver" title="deconv.deconvolver.Deconvolver"><code class="xref py py-class docutils literal notranslate"><span class="pre">deconv.deconvolver.Deconvolver</span></code></a></p>
-<p>Blind deconvolution based on:
-Fish, D. A., et al. “Blind deconvolution by means of the Richardson–Lucy algorithm.” JOSA A 12.1 (1995): 58-65.</p>
-<dl class="py method">
-<dt class="sig sig-object py" id="deconv.blind_richardson_lucy.BlindRL.predict">
-<span class="sig-name descname"><span class="pre">predict</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data_dir</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_iter_outer</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">10</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_iter_image</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">5</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_iter_psf</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">5</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sigma</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">plot_frequency</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">100</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">eval_img_steps</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">save_intermediate_res</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">parallel</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">preprocess</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#deconv.blind_richardson_lucy.BlindRL.predict" title="Permalink to this definition"></a></dt>
-<dd><p>Iterate through folder and deconvolve all tif-images found.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>data_dir</strong> (<em>str</em>) – Directory with tif-files</p></li>
-<li><p><strong>n_iter_outer</strong> (<em>int</em>) – RL-iterations</p></li>
-<li><p><strong>n_iter_image</strong> (<em>int</em>) – Convolution iterations on image</p></li>
-<li><p><strong>n_iter_psf</strong> (<em>int</em>) – Convolution iterations on psf</p></li>
-<li><p><strong>sigma</strong> (<em>float</em>) – Gaussian-smoothing parameter</p></li>
-<li><p><strong>plot_frequency</strong> (<em>int</em>) – How often should intermdeiate results be plotted? If 1, after every iteration</p></li>
-<li><p><strong>eval_img_steps</strong> (<em>bool</em>) – Calculate image quality metrics after each iteration</p></li>
-<li><p><strong>save_intermediate_res</strong> (<em>bool</em>) – True, if results should be stored after each iteration</p></li>
-<li><p><strong>parallel</strong> (<em>bool</em>) – True, if as many processes as available cores should be launched</p></li>
-</ul>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="deconv.blind_richardson_lucy.BlindRL.predict_gpu">
-<span class="sig-name descname"><span class="pre">predict_gpu</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data_dir</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_iter_outer</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">10</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_iter_image</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">5</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_iter_psf</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">5</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sigma</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">plot_frequency</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">100</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">eval_img_steps</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">save_intermediate_res</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">parallel</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#deconv.blind_richardson_lucy.BlindRL.predict_gpu" title="Permalink to this definition"></a></dt>
-<dd></dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="deconv.blind_richardson_lucy.BlindRL.predict_img">
-<span class="sig-name descname"><span class="pre">predict_img</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">X</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">psf</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_iter_outer</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">10</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_iter_image</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">5</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_iter_psf</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">5</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sigma</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">plot_frequency</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">eval_img_steps</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">save_intermediate_res</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">file_name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">preprocess</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#deconv.blind_richardson_lucy.BlindRL.predict_img" title="Permalink to this definition"></a></dt>
-<dd><p>Deconvolve image</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>X</strong> (<em>np.array</em>) – Image</p></li>
-<li><p><strong>psf</strong> (<em>n.array</em>) – PSF</p></li>
-<li><p><strong>n_iter_outer</strong> (<em>int</em>) – RL-iterations</p></li>
-<li><p><strong>n_iter_image</strong> (<em>int</em>) – Convolution iterations on image</p></li>
-<li><p><strong>n_iter_psf</strong> (<em>int</em>) – Convolution iterations on psf</p></li>
-<li><p><strong>sigma</strong> (<em>float</em>) – Gaussian-smoothing parameter</p></li>
-<li><p><strong>plot_frequency</strong> (<em>int</em>) – How often should intermediate results be plotted? If 1, after every iteration</p></li>
-<li><p><strong>save_intermediate_res</strong> (<em>bool</em>) – True, if results should be stored after each iteration (not relevant here)</p></li>
-<li><p><strong>file_name</strong> (<em>str</em>) – Name of image to use as name for storing result</p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p><ul class="simple">
-<li><p>f_unpad (<code class="xref py py-class docutils literal notranslate"><span class="pre">np.array</span></code>) - Resulting image in original size</p></li>
-<li><p>psf_unpad (<code class="xref py py-class docutils literal notranslate"><span class="pre">np.array</span></code>) - Resulting PSF in original image size</p></li>
-<li><p>res (<code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code>) - metrics measured during processing</p></li>
-</ul>
-</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="deconv.blind_richardson_lucy.BlindRL.preprocess">
-<span class="sig-name descname"><span class="pre">preprocess</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">img</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sigma</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#deconv.blind_richardson_lucy.BlindRL.preprocess" title="Permalink to this definition"></a></dt>
-<dd><p>Blind RL is sensitive to noise: Preprocessing using gaussian filter.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>img</strong> (<em>np.array</em>) – Input image</p></li>
-<li><p><strong>sigma</strong> (<em>float</em>) – Standard deviation of Gaussian distribution</p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p>Smoothed image</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="deconv.blind_richardson_lucy.BlindRL.train">
-<span class="sig-name descname"><span class="pre">train</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#deconv.blind_richardson_lucy.BlindRL.train" title="Permalink to this definition"></a></dt>
-<dd></dd></dl>
-
-</dd></dl>
-
-</section>
 <section id="module-deconv.care">
-<span id="deconv-care"></span><h2>deconv.care<a class="headerlink" href="#module-deconv.care" title="Permalink to this headline"></a></h2>
+<span id="deconv-care-module"></span><h2>deconv.care module<a class="headerlink" href="#module-deconv.care" title="Permalink to this headline"></a></h2>
 <dl class="py class">
 <dt class="sig sig-object py" id="deconv.care.CAREDeconv">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">deconv.care.</span></span><span class="sig-name descname"><span class="pre">CAREDeconv</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">args</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#deconv.care.CAREDeconv" title="Permalink to this definition"></a></dt>
 <dd><p>Bases: <a class="reference internal" href="#deconv.deconvolver.Deconvolver" title="deconv.deconvolver.Deconvolver"><code class="xref py py-class docutils literal notranslate"><span class="pre">deconv.deconvolver.Deconvolver</span></code></a></p>
-<p>Based on:
-Weigert, Martin, et al. “Content-aware image restoration: pushing the limits of fluorescence microscopy.”
-Nature methods 15.12 (2018): 1090-1097.</p>
+<p>Incorporate CSBDeep deconvolution implementation in our workflow.
+CARE:
+“Weigert, Martin, et al. “Content-aware image restoration: pushing the limits of fluorescence microscopy.”
+Nature methods 15.12 (2018): 1090-1097.”</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="deconv.care.CAREDeconv.predict">
-<span class="sig-name descname"><span class="pre">predict</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data_dir</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">model_dir</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">save_res</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#deconv.care.CAREDeconv.predict" title="Permalink to this definition"></a></dt>
-<dd><p>Deconvolve all tif-files in folder specified</p>
+<span class="sig-name descname"><span class="pre">predict</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data_dir</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">model_dir</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">res_folder</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'./'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#deconv.care.CAREDeconv.predict" title="Permalink to this definition"></a></dt>
+<dd><p>Deconvolve all images in specified folder using CARE model.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>data_dir</strong> (<em>str</em>) – Directory with files to deconvolve</p></li>
-<li><p><strong>model_dir</strong> (<em>str</em>) – Model directory</p></li>
-<li><p><strong>name</strong> (<em>str</em>) – Model name</p></li>
-<li><p><strong>save_res</strong> (<em>bool</em>) – True, if the result images should be saved</p></li>
+<li><p><strong>data_dir</strong> (<em>string</em>) – Folder containing files that should be deconvolved</p></li>
+<li><p><strong>model_dir</strong> (<em>string</em>) – Directory where CARE model is stored</p></li>
+<li><p><strong>name</strong> (<em>string</em>) – Directory where CARE model is stored</p></li>
+<li><p><strong>res_folder</strong> (<em>string</em><em>, </em><em>optional</em>) – Folder where results are to be stored, defaults to ‘./’</p></li>
 </ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Time taken to deconvolve each image</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>list[float]</p>
 </dd>
 </dl>
 </dd></dl>
@@ -249,18 +127,22 @@ Nature methods 15.12 (2018): 1090-1097.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="deconv.care.CAREDeconv.predict_img">
 <span class="sig-name descname"><span class="pre">predict_img</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">X</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">model_dir</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">save_as</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#deconv.care.CAREDeconv.predict_img" title="Permalink to this definition"></a></dt>
-<dd><p>Deconvolve image</p>
+<dd><p>Deconvolve image using CARE model.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>X</strong> (<em>np.array</em>) – Image</p></li>
-<li><p><strong>model_dir</strong> (<em>str</em>) – Model directory</p></li>
-<li><p><strong>name</strong> (<em>str</em>) – Model name</p></li>
-<li><p><strong>save_as</strong> (<em>str</em>) – If None, result is not stored. Otherwise the result is stored with this name</p></li>
+<li><p><strong>X</strong> (<em>nd.array</em>) – Input image</p></li>
+<li><p><strong>model_dir</strong> (<em>string</em>) – Directory where CARE model is stored</p></li>
+<li><p><strong>name</strong> (<em>string</em>) – Directory where CARE model is stored</p></li>
+<li><p><strong>save_as</strong> (<em>string</em><em>, </em><em>optional</em>) – File name under which to store the deconvolution result. If nothing is specified, it is not stored.
+Defaults to None</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
-<dd class="field-even"><p>Result image</p>
+<dd class="field-even"><p>Deconvolved image, time taken for deconvolution</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>nd.array, float</p>
 </dd>
 </dl>
 </dd></dl>
@@ -268,74 +150,464 @@ Nature methods 15.12 (2018): 1090-1097.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="deconv.care.CAREDeconv.preprocess">
 <span class="sig-name descname"><span class="pre">preprocess</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#deconv.care.CAREDeconv.preprocess" title="Permalink to this definition"></a></dt>
-<dd><dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p>pass</p>
+<dd><p>CARE preprocessing: None required.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="deconv.care.CAREDeconv.train">
+<span class="sig-name descname"><span class="pre">train</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data_dir</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">validation_split</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">epochs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">10</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">batch_size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">8</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">learning_rate</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.0004</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">unet_residual</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">unet_n_depth</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">2</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#deconv.care.CAREDeconv.train" title="Permalink to this definition"></a></dt>
+<dd><p>Train CARE model.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>data_dir</strong> (<em>string</em>) – Folder/file with training data</p></li>
+<li><p><strong>validation_split</strong> (<em>float</em><em>, </em><em>optional</em>) – Proportion of training data to use as validation data (between 0 and 1), defaults to 0.1</p></li>
+<li><p><strong>epochs</strong> (<em>int</em><em>, </em><em>optional</em>) – Number of training epochs, defaults to 10</p></li>
+<li><p><strong>batch_size</strong> (<em>int</em><em>, </em><em>optional</em>) – Training batch size, defaults to 8</p></li>
+<li><p><strong>learning_rate</strong> (<em>float</em><em>, </em><em>optional</em>) – Learning rate for training, defaults to 0.0004</p></li>
+<li><p><strong>unet_residual</strong> (<em>bool</em><em>, </em><em>optional</em>) – Whether to use residual learning, defaults to True</p></li>
+<li><p><strong>unet_n_depth</strong> (<em>int</em><em>, </em><em>optional</em>) – U-Net Depth, defaults to 2</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Model directory, model path</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>string, string</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="module-deconv.deconvolution_reduced">
+<span id="deconv-deconvolution-reduced-module"></span><h2>deconv.deconvolution_reduced module<a class="headerlink" href="#module-deconv.deconvolution_reduced" title="Permalink to this headline"></a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="deconv.deconvolution_reduced.BlindRL">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">deconv.deconvolution_reduced.</span></span><span class="sig-name descname"><span class="pre">BlindRL</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">args</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#deconv.deconvolution_reduced.BlindRL" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="#deconv.deconvolver.Deconvolver" title="deconv.deconvolver.Deconvolver"><code class="xref py py-class docutils literal notranslate"><span class="pre">deconv.deconvolver.Deconvolver</span></code></a></p>
+<p>Blind deconvolution based on:
+Fish, D. A., et al. “Blind deconvolution by means of the Richardson–Lucy algorithm.” JOSA A 12.1 (1995): 58-65.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="deconv.deconvolution_reduced.BlindRL.predict">
+<span class="sig-name descname"><span class="pre">predict</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data_dir</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_iter_outer</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">5</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_iter_image</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_iter_psf</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">3</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sigma</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">save_intermediate_res</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">parallel</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_processes</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#deconv.deconvolution_reduced.BlindRL.predict" title="Permalink to this definition"></a></dt>
+<dd><p>Iterate through folder and deconvolve all tif-images found. The results are stored in the folder specified at
+object initialization. It can be adjusted by setting “obj.res_path = ‘./’”.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>data_dir</strong> (<em>string</em>) – Directory with tif-files</p></li>
+<li><p><strong>n_iter_outer</strong> (<em>int</em><em>, </em><em>optional</em>) – RL-iterations, defaults to 5</p></li>
+<li><p><strong>n_iter_image</strong> (<em>int</em><em>, </em><em>optional</em>) – Convolution iterations on image, defaults to 1</p></li>
+<li><p><strong>n_iter_psf</strong> (<em>int</em><em>, </em><em>optional</em>) – Convolution iterations on psf, defaults to 3</p></li>
+<li><p><strong>sigma</strong> (<em>float</em><em>, </em><em>optional</em>) – Gaussian-smoothing parameter, defaults to 1</p></li>
+<li><p><strong>save_intermediate_res</strong> (<em>bool</em><em>, </em><em>optional</em>) – True, if results should be stored after each iteration, defaults to False</p></li>
+<li><p><strong>parallel</strong> – True, if as many processes as available cores should be launched</p></li>
+<li><p><strong>n_processes</strong> – Number of processes to run in parallel</p></li>
+</ul>
 </dd>
 </dl>
 </dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="deconv.care.CAREDeconv.train">
-<span class="sig-name descname"><span class="pre">train</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data_dir</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">validation_split</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">epochs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">10</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">batch_size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">8</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#deconv.care.CAREDeconv.train" title="Permalink to this definition"></a></dt>
-<dd><p>Train CARE model</p>
+<dt class="sig sig-object py" id="deconv.deconvolution_reduced.BlindRL.predict_img">
+<span class="sig-name descname"><span class="pre">predict_img</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">X</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">psf</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_iter_outer</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">10</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_iter_image</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">5</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_iter_psf</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">5</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sigma</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">save_intermediate_res</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">file_name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">''</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#deconv.deconvolution_reduced.BlindRL.predict_img" title="Permalink to this definition"></a></dt>
+<dd><p>Deconvolve image.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>data_dir</strong> (<em>str</em>) – Training data directory</p></li>
-<li><p><strong>validation_split</strong> (<em>float</em>) – Split of validation data (0.0, 1.0). Remaining data is used as training data.</p></li>
-<li><p><strong>epochs</strong> (<em>int</em>) – Number of epochs to train</p></li>
-<li><p><strong>batch_size</strong> (<em>int</em>) – Batch size of input</p></li>
+<li><p><strong>X</strong> (<em>nd.array</em>) – Input image</p></li>
+<li><p><strong>psf</strong> (<em>nd.array</em>) – PSF</p></li>
+<li><p><strong>n_iter_outer</strong> (<em>int</em><em>, </em><em>optional</em>) – RL-iterations, defaults to 5</p></li>
+<li><p><strong>n_iter_image</strong> (<em>int</em><em>, </em><em>optional</em>) – Convolution iterations on image, defaults to 1</p></li>
+<li><p><strong>n_iter_psf</strong> (<em>int</em><em>, </em><em>optional</em>) – Convolution iterations on psf, defaults to 3</p></li>
+<li><p><strong>sigma</strong> (<em>float</em><em>, </em><em>optional</em>) – Gaussian-smoothing parameter, defaults to 1</p></li>
+<li><p><strong>save_intermediate_res</strong> (<em>bool</em><em>, </em><em>optional</em>) – True, if results should be stored after each iteration, defaults to False</p></li>
+<li><p><strong>file_name</strong> (<em>string</em><em>, </em><em>optional</em>) – File name used to store the deconvolution result</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
-<dd class="field-even"><p><ul class="simple">
-<li><p>model_dir (<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>) - Folder of stored model</p></li>
-<li><p>model_path (<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>) - Absolute file path to model</p></li>
-</ul>
-</p>
+<dd class="field-even"><p>Deconvolved image, estimated PSF, None</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>nd.array, nd.array, NoneType</p>
 </dd>
 </dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="deconv.deconvolution_reduced.BlindRL.predict_seq">
+<span class="sig-name descname"><span class="pre">predict_seq</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data_dir</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_iter_outer</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">5</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_iter_image</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_iter_psf</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">3</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sigma</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">save_intermediate_res</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#deconv.deconvolution_reduced.BlindRL.predict_seq" title="Permalink to this definition"></a></dt>
+<dd><p>Iterate through folder and deconvolve all tif-images found sequentially. The results are stored in the folder specified at
+object initialization. It can be adjusted by setting “obj.res_path = ‘./’”.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>data_dir</strong> (<em>string</em>) – Directory with tif-files</p></li>
+<li><p><strong>n_iter_outer</strong> (<em>int</em><em>, </em><em>optional</em>) – RL-iterations, defaults to 5</p></li>
+<li><p><strong>n_iter_image</strong> (<em>int</em><em>, </em><em>optional</em>) – Convolution iterations on image, defaults to 1</p></li>
+<li><p><strong>n_iter_psf</strong> (<em>int</em><em>, </em><em>optional</em>) – Convolution iterations on psf, defaults to 3</p></li>
+<li><p><strong>sigma</strong> (<em>float</em><em>, </em><em>optional</em>) – Gaussian-smoothing parameter, defaults to 1</p></li>
+<li><p><strong>save_intermediate_res</strong> (<em>bool</em><em>, </em><em>optional</em>) – True, if results should be stored after each iteration, defaults to False</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Time required for deconvolution for each image</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>list[float]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="deconv.deconvolution_reduced.BlindRL.preprocess">
+<span class="sig-name descname"><span class="pre">preprocess</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">img</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sigma</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#deconv.deconvolution_reduced.BlindRL.preprocess" title="Permalink to this definition"></a></dt>
+<dd><p>Preprocess image using Gaussian filter</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>img</strong> (<em>nd.array</em>) – Input image</p></li>
+<li><p><strong>sigma</strong> (<em>float</em><em>, </em><em>optional</em>) – Standard deviation of Gaussian filter, defaults to 1</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Preprocessed image</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>nd.array</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="deconv.deconvolution_reduced.BlindRL.process_img">
+<span class="sig-name descname"><span class="pre">process_img</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">file_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_iter_outer</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">5</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_iter_image</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_iter_psf</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">3</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sigma</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">save_intermediate_res</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">output_name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#deconv.deconvolution_reduced.BlindRL.process_img" title="Permalink to this definition"></a></dt>
+<dd><p>Process image: Load and deconvolve the image specified in file name</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>file_name</strong> (<em>string</em>) – Location of input file</p></li>
+<li><p><strong>n_iter_outer</strong> (<em>int</em><em>, </em><em>optional</em>) – RL-iterations, defaults to 5</p></li>
+<li><p><strong>n_iter_image</strong> (<em>int</em><em>, </em><em>optional</em>) – Convolution iterations on image, defaults to 1</p></li>
+<li><p><strong>n_iter_psf</strong> (<em>int</em><em>, </em><em>optional</em>) – Convolution iterations on psf, defaults to 3</p></li>
+<li><p><strong>sigma</strong> (<em>string</em><em>, </em><em>optional</em>) – Gaussian-smoothing parameter, defaults to 1</p></li>
+<li><p><strong>save_intermediate_res</strong> (<em>bool</em><em>, </em><em>optional</em>) – True, if results should be stored after each iteration, defaults to False</p></li>
+<li><p><strong>output_name</strong> – Name of file the processed image is to be stored, defaults to None (stored as input file name)</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="deconv.deconvolution_reduced.BlindRL.train">
+<span class="sig-name descname"><span class="pre">train</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#deconv.deconvolution_reduced.BlindRL.train" title="Permalink to this definition"></a></dt>
+<dd><p>Blind RL training: None required.</p>
 </dd></dl>
 
 </dd></dl>
 
 </section>
 <section id="module-deconv.deconvolver">
-<span id="deconv-deconvolver"></span><h2>deconv.deconvolver<a class="headerlink" href="#module-deconv.deconvolver" title="Permalink to this headline"></a></h2>
+<span id="deconv-deconvolver-module"></span><h2>deconv.deconvolver module<a class="headerlink" href="#module-deconv.deconvolver" title="Permalink to this headline"></a></h2>
 <dl class="py class">
 <dt class="sig sig-object py" id="deconv.deconvolver.Deconvolver">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">deconv.deconvolver.</span></span><span class="sig-name descname"><span class="pre">Deconvolver</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">args</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#deconv.deconvolver.Deconvolver" title="Permalink to this definition"></a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
-<p>Super-class for deconvolution modules</p>
+<p>Super-class for all implemented deconvolution techniques. All derived classes implement a preprocessing, training and
+deconvolution function for either one image or all images within one folder.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="deconv.deconvolver.Deconvolver.predict">
 <span class="sig-name descname"><span class="pre">predict</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#deconv.deconvolver.Deconvolver.predict" title="Permalink to this definition"></a></dt>
-<dd></dd></dl>
+<dd><p>Overwritten in derived classes. Otherwise throws NotImplementedError.</p>
+</dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="deconv.deconvolver.Deconvolver.predict_img">
 <span class="sig-name descname"><span class="pre">predict_img</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#deconv.deconvolver.Deconvolver.predict_img" title="Permalink to this definition"></a></dt>
-<dd></dd></dl>
+<dd><p>Overwritten in derived classes. Otherwise throws NotImplementedError.</p>
+</dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="deconv.deconvolver.Deconvolver.preprocess">
 <span class="sig-name descname"><span class="pre">preprocess</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#deconv.deconvolver.Deconvolver.preprocess" title="Permalink to this definition"></a></dt>
-<dd></dd></dl>
+<dd><p>Overwritten in derived classes. Otherwise throws NotImplementedError.</p>
+</dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="deconv.deconvolver.Deconvolver.train">
 <span class="sig-name descname"><span class="pre">train</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#deconv.deconvolver.Deconvolver.train" title="Permalink to this definition"></a></dt>
-<dd></dd></dl>
+<dd><p>Overwritten in derived classes. Otherwise throws NotImplementedError.</p>
+</dd></dl>
 
 </dd></dl>
 
 </section>
-<section id="deconv-mu-net">
-<h2>deconv.mu_net<a class="headerlink" href="#deconv-mu-net" title="Permalink to this headline"></a></h2>
+<section id="module-deconv.mu_net">
+<span id="deconv-mu-net-module"></span><h2>deconv.mu_net module<a class="headerlink" href="#module-deconv.mu_net" title="Permalink to this headline"></a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="deconv.mu_net.Mu_Net">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">deconv.mu_net.</span></span><span class="sig-name descname"><span class="pre">Mu_Net</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">args</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#deconv.mu_net.Mu_Net" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="#deconv.deconvolver.Deconvolver" title="deconv.deconvolver.Deconvolver"><code class="xref py py-class docutils literal notranslate"><span class="pre">deconv.deconvolver.Deconvolver</span></code></a></p>
+<p>Deconvolve image using Mu-Net.
+Based on:
+“Lee, Sehyung, et al. “Mu-net: Multi-scale U-net for two-photon microscopy image denoising and restoration.”
+Neural Networks 125 (2020): 92-103.”</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="deconv.mu_net.Mu_Net.plot_training">
+<span class="sig-name descname"><span class="pre">plot_training</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">train_history</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#deconv.mu_net.Mu_Net.plot_training" title="Permalink to this definition"></a></dt>
+<dd><p>Plot training history.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>train_history</strong> (<em>dict</em>) – Object containing training history (output of train())</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="deconv.mu_net.Mu_Net.predict">
+<span class="sig-name descname"><span class="pre">predict</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data_dir</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">model_dir</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#deconv.mu_net.Mu_Net.predict" title="Permalink to this definition"></a></dt>
+<dd><p>Deconvolve all tif-files within specified folder</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>data_dir</strong> (<em>string</em>) – File containing image data</p></li>
+<li><p><strong>model_dir</strong> (<em>string</em>) – Directory containing trained Mu-Net model</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Time taken to deconvolve each image</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>list[float]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="deconv.mu_net.Mu_Net.predict_img">
+<span class="sig-name descname"><span class="pre">predict_img</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">X</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">model_dir</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">save_as</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#deconv.mu_net.Mu_Net.predict_img" title="Permalink to this definition"></a></dt>
+<dd><p>Deconvolve image using Mu-Net model.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>X</strong> (<em>nd.array</em>) – Input image</p></li>
+<li><p><strong>model_dir</strong> (<em>string</em>) – Directory where Mu-Net model is stored</p></li>
+<li><p><strong>save_as</strong> (<em>string</em><em>, </em><em>optional</em>) – File name under which to store the deconvolution result. If nothing is specified, it is not stored.
+Defaults to None</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Deconvolved image, time taken for deconvolution</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>nd.array, float</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="deconv.mu_net.Mu_Net.preprocess">
+<span class="sig-name descname"><span class="pre">preprocess</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#deconv.mu_net.Mu_Net.preprocess" title="Permalink to this definition"></a></dt>
+<dd><p>Mu-Net preprocessing: None required.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="deconv.mu_net.Mu_Net.train">
+<span class="sig-name descname"><span class="pre">train</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data_provider</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">epochs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">10</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">batch_size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">8</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#deconv.mu_net.Mu_Net.train" title="Permalink to this definition"></a></dt>
+<dd><p>Train Mu-Net model.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>data_provider</strong> (<em>data_augmentation.DataProvider object</em>) – Object handling input data.</p></li>
+<li><p><strong>epochs</strong> (<em>int</em><em>, </em><em>optional</em>) – Number of training epochs, defaults to 10</p></li>
+<li><p><strong>batch_size</strong> (<em>int</em><em>, </em><em>optional</em>) – Training batch size, defaults to 8</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Directory containing model, Training history</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>string, dict</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
 </section>
-<section id="module-contents">
-<h2>Module contents<a class="headerlink" href="#module-contents" title="Permalink to this headline"></a></h2>
+<section id="module-deconv.utils">
+<span id="deconv-utils-module"></span><h2>deconv.utils module<a class="headerlink" href="#module-deconv.utils" title="Permalink to this headline"></a></h2>
+<dl class="py function">
+<dt class="sig sig-object py" id="deconv.utils.read_psf_file">
+<span class="sig-prename descclassname"><span class="pre">deconv.utils.</span></span><span class="sig-name descname"><span class="pre">read_psf_file</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">size_xy</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">size_z</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">psf_dir</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#deconv.utils.read_psf_file" title="Permalink to this definition"></a></dt>
+<dd><p>Read PSF from file.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>size_xy</strong> (<em>int</em>) – Required size in x- and y-direction</p></li>
+<li><p><strong>size_z</strong> (<em>int</em>) – Required size in z-direction</p></li>
+<li><p><strong>psf_dir</strong> (<em>string</em>) – Directory containing PSF file</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>PSF</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>nd.array</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<section id="module-deconv.wb_backprojector">
+<span id="deconv-wb-backprojector-module"></span><h2>deconv.wb_backprojector module<a class="headerlink" href="#module-deconv.wb_backprojector" title="Permalink to this headline"></a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="deconv.wb_backprojector.WBBackProjectorDeconv">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">deconv.wb_backprojector.</span></span><span class="sig-name descname"><span class="pre">WBBackProjectorDeconv</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">args</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#deconv.wb_backprojector.WBBackProjectorDeconv" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="#deconv.deconvolver.Deconvolver" title="deconv.deconvolver.Deconvolver"><code class="xref py py-class docutils literal notranslate"><span class="pre">deconv.deconvolver.Deconvolver</span></code></a></p>
+<p>Non-blind Richardson-Lucy with Wiener-Butterworth backprojector
+Based on: Guo, Min, et al. “Rapid image deconvolution and multiview fusion for optical microscopy.”
+Nature biotechnology 38.11 (2020): 1337-1346</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="deconv.wb_backprojector.WBBackProjectorDeconv.conv3d_s">
+<span class="sig-name descname"><span class="pre">conv3d_s</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">vol</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">otf</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#deconv.wb_backprojector.WBBackProjectorDeconv.conv3d_s" title="Permalink to this definition"></a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>vol</strong> – </p></li>
+<li><p><strong>otf</strong> – OTF (PSF in frequency domain)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="deconv.wb_backprojector.WBBackProjectorDeconv.fwhm">
+<span class="sig-name descname"><span class="pre">fwhm</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#deconv.wb_backprojector.WBBackProjectorDeconv.fwhm" title="Permalink to this definition"></a></dt>
+<dd><p>Full-Width at Half-Maximum (FWHM) of the waveform y(x) and its polarity.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>x</strong> – </p></li>
+<li><p><strong>y</strong> – </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="deconv.wb_backprojector.WBBackProjectorDeconv.fwhm_PSF">
+<span class="sig-name descname"><span class="pre">fwhm_PSF</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">PSF</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pixelSize</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cFlag</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#deconv.wb_backprojector.WBBackProjectorDeconv.fwhm_PSF" title="Permalink to this definition"></a></dt>
+<dd><p>Feed back the full width at half maximun of the input PSF</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>PSF</strong> (<em>nd.array</em>) – PSF</p></li>
+<li><p><strong>pixelSize</strong> – </p></li>
+<li><p><strong>cFlag</strong> (<em>bool</em><em>, </em><em>optional</em>) – False: use maximum’s position as PSF center position,
+True: use matrix’s center position as PSF center position, defaults to False</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>FWHM in x-, y- and z-direction</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="deconv.wb_backprojector.WBBackProjectorDeconv.get_BackProjector">
+<span class="sig-name descname"><span class="pre">get_BackProjector</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">psf1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">alpha</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#deconv.wb_backprojector.WBBackProjectorDeconv.get_BackProjector" title="Permalink to this definition"></a></dt>
+<dd><p>Compute back-projector from PSF (forward-projector)</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>psf1</strong> – PSF</p></li>
+<li><p><strong>alpha</strong> (<em>float</em>) – </p></li>
+<li><p><strong>n</strong> (<em>int</em>) – </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Back-projector</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="deconv.wb_backprojector.WBBackProjectorDeconv.predict">
+<span class="sig-name descname"><span class="pre">predict</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data_dir</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_iter</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sigma</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#deconv.wb_backprojector.WBBackProjectorDeconv.predict" title="Permalink to this definition"></a></dt>
+<dd><p>Deconvolve all tif-images within folder specified.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>data_dir</strong> (<em>string</em>) – Directory with tif-files</p></li>
+<li><p><strong>n_iter</strong> (<em>int</em><em>, </em><em>optional</em>) – Number of iterations, defaults to 1</p></li>
+<li><p><strong>sigma</strong> (<em>float</em><em>, </em><em>optional</em>) – Gaussian-smoothing parameter, defaults to 1</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="deconv.wb_backprojector.WBBackProjectorDeconv.predict_img">
+<span class="sig-name descname"><span class="pre">predict_img</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">img</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_iter</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sigma</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1.5</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#deconv.wb_backprojector.WBBackProjectorDeconv.predict_img" title="Permalink to this definition"></a></dt>
+<dd><p>Deconvolve image and save to file if wanted.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>img</strong> (<em>nd.array</em>) – Input image</p></li>
+<li><p><strong>n_iter</strong> (<em>int</em><em>, </em><em>optional</em>) – Number of iterations, defaults to 1</p></li>
+<li><p><strong>name</strong> (<em>string</em><em>, </em><em>optional</em>) – Name to save deconvolved file as, if name is NoneType it is not saved. Defaults to None</p></li>
+<li><p><strong>sigma</strong> (<em>float</em><em>, </em><em>optional</em>) – Gaussian-smoothing parameter, defaults to 1</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Deconvolved image</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>nd.array</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="deconv.wb_backprojector.WBBackProjectorDeconv.preprocess">
+<span class="sig-name descname"><span class="pre">preprocess</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">img</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sigma</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#deconv.wb_backprojector.WBBackProjectorDeconv.preprocess" title="Permalink to this definition"></a></dt>
+<dd><p>Preprocess image using Gaussian filter</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>img</strong> (<em>nd.array</em>) – Input image</p></li>
+<li><p><strong>sigma</strong> (<em>float</em><em>, </em><em>optional</em>) – Standard deviation of Gaussian filter, defaults to 1</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Preprocessed image</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>nd.array</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="deconv.wb_backprojector.WBBackProjectorDeconv.train">
+<span class="sig-name descname"><span class="pre">train</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#deconv.wb_backprojector.WBBackProjectorDeconv.train" title="Permalink to this definition"></a></dt>
+<dd><p>RL training: None required.</p>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="module-deconv">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-deconv" title="Permalink to this headline"></a></h2>
 </section>
 </section>
 
@@ -344,13 +616,13 @@ Nature methods 15.12 (2018): 1090-1097.</p>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
         <a href="data_augmentation.html" class="btn btn-neutral float-left" title="data_augmentation module" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="deconv_nets_experiments.html" class="btn btn-neutral float-right" title="deconv_nets_experiments module" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="denoising.html" class="btn btn-neutral float-right" title="denoising module" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2021, Johanna Brosig.</p>
+    <p>&#169; Copyright 2022, Johanna Brosig.</p>
   </div>
 
   Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a

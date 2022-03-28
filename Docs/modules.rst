@@ -4,15 +4,11 @@ MasterThesis_OfSpinesAndDendrites
 .. toctree::
    :maxdepth: 4
 
-   Neighbor2Neighbor
    SIREN
-   convolution_exploration
+   UI_Test_img
    data_augmentation
    deconv
-   deconv_nets_experiments
    denoising
    imagequalitymetrics
-   main
-   registration
-   run
+   normalize
    utils

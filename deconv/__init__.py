@@ -3,9 +3,6 @@ REGISTRY = {}
 from .deconvolution_reduced import BlindRL
 REGISTRY['BlindRL'] = BlindRL
 
-# from .auto_encoder import AE
-# REGISTRY['autoencoder'] = AE
-
 from .care import CAREDeconv
 REGISTRY['csbdeep'] = CAREDeconv
 

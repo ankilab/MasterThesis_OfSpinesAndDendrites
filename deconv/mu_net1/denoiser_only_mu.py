@@ -26,6 +26,11 @@ else:
 
 
 class Denoiser():
+    """
+    Implements model described in
+    "Lee, Sehyung, et al. "Mu-net: Multi-scale U-net for two-photon microscopy image denoising and restoration."
+    Neural Networks 125 (2020): 92-103."
+    """
 
     def __init__(self, args):
         self.args = args
@@ -36,18 +41,23 @@ class Denoiser():
         self.max_value = 12870
         self.min_value = -2327
         self.learning_rate = args.get('lr', 0.0001)
-        self.train_history_setup()
+        self._train_history_setup()
         self.data_provider = None
         self.n_levels=args['n_levels'] if 'n_levels' in args.keys() else 2
         self.model_path = os.path.join(args['result_path'],'model')
         self.model_setup()
         print(self.model.summary)
-        self.loss_setup()
+        self._loss_setup()
         tx=args.get('train_flag', True)
         if tx:
-            self.data_setup()
+            self._data_setup()
 
     def model_setup(self):
+        """
+        Initialize model based on object parameters.
+
+        """
+
         self.img = tf.keras.layers.Input(shape=(self.sz_z, self.sz, self.sz, 1), batch_size=self.batch_sz, name='img',
                                          dtype=tf.float32)
         # self.img = tf.keras.layers.Input(shape=(None, None, None, 1), batch_size=self.batch_sz, name='img',
@@ -99,23 +109,15 @@ class Denoiser():
             self.model = tf.keras.Model(inputs=self.img, outputs=[self.L3_pred])
             self.gt = None
 
-
-    def train_history_setup(self):
+    def _train_history_setup(self):
         self.train_hist = []
-        # self.train_hist['loss']=[]
-        # self.train_hist['L0_pred_loss']=[]
-        # self.train_hist['L1_pred_loss']=[]
-        # self.train_hist['L2_pred_loss']=[]
-        # self.train_hist['L3_pred_loss']=[]
 
-    def data_setup(self):
+    def _data_setup(self):
         if self.data_provider is None:
             self.data_provider = dp((self.sz_z, self.sz), self.args['data_path'], self.args['source_folder'],
                                           self.args['target_folder'], self.args['n_patches'])
-            # self.data_provider = dp(data_path=self.args['data_path'], source=self.args['source_folder'],
-            #                               target=self.args['target_folder'])
 
-    def loss_setup(self):
+    def _loss_setup(self):
         l = {'L0_pred': self._gen_loss, 'L1_pred': self._gen_loss,
                       'L2_pred': self._gen_loss, 'L3_pred': self._gen_loss}
 
@@ -129,7 +131,7 @@ class Denoiser():
     def train(self, data_provider, epochs=30):
         self.data_provider = data_provider
         num_batch_samples = np.ceil(self.data_provider.size[0]/self.batch_sz).astype(int)
-        self.train_history_setup()
+        self._train_history_setup()
 
         # Set up optimizers
         lr_schedule = tf.keras.optimizers.schedules.ExponentialDecay(initial_learning_rate=self.learning_rate,

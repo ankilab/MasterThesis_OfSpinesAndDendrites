@@ -5,6 +5,9 @@ Created on Thu Mar 15 17:34:16 2018
 @author: sehyung
 """
 
+import sys
+sys.path.insert(1, 'C:/Users/jo77pihe/Documents/MasterThesis_OfSpinesAndDendrites')
+
 import tensorflow as tf
 import tensorflow_addons as tfa
 

@@ -24,7 +24,7 @@ paths = [aq,care,blind,mu3,mu2,mu1,mu0]
 num = 20
 files = [f for f in os.listdir(aq) if f.endswith('.tif')]
 
-MAX_VAL = 12870  # we set maximum value to 5,000 of microscope output
+MAX_VAL = 12870
 MIN_VAL = -2327
 
 

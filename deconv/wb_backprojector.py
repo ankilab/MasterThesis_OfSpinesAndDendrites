@@ -9,19 +9,49 @@ import deconv.utils as du
 
 
 class WBBackProjectorDeconv(Deconvolver):
+    """
+    Non-blind Richardson-Lucy with Wiener-Butterworth backprojector
+    Based on: Guo, Min, et al. "Rapid image deconvolution and multiview fusion for optical microscopy."
+    Nature biotechnology 38.11 (2020): 1337-1346
+    """
+
     def __init__(self, args):
         super().__init__(args)
         self.psf_dir =args.get("psf", './PSF')
         self.counter =0
 
-    def preprocess(self, img, sigma=1.5):
+    def preprocess(self, img, sigma=1):
+        """
+        Preprocess image using Gaussian filter
+
+        :param img: Input image
+        :type img: nd.array
+        :param sigma: Standard deviation of Gaussian filter, defaults to 1
+        :type sigma: float, optional
+        :return: Preprocessed image
+        :rtype: nd.array
+        """
+
         den = GaussianFilter()
         return den.denoise(img, sigma)
 
     def train(self, **kwargs):
+        """
+        RL training: None required.
+        """
         pass
 
-    def predict(self, data_dir, n_iter=1, sigma=1.5):
+    def predict(self, data_dir, n_iter=1, sigma=1):
+        """
+        Deconvolve all tif-images within folder specified.
+
+        :param data_dir: Directory with tif-files
+        :type data_dir: string
+        :param n_iter: Number of iterations, defaults to 1
+        :type n_iter: int, optional
+        :param sigma: Gaussian-smoothing parameter, defaults to 1
+        :type sigma: float, optional
+        """
         self.data_path = data_dir
         files = [f for f in os.listdir(data_dir) if f.endswith('.tif')]
         for f in files:
@@ -29,6 +59,20 @@ class WBBackProjectorDeconv(Deconvolver):
                              name=os.path.join(self.res_path, f))
 
     def predict_img(self, img, n_iter=1, name= None, sigma=1.5):
+        """
+        Deconvolve image and save to file if wanted.
+
+        :param img: Input image
+        :type img: nd.array
+        :param n_iter: Number of iterations, defaults to 1
+        :type n_iter: int, optional
+        :param name: Name to save deconvolved file as, if name is NoneType it is not saved. Defaults to None
+        :type name: string, optional
+        :param sigma: Gaussian-smoothing parameter, defaults to 1
+        :type sigma: float, optional
+        :return: Deconvolved image
+        :rtype: nd.array
+        """
         fp, bp = self._get_fb_bp(img.shape[0], img.shape[0], self.psf_dir)
         OTF_fp = np.fft.fftn(np.fft.ifftshift(fp))
         OTF_bp = np.fft.fftn(np.fft.ifftshift(bp))
@@ -42,10 +86,12 @@ class WBBackProjectorDeconv(Deconvolver):
             name ='wb_deconv_' + str(self.counter) +'.tif'
             self.counter +=1
         tifffile.imwrite(name, estimate)
+        return estimate
 
     def _get_fb_bp(self, size_xy, size_z, psf_dir):
         """
         Load PSF-file and extract relevant z-planes
+
         :param size_xy: Size in X and Y- direction (after padding)
         :param size_z: Size in Z direction (after padding)
         :return: PSF
@@ -71,6 +117,17 @@ class WBBackProjectorDeconv(Deconvolver):
         return psf1, psf2
 
     def get_BackProjector(self, psf1, alpha, n):
+        """
+        Compute back-projector from PSF (forward-projector)
+
+        :param psf1: PSF
+        :type psf: nd.array
+        :param alpha:
+        :type alpha: float
+        :param n:
+        :type n: int
+        :return: Back-projector
+        """
         (Sx, Sy, Sz) = psf1.shape
         Scx = (Sx + 1) / 2
         Scy = (Sy + 1) / 2
@@ -147,22 +204,17 @@ class WBBackProjectorDeconv(Deconvolver):
 
         return PSF_bp
 
-    def fwhm_PSF(self, PSF, pixelSize=1, cFlag=0):
+    def fwhm_PSF(self, PSF, pixelSize=1, cFlag=False):
         """
-        % Feed back the full width at half maximun of the input PSF
-        % fwhm.m and mygaussfit.m are needed
-        % cFlag
-        %       0: use maximum's position as PSF center position
-        %       1: use matrix's center position as PSF center position
-        % fitFlag
-        %       0: no fitting before calculate FWHM
-        %       1: spine fitting before calculate FWHM
-        %       2: gaussian fitting before calculate FWHM
-        :param PSF:
+        Feed back the full width at half maximun of the input PSF
+
+        :param PSF: PSF
+        :type PSF: nd.array
         :param pixelSize:
-        :param cFlag:
-        :param fitFlag:
-        :return:
+        :param cFlag: False: use maximum's position as PSF center position,
+                    True: use matrix's center position as PSF center position, defaults to False
+        :type cFlag: bool, optional
+        :return: FWHM in x-, y- and z-direction
         """
 
         (Sx,Sy,Sz) = PSF.shape
@@ -198,8 +250,8 @@ class WBBackProjectorDeconv(Deconvolver):
 
     def fwhm(self,x,y):
         """
-        % Full-Width at Half-Maximum (FWHM) of the waveform y(x)
-        % and its polarity.
+        Full-Width at Half-Maximum (FWHM) of the waveform y(x) and its polarity.
+
         :param x:
         :param y:
         :return:
@@ -230,6 +282,12 @@ class WBBackProjectorDeconv(Deconvolver):
         return width
 
     def conv3d_s(self, vol, otf):
+        """
+
+        :param vol:
+        :param otf: OTF (PSF in frequency domain)
+        :return:
+        """
         return np.real(np.fft.ifftn(np.fft.fftn(vol)*otf))
 
 

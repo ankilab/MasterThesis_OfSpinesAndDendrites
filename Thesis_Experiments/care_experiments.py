@@ -3,13 +3,11 @@ import sys
 import tensorflow as tf
 import tifffile
 import multiprocessing
-from functools import partial
 
 sys.path.insert(1, 'C:/Users/jo77pihe/Documents/MasterThesis_OfSpinesAndDendrites')
 
 import os
 from deconv import REGISTRY
-import timeit
 from data_augmentation import DataAugmenter
 import json
 

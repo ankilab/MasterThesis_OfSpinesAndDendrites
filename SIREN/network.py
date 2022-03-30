@@ -2,10 +2,16 @@ import numpy as np
 import tensorflow as tf
 import os
 import matplotlib.pyplot as plt
-import time
 from tqdm import tqdm
 
 class SIREN:
+    """
+    Network with sinosoidal activation functions, based on:
+    "Sitzmann, Vincent, et al. "Implicit neural representations with periodic activation functions." Advances in Neural
+    Information Processing Systems 33 (2020): 7462-7473."
+
+    """
+
     def __init__(self, in_features, hidden_features, hidden_layers, out_features, outermost_linear=False,
                  first_omega_0=30., hidden_omega_0=30., sine=True):
         self.in_features = in_features
@@ -20,9 +26,33 @@ class SIREN:
         self.model_setup()
 
     def SineActivation(self, x, omega_0):
+        """
+        Sinusoidal activation.
+
+        :param x: input
+        :param omega_0: Frequency tuning parameter
+        :type omega_0: float
+        :return: sinusoidal activated input
+        """
         return tf.sin(omega_0 * x)
 
-    def SineLayer(self, x, in_features, out_features, bias=True, is_first=False, omega_0=30.):
+    def SineLayer(self, X, in_features, out_features, bias=True, is_first=False, omega_0=30.):
+        """
+        Fully connected layer with sinus activation.
+
+        :param X: Input
+        :param in_features: Number of inputs
+        :type in_features: int
+        :param out_features: Number of outputs
+        :type out_features: int
+        :param bias: Whether to use bias
+        :type bias: bool
+        :param is_first: Whether it is the first layer
+        :type is_first: bool
+        :param omega_0: Frequency tuning parameter
+        :type omega_0: float
+        :return: Layer output
+        """
 
         if is_first:
             init = tf.keras.initializers.RandomUniform(-1 / in_features,
@@ -30,17 +60,17 @@ class SIREN:
         else:
             init = tf.keras.initializers.RandomUniform(-np.sqrt(6 / in_features) / omega_0,
                                                        np.sqrt(6 / in_features) / omega_0)
-        # print('Sine 1')
-        # time.sleep(10)
 
-        x = tf.keras.layers.Dense(out_features, kernel_initializer=init, use_bias=bias, dtype=tf.float32)(x)
-        # print('sine 2')
-        # time.sleep(10)
-        x = self.SineActivation(x, omega_0) if self.sine else tf.nn.relu(x)
+        X = tf.keras.layers.Dense(out_features, kernel_initializer=init, use_bias=bias, dtype=tf.float32)(X)
+        X = self.SineActivation(X, omega_0) if self.sine else tf.nn.relu(X)
 
-        return x
+        return X
 
     def model_setup(self):
+        """
+        Initialize and compile network based on object parameters set at initialization.
+
+        """
         in_layer = tf.keras.layers.Input((self.in_features,),dtype=tf.float32)
 
         # feature_names = ['x1', 'x2', 'x3']
@@ -65,165 +95,64 @@ class SIREN:
         self.model.compile("adam","mse")
 
     def preprocess(self, X,y):
-        #write_to_file(X,y,self.data_path)
+        """
+        Preprocessing: None required.
+
+        :param X: Input data
+        :param y: Output data
+        """
+        #_write_to_file(X,y,self.data_path)
         pass
 
-    def train(self, steps, X, y, step_to_plot, orig_shape, batch_size=128):
+    def train(self, steps, X, y, batch_size=None):
+        """
+        Train the network.
+
+        :param steps: Number of training steps
+        :type steps: int
+        :param X: Input data
+        :param y: Output data (ground truth)
+        :param batch_size: Batch size
+        :type batch_size: int or NoneType
+        :return: Loss over training training time
+        :rtype: list[float]
+        """
         loss = []
-        # dataset = get_dataset(self.data_path)
+
+        # By using the commented code in this function instead of the fitting not commented, the dataset is saved to
+        # file and can be read from file successively. This can enable handling larger amounts of data
+        # dataset = _get_dataset(self.data_path)
         # dataset = dataset.shuffle(len(y), reshuffle_each_iteration=True)
         # dataset = dataset.prefetch(buffer_size=tf.data.AUTOTUNE)
         # dataset = dataset.batch(batch_size)
-
         # shuffled = dataset.shuffle(buffer_size=len(y)).batch(batch_size)
 
-        for i in tqdm(range(steps)):
+        if batch_size is None:
+            batch_size=len(y)
+
+        for _ in tqdm(range(steps)):
             p = np.random.permutation(len(y))
             Xs, ys= X[p], y[p]
-            h = self.model.fit(Xs,ys, epochs=1, verbose=1, batch_size=len(y))
+            h = self.model.fit(Xs,ys, epochs=1, verbose=1, batch_size=batch_size)
             loss.append(h.history['loss'])
 
         # h=self.model.fit(dataset, epochs=steps, verbose=1, batch_size=batch_size)
         # loss = h.history['loss']
-
-            # if step_to_plot!=0 and i % step_to_plot == 0:
-            #     plt.figure()
-            #     plt.title(f"Step {i}")
-            #     plt.imshow(self.model.predict(X, batch_size=batch_size).reshape(orig_shape).sum(0), cmap='gray')
-            #     plt.show()
 
         plt.figure()
         plt.plot(loss)
         plt.show(block=False)
         return loss
 
-    def predict(self, X, batchsize):
-        return self.model.predict(X, batch_size=batchsize)
+    def predict(self, X, batch_size):
+        """
+        Predict output for input data.
 
-
-
-def _bytes_feature(value):
-    """Returns a bytes_list from a string / byte."""
-    if isinstance(value, type(tf.constant(0))): # if value ist tensor
-        value = value.numpy() # get value of tensor
-    return tf.train.Feature(bytes_list=tf.train.BytesList(value=[value]))
-
-def _float_feature(value):
-  """Returns a floast_list from a float / double."""
-  return tf.train.Feature(float_list=tf.train.FloatList(value=value))
-
-def serialize_array(array):
-  array = tf.io.serialize_tensor(array)
-  return array
-
-
-def parse_single_item(X, label):
-    # define the dictionary -- the structure -- of our single example
-    data = {
-        'x': _bytes_feature(serialize_array(X)),
-        'label': _float_feature(label)
-    }
-    # create an Example, wrapping the single features
-    out = tf.train.Example(features=tf.train.Features(feature=data))
-
-    return out
-
-
-def read_element(element):
-    # use the same structure as above; it's kinda an outline of the structure we now want to create
-    data = {
-        'x': tf.io.FixedLenFeature([], tf.string),
-        'label': tf.io.FixedLenFeature([], tf.float32),
-    }
-
-    content = tf.io.parse_single_example(element, data)
-
-    label = content['label']
-    X = content['x']
-
-    # get our 'feature'-- our image -- and reshape it appropriately
-    feature = tf.io.parse_tensor(X, out_type=tf.float32)
-    feature = tf.reshape(feature, shape=[3])
-    return (feature, label)
-
-
-def get_dataset(filename):
-    # create the dataset
-    dataset = tf.data.TFRecordDataset(filename, num_parallel_reads=tf.data.experimental.AUTOTUNE)
-
-    # pass every single feature through our mapping function
-    dataset = dataset.map(
-        read_element, num_parallel_calls=tf.data.experimental.AUTOTUNE
-    )
-    return dataset
-
-
-def write_to_file(X,y, path):
-    with tf.io.TFRecordWriter(path) as file_writer:
-        for i in range(len(y)):
-            out=parse_single_item(X[i], [y[i]])
-
-            # example = tf.train.Example(features=tf.train.Features(feature={
-            #     "x1": tf.train.Feature(float_list=tf.train.FloatList(value=X[:,0])),
-            #     "x2": tf.train.Feature(float_list=tf.train.FloatList(value=X[:, 1])),
-            #     "x3": tf.train.Feature(float_list=tf.train.FloatList(value=X[:, 2])),
-            #     "y": tf.train.Feature(float_list=tf.train.FloatList(value=y)),
-            # }))
-            file_writer.write(out.SerializeToString())
-
-# # https://keras.io/examples/keras_recipes/tfrecord/
-# AUTOTUNE = tf.data.AUTOTUNE
-# BATCH_SIZE= 64
-# TRAINING_FILENAMES = './example.tfrecords'
-#
-#
-# def read_tfrecord(example, labeled):
-#     tfrecord_format = (
-#         {
-#             "x1": tf.io.FixedLenFeature([], tf.float32),
-#             "x2": tf.io.FixedLenFeature([], tf.float32),
-#             "x3": tf.io.FixedLenFeature([], tf.float32),
-#             "y": tf.io.FixedLenFeature([], tf.float32),
-#         }
-#         if labeled
-#         else {
-#             "x1": tf.io.FixedLenFeature([], tf.float32),
-#             "x2": tf.io.FixedLenFeature([], tf.float32),
-#             "x3": tf.io.FixedLenFeature([], tf.float32),
-#         }
-#     )
-#     example = tf.io.parse_single_example(example, tfrecord_format)
-#     return example['x1'],  example['x2'], example['x3'], example['y']
-#
-#
-# def load_dataset(filenames, labeled=True):
-#     ignore_order = tf.data.Options()
-#     ignore_order.experimental_deterministic = False  # disable order, increase speed
-#     dataset = tf.data.TFRecordDataset(
-#         [filenames]
-#     )  # automatically interleaves reads from multiple files
-#     dataset = dataset.with_options(
-#         ignore_order
-#     )  # uses data as soon as it streams in, rather than in its original order
-#     dataset = dataset.map(
-#         partial(read_tfrecord, labeled=labeled), num_parallel_calls=AUTOTUNE
-#     )
-#     # returns a dataset of (image, label) pairs if labeled=True or just images if labeled=False
-#     return dataset
-
-
-# def reshape_example(x1,x2,x3,y):
-#     x1, x2, x3 = x1[:,tf.newaxis], x2[:,tf.newaxis], x3[:,tf.newaxis]
-#     return (tf.concat([x1,x2,x3], axis=1),y)
-
-
-# def get_dataset(filenames, labeled=True):
-#     dataset = load_dataset(filenames, labeled=labeled)
-#     # dataset = dataset.map(reshape_example)
-#     dataset = dataset.shuffle(2621440)
-#     dataset = dataset.prefetch(buffer_size=AUTOTUNE)
-#     dataset = dataset.batch(BATCH_SIZE)
-#     return dataset
+        :param X: Input data
+        :param batch_size: Batch size
+        :return: Predictions
+        """
+        return self.model.predict(X, batch_size=batch_size)
 
 
 

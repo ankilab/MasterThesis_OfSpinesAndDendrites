@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>utils module &mdash; MasterThesis: Of Spines And Dendrites  documentation</title>
+  <title>utils &mdash; MasterThesis: Of Spines And Dendrites  documentation</title>
       <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
@@ -18,7 +18,7 @@
     <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="prev" title="normalize module" href="normalize.html" /> 
+    <link rel="prev" title="normalize" href="normalize.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -40,13 +40,13 @@
 <ul class="current">
 <li class="toctree-l1 current"><a class="reference internal" href="modules.html">MasterThesis_OfSpinesAndDendrites</a><ul class="current">
 <li class="toctree-l2"><a class="reference internal" href="SIREN.html">SIREN package</a></li>
-<li class="toctree-l2"><a class="reference internal" href="UI_Test_img.html">UI_Test_img module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="data_augmentation.html">data_augmentation module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="UI_Test_img.html">UI_Test_img</a></li>
+<li class="toctree-l2"><a class="reference internal" href="data_augmentation.html">data_augmentation</a></li>
 <li class="toctree-l2"><a class="reference internal" href="deconv.html">deconv package</a></li>
-<li class="toctree-l2"><a class="reference internal" href="denoising.html">denoising module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="imagequalitymetrics.html">imagequalitymetrics module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="normalize.html">normalize module</a></li>
-<li class="toctree-l2 current"><a class="current reference internal" href="#">utils module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="denoising.html">denoising</a></li>
+<li class="toctree-l2"><a class="reference internal" href="imagequalitymetrics.html">imagequalitymetrics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="normalize.html">normalize</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">utils</a></li>
 </ul>
 </li>
 </ul>
@@ -66,7 +66,7 @@
   <ul class="wy-breadcrumbs">
       <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
           <li><a href="modules.html">MasterThesis_OfSpinesAndDendrites</a> &raquo;</li>
-      <li>utils module</li>
+      <li>utils</li>
       <li class="wy-breadcrumbs-aside">
             <a href="_sources/utils.rst.txt" rel="nofollow"> View page source</a>
       </li>
@@ -77,98 +77,270 @@
            <div itemprop="articleBody">
              
   <section id="module-utils">
-<span id="utils-module"></span><h1>utils module<a class="headerlink" href="#module-utils" title="Permalink to this headline"></a></h1>
+<span id="utils"></span><h1>utils<a class="headerlink" href="#module-utils" title="Permalink to this headline"></a></h1>
 <dl class="py function">
 <dt class="sig sig-object py" id="utils.copy_rename_matching_autoquant_images">
 <span class="sig-prename descclassname"><span class="pre">utils.</span></span><span class="sig-name descname"><span class="pre">copy_rename_matching_autoquant_images</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">raw_data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">result_folder</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#utils.copy_rename_matching_autoquant_images" title="Permalink to this definition"></a></dt>
-<dd></dd></dl>
+<dd><p>Copy and rename original AutoQuant stacks.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>raw_data</strong> (<em>str</em>) – Path to folder where to find the data</p></li>
+<li><p><strong>result_folder</strong> (<em>str</em>) – Path to folder where to store renamed files</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="utils.create_subsampled_images">
 <span class="sig-prename descclassname"><span class="pre">utils.</span></span><span class="sig-name descname"><span class="pre">create_subsampled_images</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">result_folder</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">z_shape</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">10</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">xy_factor</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">4</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#utils.create_subsampled_images" title="Permalink to this definition"></a></dt>
-<dd></dd></dl>
+<dd><p>Subsample stacks.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>path</strong> (<em>str</em>) – Path to input files.</p></li>
+<li><p><strong>result_folder</strong> (<em>str</em>) – Path to folder where t store results</p></li>
+<li><p><strong>z_shape</strong> (<em>int</em>) – Number of z-planes in subsampled stack</p></li>
+<li><p><strong>xy_factor</strong> (<em>int</em>) – Factor by which to reduce x and y dimension</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="utils.display">
 <span class="sig-prename descclassname"><span class="pre">utils.</span></span><span class="sig-name descname"><span class="pre">display</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">im3d</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cmap</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'gray'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">step</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#utils.display" title="Permalink to this definition"></a></dt>
-<dd></dd></dl>
+<dd><p>Diplay stack plane-wise.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>im3d</strong> (<em>nd.array</em>) – Image stack</p></li>
+<li><p><strong>cmap</strong> (<em>str</em><em>, </em><em>optional</em>) – Color map, defaults to ‘gray’</p></li>
+<li><p><strong>step</strong> (<em>int</em><em>, </em><em>optional</em>) – Step in z direction between displayed planes, defaults to 1</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="utils.find_all_img_with_min_z">
 <span class="sig-prename descclassname"><span class="pre">utils.</span></span><span class="sig-name descname"><span class="pre">find_all_img_with_min_z</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">min_z</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">result_folder</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#utils.find_all_img_with_min_z" title="Permalink to this definition"></a></dt>
-<dd></dd></dl>
+<dd><p>Iterate over tif-files within a folder and find images that have at least min_z z-planes.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>path</strong> (<em>str</em>) – Path to data</p></li>
+<li><p><strong>min_z</strong> (<em>int</em>) – Minimum number of z-planes</p></li>
+<li><p><strong>result_folder</strong> (<em>str</em>) – Folder where to store files that fit the requested amount of z-planes</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="utils.generate_axial_psf">
 <span class="sig-prename descclassname"><span class="pre">utils.</span></span><span class="sig-name descname"><span class="pre">generate_axial_psf</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">file</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">save_as</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#utils.generate_axial_psf" title="Permalink to this definition"></a></dt>
-<dd></dd></dl>
+<dd><p>Basis for creating axial (x-z) image of PSF.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>file</strong> (<em>str</em>) – Path and filename of PSF</p></li>
+<li><p><strong>save_as</strong> (<em>str</em><em> or </em><em>NoneType</em><em>, </em><em>optional</em>) – File name and path as which to store the axial PSF, if None, not saved, defaults to None</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Axial PSF</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>nd.array</p>
+</dd>
+</dl>
+</dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="utils.get_extrem_val">
 <span class="sig-prename descclassname"><span class="pre">utils.</span></span><span class="sig-name descname"><span class="pre">get_extrem_val</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#utils.get_extrem_val" title="Permalink to this definition"></a></dt>
-<dd></dd></dl>
+<dd><p>Get extrem values of all tif-files within one folder.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>path</strong> (<em>str</em>) – Path to folder where tif-files are  stored</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Minimum, Maximum value</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>float, float</p>
+</dd>
+</dl>
+</dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="utils.load_stack_from_drive">
 <span class="sig-prename descclassname"><span class="pre">utils.</span></span><span class="sig-name descname"><span class="pre">load_stack_from_drive</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mouse</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">required_string</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">aq</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#utils.load_stack_from_drive" title="Permalink to this definition"></a></dt>
-<dd></dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="utils.overlay_images">
-<span class="sig-prename descclassname"><span class="pre">utils.</span></span><span class="sig-name descname"><span class="pre">overlay_images</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">imgs</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">equalize=False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">aggregator=&lt;function</span> <span class="pre">mean&gt;</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#utils.overlay_images" title="Permalink to this definition"></a></dt>
-<dd></dd></dl>
+<dd><p>Create image stacks from original data which is stored as separate image planes in different folders.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>path</strong> (<em>str</em>) – Path to data</p></li>
+<li><p><strong>mouse</strong> (<em>str</em>) – Name of required Mouse</p></li>
+<li><p><strong>required_string</strong> (<em>str</em><em>, </em><em>optional</em>) – Mandatory string to filter right image planes, defaults to ‘’</p></li>
+<li><p><strong>aq</strong> (<em>bool</em><em>, </em><em>optional</em>) – Flag whether the planes are already deconvolved by AutoQuant, defaults to False</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Stacked image planes</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>nd.array</p>
+</dd>
+</dl>
+</dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="utils.register_3d_stack">
 <span class="sig-prename descclassname"><span class="pre">utils.</span></span><span class="sig-name descname"><span class="pre">register_3d_stack</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">img_stack</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">transformations</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#utils.register_3d_stack" title="Permalink to this definition"></a></dt>
-<dd></dd></dl>
+<dd><p>Register image planes of 3D stack.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>img_stack</strong> (<em>nd.array</em>) – Image stack</p></li>
+<li><p><strong>transformations</strong> (<em>dict of StackReg Transformations</em>) – Allowed transformations</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Transformed stack, transformation matrix</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>nd.array, nd.array</p>
+</dd>
+</dl>
+</dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="utils.register_3d_stack_from_middle">
 <span class="sig-prename descclassname"><span class="pre">utils.</span></span><span class="sig-name descname"><span class="pre">register_3d_stack_from_middle</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">img_stack</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">transformation</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#utils.register_3d_stack_from_middle" title="Permalink to this definition"></a></dt>
-<dd><p>Assumed input shape: frames (z-axis) x width x height
-:param transformations:
-:param img_stack:
-:return:</p>
+<dd><p>Register 3D stack starting from middle plane.
+Assumed input shape: frames (z-axis) x width x height.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>img_stack</strong> (<em>nd.array</em>) – Image stack</p></li>
+<li><p><strong>transformation</strong> (<em>dict of StackReg Transformations</em>) – Allowed transformations</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Registered stack</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="utils.register_all_repetitions">
 <span class="sig-prename descclassname"><span class="pre">utils.</span></span><span class="sig-name descname"><span class="pre">register_all_repetitions</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">csv_file</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">result_folder</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#utils.register_all_repetitions" title="Permalink to this definition"></a></dt>
-<dd></dd></dl>
+<dd><p>Create and register (all) available repetitions of the same scene from the original data.
+(Required for motion correction)</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>csv_file</strong> (<em>str</em>) – Path and name to csv file that specifies, which stacks should be registered(Train_Test.csv)</p></li>
+<li><p><strong>result_folder</strong> (<em>str</em>) – Path to folder where to store the results</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="utils.register_autoquant_images">
 <span class="sig-prename descclassname"><span class="pre">utils.</span></span><span class="sig-name descname"><span class="pre">register_autoquant_images</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">result_folder</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#utils.register_autoquant_images" title="Permalink to this definition"></a></dt>
-<dd></dd></dl>
+<dd><p>Register stacks that where deconvolved with AutoQuant from original data.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>path</strong> (<em>str</em>) – Path to original data</p></li>
+<li><p><strong>result_folder</strong> (<em>str</em>) – Path to folder where to store the results</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="utils.register_stacks_from_drive">
 <span class="sig-prename descclassname"><span class="pre">utils.</span></span><span class="sig-name descname"><span class="pre">register_stacks_from_drive</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">csv_file</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">result_folder</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">required_string</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'000001.ome'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">save_name_id</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">''</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#utils.register_stacks_from_drive" title="Permalink to this definition"></a></dt>
-<dd></dd></dl>
+<dd><p>Create and register stacks from original data.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>csv_file</strong> (<em>str</em>) – Path and name to csv file that specifies, which stacks should be registered(Train_Test.csv)</p></li>
+<li><p><strong>result_folder</strong> (<em>str</em>) – Path to folder, where to store the results</p></li>
+<li><p><strong>required_string</strong> (<em>str</em><em>, </em><em>optional</em>) – String required to identify the right image planes from the original data,
+defaults to ‘000001.ome’</p></li>
+<li><p><strong>save_name_id</strong> (<em>str</em><em>, </em><em>optional</em>) – Additional string to be included in result stack name, defaults to ‘’</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="utils.restore_3d_stack_from_2d_images">
 <span class="sig-prename descclassname"><span class="pre">utils.</span></span><span class="sig-name descname"><span class="pre">restore_3d_stack_from_2d_images</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">source_folder</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">result_folder</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#utils.restore_3d_stack_from_2d_images" title="Permalink to this definition"></a></dt>
-<dd><p>Stacks that were previously splitted by save_tif_stack_to_2d() are restored to stacks
-:param source_folder: Folder with 2D images
-:param result_folder: Folder were restored stackes should be stored in</p>
+<dd><p>Stacks that were previously splitted by save_tif_stack_to_2d() are restored to stacks.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>source_folder</strong> – Folder with 2D images</p></li>
+<li><p><strong>result_folder</strong> – Folder were restored stackes should be stored in</p></li>
+</ul>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="utils.save_reduced_tif_stack">
 <span class="sig-prename descclassname"><span class="pre">utils.</span></span><span class="sig-name descname"><span class="pre">save_reduced_tif_stack</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">search_path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">save_path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">start_idx</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">end_idx</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#utils.save_reduced_tif_stack" title="Permalink to this definition"></a></dt>
-<dd></dd></dl>
+<dd><p>Reduce all stacks in one folder to specified number of z planes.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>search_path</strong> (<em>str</em>) – Folder containing images that are to be reduced</p></li>
+<li><p><strong>save_path</strong> (<em>str</em>) – Folder where reduced stacks are to be stored</p></li>
+<li><p><strong>start_idx</strong> (<em>int</em>) – index of z plane being the first plane of the reduced stack</p></li>
+<li><p><strong>end_idx</strong> (<em>int</em>) – index of z plane being the last plane of the reduced stack</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="utils.save_tif_stack_to_2d">
 <span class="sig-prename descclassname"><span class="pre">utils.</span></span><span class="sig-name descname"><span class="pre">save_tif_stack_to_2d</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">im3d</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">save_path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">start_val</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'f'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#utils.save_tif_stack_to_2d" title="Permalink to this definition"></a></dt>
-<dd></dd></dl>
+<dd><p>Save 3D-stack as 2D planes/images.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>im3d</strong> (<em>nd.array</em>) – Image stack</p></li>
+<li><p><strong>save_path</strong> (<em>str</em>) – Path where to save results</p></li>
+<li><p><strong>start_val</strong> (<em>int</em><em>, </em><em>optional</em>) – Index of first plane in new file name, defaults to 0</p></li>
+<li><p><strong>name</strong> (<em>str</em><em>, </em><em>optional</em>) – file name for acquired 2D planes, defaults to ‘f’</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="utils.split_train_test">
 <span class="sig-prename descclassname"><span class="pre">utils.</span></span><span class="sig-name descname"><span class="pre">split_train_test</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">csv_file</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">path</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#utils.split_train_test" title="Permalink to this definition"></a></dt>
-<dd></dd></dl>
+<dd><p>Split data into training and test set by copying the data in distinct folders.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>csv_file</strong> (<em>str</em>) – Path and name to csv file that specifies, which stacks should be assigned to training and test set
+(Train_Test.csv)</p></li>
+<li><p><strong>path</strong> (<em>str</em>) – Path where to create the folders for training and test set</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
 
 </section>
 
@@ -176,7 +348,7 @@
            </div>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="normalize.html" class="btn btn-neutral float-left" title="normalize module" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="normalize.html" class="btn btn-neutral float-left" title="normalize" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
     </div>
 
   <hr/>

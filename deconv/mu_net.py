@@ -41,7 +41,7 @@ class Mu_Net(Deconvolver):
         :param batch_size: Training batch size, defaults to 8
         :type batch_size: int, optional
         :return: Directory containing model, Training history
-        :rtype: string, dict
+        :rtype: str, dict
         """
         model_dir, train_hist= self.denoiser.train(data_provider, epochs=epochs)
         with open(os.path.join(self.res_path, 'history_mu_net.pkl'), 'wb') as outfile:
@@ -71,9 +71,9 @@ class Mu_Net(Deconvolver):
         Deconvolve all tif-files within specified folder
 
         :param data_dir: File containing image data
-        :type data_dir: string
+        :type data_dir: str
         :param model_dir: Directory containing trained Mu-Net model
-        :type model_dir: string
+        :type model_dir: str
         :return: Time taken to deconvolve each image
         :rtype: list[float]
         """
@@ -97,10 +97,10 @@ class Mu_Net(Deconvolver):
         :param X: Input image
         :type X: nd.array
         :param model_dir: Directory where Mu-Net model is stored
-        :type model_dir: string
+        :type model_dir: str
         :param save_as: File name under which to store the deconvolution result. If nothing is specified, it is not stored.
                         Defaults to None
-        :type save_as: string, optional
+        :type save_as: str, optional
         :return: Deconvolved image, time taken for deconvolution
         :rtype: nd.array, float
         """

@@ -41,17 +41,15 @@
 <ul class="current">
 <li class="toctree-l1 current"><a class="reference internal" href="modules.html">MasterThesis_OfSpinesAndDendrites</a><ul class="current">
 <li class="toctree-l2"><a class="reference internal" href="SIREN.html">SIREN package</a></li>
-<li class="toctree-l2"><a class="reference internal" href="UI_Test_img.html">UI_Test_img module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="UI_Test_img.html">UI_Test_img</a></li>
 <li class="toctree-l2"><a class="reference internal" href="data_augmentation.html">data_augmentation module</a></li>
 <li class="toctree-l2 current"><a class="current reference internal" href="#">deconv package</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#submodules">Submodules</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#module-deconv.care">deconv.care module</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#module-deconv.deconvolution_reduced">deconv.deconvolution_reduced module</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#module-deconv.deconvolver">deconv.deconvolver module</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#module-deconv.mu_net">deconv.mu_net module</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#module-deconv.utils">deconv.utils module</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#module-deconv.wb_backprojector">deconv.wb_backprojector module</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#module-deconv">Module contents</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#module-deconv.care">deconv.care</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#module-deconv.deconvolution_reduced">deconv.deconvolution_reduced</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#module-deconv.deconvolver">deconv.deconvolver</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#module-deconv.mu_net">deconv.mu_net</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#module-deconv.utils">deconv.utils</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#module-deconv.wb_backprojector">deconv.wb_backprojector</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="denoising.html">denoising module</a></li>
@@ -89,11 +87,8 @@
              
   <section id="deconv-package">
 <h1>deconv package<a class="headerlink" href="#deconv-package" title="Permalink to this headline"></a></h1>
-<section id="submodules">
-<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline"></a></h2>
-</section>
 <section id="module-deconv.care">
-<span id="deconv-care-module"></span><h2>deconv.care module<a class="headerlink" href="#module-deconv.care" title="Permalink to this headline"></a></h2>
+<span id="deconv-care"></span><h2>deconv.care<a class="headerlink" href="#module-deconv.care" title="Permalink to this headline"></a></h2>
 <dl class="py class">
 <dt class="sig sig-object py" id="deconv.care.CAREDeconv">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">deconv.care.</span></span><span class="sig-name descname"><span class="pre">CAREDeconv</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">args</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#deconv.care.CAREDeconv" title="Permalink to this definition"></a></dt>
@@ -109,10 +104,10 @@ Nature methods 15.12 (2018): 1090-1097.”</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>data_dir</strong> (<em>string</em>) – Folder containing files that should be deconvolved</p></li>
-<li><p><strong>model_dir</strong> (<em>string</em>) – Directory where CARE model is stored</p></li>
-<li><p><strong>name</strong> (<em>string</em>) – Directory where CARE model is stored</p></li>
-<li><p><strong>res_folder</strong> (<em>string</em><em>, </em><em>optional</em>) – Folder where results are to be stored, defaults to ‘./’</p></li>
+<li><p><strong>data_dir</strong> (<em>str</em>) – Folder containing files that should be deconvolved</p></li>
+<li><p><strong>model_dir</strong> (<em>str</em>) – Directory where CARE model is stored</p></li>
+<li><p><strong>name</strong> (<em>str</em>) – Directory where CARE model is stored</p></li>
+<li><p><strong>res_folder</strong> (<em>str</em><em>, </em><em>optional</em>) – Folder where results are to be stored, defaults to ‘./’</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
@@ -132,9 +127,9 @@ Nature methods 15.12 (2018): 1090-1097.”</p>
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>X</strong> (<em>nd.array</em>) – Input image</p></li>
-<li><p><strong>model_dir</strong> (<em>string</em>) – Directory where CARE model is stored</p></li>
-<li><p><strong>name</strong> (<em>string</em>) – Directory where CARE model is stored</p></li>
-<li><p><strong>save_as</strong> (<em>string</em><em>, </em><em>optional</em>) – File name under which to store the deconvolution result. If nothing is specified, it is not stored.
+<li><p><strong>model_dir</strong> (<em>str</em>) – Directory where CARE model is stored</p></li>
+<li><p><strong>name</strong> (<em>str</em>) – Directory where CARE model is stored</p></li>
+<li><p><strong>save_as</strong> (<em>str</em><em>, </em><em>optional</em>) – File name under which to store the deconvolution result. If nothing is specified, it is not stored.
 Defaults to None</p></li>
 </ul>
 </dd>
@@ -160,7 +155,7 @@ Defaults to None</p></li>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>data_dir</strong> (<em>string</em>) – Folder/file with training data</p></li>
+<li><p><strong>data_dir</strong> (<em>str</em>) – Folder/file with training data</p></li>
 <li><p><strong>validation_split</strong> (<em>float</em><em>, </em><em>optional</em>) – Proportion of training data to use as validation data (between 0 and 1), defaults to 0.1</p></li>
 <li><p><strong>epochs</strong> (<em>int</em><em>, </em><em>optional</em>) – Number of training epochs, defaults to 10</p></li>
 <li><p><strong>batch_size</strong> (<em>int</em><em>, </em><em>optional</em>) – Training batch size, defaults to 8</p></li>
@@ -173,7 +168,7 @@ Defaults to None</p></li>
 <dd class="field-even"><p>Model directory, model path</p>
 </dd>
 <dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>string, string</p>
+<dd class="field-odd"><p>str, str</p>
 </dd>
 </dl>
 </dd></dl>
@@ -182,7 +177,7 @@ Defaults to None</p></li>
 
 </section>
 <section id="module-deconv.deconvolution_reduced">
-<span id="deconv-deconvolution-reduced-module"></span><h2>deconv.deconvolution_reduced module<a class="headerlink" href="#module-deconv.deconvolution_reduced" title="Permalink to this headline"></a></h2>
+<span id="deconv-deconvolution-reduced"></span><h2>deconv.deconvolution_reduced<a class="headerlink" href="#module-deconv.deconvolution_reduced" title="Permalink to this headline"></a></h2>
 <dl class="py class">
 <dt class="sig sig-object py" id="deconv.deconvolution_reduced.BlindRL">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">deconv.deconvolution_reduced.</span></span><span class="sig-name descname"><span class="pre">BlindRL</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">args</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#deconv.deconvolution_reduced.BlindRL" title="Permalink to this definition"></a></dt>
@@ -197,7 +192,7 @@ object initialization. It can be adjusted by setting “obj.res_path = ‘./’�
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>data_dir</strong> (<em>string</em>) – Directory with tif-files</p></li>
+<li><p><strong>data_dir</strong> (<em>str</em>) – Directory with tif-files</p></li>
 <li><p><strong>n_iter_outer</strong> (<em>int</em><em>, </em><em>optional</em>) – RL-iterations, defaults to 5</p></li>
 <li><p><strong>n_iter_image</strong> (<em>int</em><em>, </em><em>optional</em>) – Convolution iterations on image, defaults to 1</p></li>
 <li><p><strong>n_iter_psf</strong> (<em>int</em><em>, </em><em>optional</em>) – Convolution iterations on psf, defaults to 3</p></li>
@@ -224,7 +219,7 @@ object initialization. It can be adjusted by setting “obj.res_path = ‘./’�
 <li><p><strong>n_iter_psf</strong> (<em>int</em><em>, </em><em>optional</em>) – Convolution iterations on psf, defaults to 3</p></li>
 <li><p><strong>sigma</strong> (<em>float</em><em>, </em><em>optional</em>) – Gaussian-smoothing parameter, defaults to 1</p></li>
 <li><p><strong>save_intermediate_res</strong> (<em>bool</em><em>, </em><em>optional</em>) – True, if results should be stored after each iteration, defaults to False</p></li>
-<li><p><strong>file_name</strong> (<em>string</em><em>, </em><em>optional</em>) – File name used to store the deconvolution result</p></li>
+<li><p><strong>file_name</strong> (<em>str</em><em>, </em><em>optional</em>) – File name used to store the deconvolution result</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
@@ -244,7 +239,7 @@ object initialization. It can be adjusted by setting “obj.res_path = ‘./’�
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>data_dir</strong> (<em>string</em>) – Directory with tif-files</p></li>
+<li><p><strong>data_dir</strong> (<em>str</em>) – Directory with tif-files</p></li>
 <li><p><strong>n_iter_outer</strong> (<em>int</em><em>, </em><em>optional</em>) – RL-iterations, defaults to 5</p></li>
 <li><p><strong>n_iter_image</strong> (<em>int</em><em>, </em><em>optional</em>) – Convolution iterations on image, defaults to 1</p></li>
 <li><p><strong>n_iter_psf</strong> (<em>int</em><em>, </em><em>optional</em>) – Convolution iterations on psf, defaults to 3</p></li>
@@ -288,11 +283,11 @@ object initialization. It can be adjusted by setting “obj.res_path = ‘./’�
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>file_name</strong> (<em>string</em>) – Location of input file</p></li>
+<li><p><strong>file_name</strong> (<em>str</em>) – Location of input file</p></li>
 <li><p><strong>n_iter_outer</strong> (<em>int</em><em>, </em><em>optional</em>) – RL-iterations, defaults to 5</p></li>
 <li><p><strong>n_iter_image</strong> (<em>int</em><em>, </em><em>optional</em>) – Convolution iterations on image, defaults to 1</p></li>
 <li><p><strong>n_iter_psf</strong> (<em>int</em><em>, </em><em>optional</em>) – Convolution iterations on psf, defaults to 3</p></li>
-<li><p><strong>sigma</strong> (<em>string</em><em>, </em><em>optional</em>) – Gaussian-smoothing parameter, defaults to 1</p></li>
+<li><p><strong>sigma</strong> (<em>str</em><em>, </em><em>optional</em>) – Gaussian-smoothing parameter, defaults to 1</p></li>
 <li><p><strong>save_intermediate_res</strong> (<em>bool</em><em>, </em><em>optional</em>) – True, if results should be stored after each iteration, defaults to False</p></li>
 <li><p><strong>output_name</strong> – Name of file the processed image is to be stored, defaults to None (stored as input file name)</p></li>
 </ul>
@@ -310,7 +305,7 @@ object initialization. It can be adjusted by setting “obj.res_path = ‘./’�
 
 </section>
 <section id="module-deconv.deconvolver">
-<span id="deconv-deconvolver-module"></span><h2>deconv.deconvolver module<a class="headerlink" href="#module-deconv.deconvolver" title="Permalink to this headline"></a></h2>
+<span id="deconv-deconvolver"></span><h2>deconv.deconvolver<a class="headerlink" href="#module-deconv.deconvolver" title="Permalink to this headline"></a></h2>
 <dl class="py class">
 <dt class="sig sig-object py" id="deconv.deconvolver.Deconvolver">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">deconv.deconvolver.</span></span><span class="sig-name descname"><span class="pre">Deconvolver</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">args</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#deconv.deconvolver.Deconvolver" title="Permalink to this definition"></a></dt>
@@ -345,7 +340,7 @@ deconvolution function for either one image or all images within one folder.</p>
 
 </section>
 <section id="module-deconv.mu_net">
-<span id="deconv-mu-net-module"></span><h2>deconv.mu_net module<a class="headerlink" href="#module-deconv.mu_net" title="Permalink to this headline"></a></h2>
+<span id="deconv-mu-net"></span><h2>deconv.mu_net<a class="headerlink" href="#module-deconv.mu_net" title="Permalink to this headline"></a></h2>
 <dl class="py class">
 <dt class="sig sig-object py" id="deconv.mu_net.Mu_Net">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">deconv.mu_net.</span></span><span class="sig-name descname"><span class="pre">Mu_Net</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">args</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#deconv.mu_net.Mu_Net" title="Permalink to this definition"></a></dt>
@@ -372,8 +367,8 @@ Neural Networks 125 (2020): 92-103.”</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>data_dir</strong> (<em>string</em>) – File containing image data</p></li>
-<li><p><strong>model_dir</strong> (<em>string</em>) – Directory containing trained Mu-Net model</p></li>
+<li><p><strong>data_dir</strong> (<em>str</em>) – File containing image data</p></li>
+<li><p><strong>model_dir</strong> (<em>str</em>) – Directory containing trained Mu-Net model</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
@@ -393,8 +388,8 @@ Neural Networks 125 (2020): 92-103.”</p>
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>X</strong> (<em>nd.array</em>) – Input image</p></li>
-<li><p><strong>model_dir</strong> (<em>string</em>) – Directory where Mu-Net model is stored</p></li>
-<li><p><strong>save_as</strong> (<em>string</em><em>, </em><em>optional</em>) – File name under which to store the deconvolution result. If nothing is specified, it is not stored.
+<li><p><strong>model_dir</strong> (<em>str</em>) – Directory where Mu-Net model is stored</p></li>
+<li><p><strong>save_as</strong> (<em>str</em><em>, </em><em>optional</em>) – File name under which to store the deconvolution result. If nothing is specified, it is not stored.
 Defaults to None</p></li>
 </ul>
 </dd>
@@ -429,7 +424,7 @@ Defaults to None</p></li>
 <dd class="field-even"><p>Directory containing model, Training history</p>
 </dd>
 <dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>string, dict</p>
+<dd class="field-odd"><p>str, dict</p>
 </dd>
 </dl>
 </dd></dl>
@@ -438,7 +433,7 @@ Defaults to None</p></li>
 
 </section>
 <section id="module-deconv.utils">
-<span id="deconv-utils-module"></span><h2>deconv.utils module<a class="headerlink" href="#module-deconv.utils" title="Permalink to this headline"></a></h2>
+<span id="deconv-utils"></span><h2>deconv.utils<a class="headerlink" href="#module-deconv.utils" title="Permalink to this headline"></a></h2>
 <dl class="py function">
 <dt class="sig sig-object py" id="deconv.utils.read_psf_file">
 <span class="sig-prename descclassname"><span class="pre">deconv.utils.</span></span><span class="sig-name descname"><span class="pre">read_psf_file</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">size_xy</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">size_z</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">psf_dir</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#deconv.utils.read_psf_file" title="Permalink to this definition"></a></dt>
@@ -448,7 +443,7 @@ Defaults to None</p></li>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>size_xy</strong> (<em>int</em>) – Required size in x- and y-direction</p></li>
 <li><p><strong>size_z</strong> (<em>int</em>) – Required size in z-direction</p></li>
-<li><p><strong>psf_dir</strong> (<em>string</em>) – Directory containing PSF file</p></li>
+<li><p><strong>psf_dir</strong> (<em>str</em>) – Directory containing PSF file</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
@@ -462,7 +457,7 @@ Defaults to None</p></li>
 
 </section>
 <section id="module-deconv.wb_backprojector">
-<span id="deconv-wb-backprojector-module"></span><h2>deconv.wb_backprojector module<a class="headerlink" href="#module-deconv.wb_backprojector" title="Permalink to this headline"></a></h2>
+<span id="deconv-wb-backprojector"></span><h2>deconv.wb_backprojector<a class="headerlink" href="#module-deconv.wb_backprojector" title="Permalink to this headline"></a></h2>
 <dl class="py class">
 <dt class="sig sig-object py" id="deconv.wb_backprojector.WBBackProjectorDeconv">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">deconv.wb_backprojector.</span></span><span class="sig-name descname"><span class="pre">WBBackProjectorDeconv</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">args</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#deconv.wb_backprojector.WBBackProjectorDeconv" title="Permalink to this definition"></a></dt>
@@ -547,7 +542,7 @@ True: use matrix’s center position as PSF center position, defaults to False</
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>data_dir</strong> (<em>string</em>) – Directory with tif-files</p></li>
+<li><p><strong>data_dir</strong> (<em>str</em>) – Directory with tif-files</p></li>
 <li><p><strong>n_iter</strong> (<em>int</em><em>, </em><em>optional</em>) – Number of iterations, defaults to 1</p></li>
 <li><p><strong>sigma</strong> (<em>float</em><em>, </em><em>optional</em>) – Gaussian-smoothing parameter, defaults to 1</p></li>
 </ul>
@@ -564,7 +559,7 @@ True: use matrix’s center position as PSF center position, defaults to False</
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>img</strong> (<em>nd.array</em>) – Input image</p></li>
 <li><p><strong>n_iter</strong> (<em>int</em><em>, </em><em>optional</em>) – Number of iterations, defaults to 1</p></li>
-<li><p><strong>name</strong> (<em>string</em><em>, </em><em>optional</em>) – Name to save deconvolved file as, if name is NoneType it is not saved. Defaults to None</p></li>
+<li><p><strong>name</strong> (<em>str</em><em>, </em><em>optional</em>) – Name to save deconvolved file as, if name is NoneType it is not saved. Defaults to None</p></li>
 <li><p><strong>sigma</strong> (<em>float</em><em>, </em><em>optional</em>) – Gaussian-smoothing parameter, defaults to 1</p></li>
 </ul>
 </dd>
@@ -605,9 +600,6 @@ True: use matrix’s center position as PSF center position, defaults to False</
 
 </dd></dl>
 
-</section>
-<section id="module-deconv">
-<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-deconv" title="Permalink to this headline"></a></h2>
 </section>
 </section>
 

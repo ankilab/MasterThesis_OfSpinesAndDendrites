@@ -6,11 +6,12 @@ import torch.optim as optim
 from torch.optim import lr_scheduler
 from torch.utils.data import DataLoader
 import tifffile as tif
-from Neighbor2Neighbor.arch_unet import UNet
+from denoising.Neighbor2Neighbor.arch_unet import UNet
 import datetime
-from Neighbor2Neighbor.noise_augmetation import *
-import Neighbor2Neighbor.utils as utils
-from Neighbor2Neighbor.data_loader import *
+from denoising.Neighbor2Neighbor.noise_augmetation import *
+import denoising.Neighbor2Neighbor.utils as utils
+from denoising.Neighbor2Neighbor.data_loader import *
+import os
 
 
 systime = datetime.datetime.now().strftime('%Y-%m-%d-%H-%M')

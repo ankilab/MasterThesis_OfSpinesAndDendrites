@@ -12,7 +12,7 @@ def read_psf_file(size_xy, size_z,psf_dir):
     :param size_z: Required size in z-direction
     :type size_z: int
     :param psf_dir: Directory containing PSF file
-    :type psf_dir: string
+    :type psf_dir: str
     :return: PSF
     :rtype: nd.array
     """

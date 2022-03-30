@@ -46,7 +46,7 @@ class WBBackProjectorDeconv(Deconvolver):
         Deconvolve all tif-images within folder specified.
 
         :param data_dir: Directory with tif-files
-        :type data_dir: string
+        :type data_dir: str
         :param n_iter: Number of iterations, defaults to 1
         :type n_iter: int, optional
         :param sigma: Gaussian-smoothing parameter, defaults to 1
@@ -67,7 +67,7 @@ class WBBackProjectorDeconv(Deconvolver):
         :param n_iter: Number of iterations, defaults to 1
         :type n_iter: int, optional
         :param name: Name to save deconvolved file as, if name is NoneType it is not saved. Defaults to None
-        :type name: string, optional
+        :type name: str, optional
         :param sigma: Gaussian-smoothing parameter, defaults to 1
         :type sigma: float, optional
         :return: Deconvolved image

@@ -64,7 +64,7 @@ class BlindRL(Deconvolver):
         object initialization. It can be adjusted by setting "obj.res_path = './'".
 
         :param data_dir: Directory with tif-files
-        :type data_dir: string
+        :type data_dir: str
         :param n_iter_outer: RL-iterations, defaults to 5
         :type n_iter_outer: int, optional
         :param n_iter_image: Convolution iterations on image, defaults to 1
@@ -112,7 +112,7 @@ class BlindRL(Deconvolver):
         object initialization. It can be adjusted by setting "obj.res_path = './'".
 
         :param data_dir: Directory with tif-files
-        :type data_dir: string
+        :type data_dir: str
         :param n_iter_outer: RL-iterations, defaults to 5
         :type n_iter_outer: int, optional
         :param n_iter_image: Convolution iterations on image, defaults to 1
@@ -144,7 +144,7 @@ class BlindRL(Deconvolver):
         Load image by filename and generate corresponding PSF.
 
         :param file_name: Name of tif-file to be loaded
-        :type file_name: string
+        :type file_name: str
         :return: Image, corresponding PSF
         :rtype: nd.array, nd.array
         """
@@ -161,7 +161,7 @@ class BlindRL(Deconvolver):
         Process image: Load and deconvolve the image specified in file name
 
         :param file_name: Location of input file
-        :type file_name: string
+        :type file_name: str
         :param n_iter_outer: RL-iterations, defaults to 5
         :type n_iter_outer: int, optional
         :param n_iter_image: Convolution iterations on image, defaults to 1
@@ -173,7 +173,7 @@ class BlindRL(Deconvolver):
         :param save_intermediate_res: True, if results should be stored after each iteration, defaults to False
         :type save_intermediate_res: bool, optional
         :param output_name: Name of file the processed image is to be stored, defaults to None (stored as input file name)
-        :type sigma: string, optional
+        :type sigma: str, optional
         """
         X, g = self._load_img(file_name)
         if output_name is None:
@@ -202,7 +202,7 @@ class BlindRL(Deconvolver):
         :param save_intermediate_res: True, if results should be stored after each iteration, defaults to False
         :type save_intermediate_res: bool, optional
         :param file_name: File name used to store the deconvolution result
-        :type file_name: string, optional
+        :type file_name: str, optional
         :return: Deconvolved image, estimated PSF, None
         :rtype: nd.array, nd.array, NoneType
         """
@@ -272,9 +272,9 @@ class BlindRL(Deconvolver):
         :param psf: Computed PSF
         :type psf: nd.array
         :param iteration: Specifies after which number of iterations the result was obtained
-        :type iteration: string
+        :type iteration: str
         :param f_name: File name for results to store as, defaults to 'x.tif'
-        :type f_name: string, optional
+        :type f_name: str, optional
         :return: input image and PSF shrinked to original size (without padding)
         :rtype: nd.array, nd.array
         """

@@ -1,4 +1,4 @@
-imagequalitymetrics module
+imagequalitymetrics
 ==========================
 
 .. automodule:: imagequalitymetrics

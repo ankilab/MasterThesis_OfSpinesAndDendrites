@@ -7,7 +7,7 @@ Welcome to MasterThesis: Of Spines And Dendrites's documentation!
 =================================================================
 
 .. toctree::
-   :maxdepth: 2
+   :maxdepth: 4
    :caption: Contents:
 
    modules

@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>data_augmentation module &mdash; MasterThesis: Of Spines And Dendrites  documentation</title>
+  <title>data_augmentation &mdash; MasterThesis: Of Spines And Dendrites  documentation</title>
       <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
@@ -19,7 +19,7 @@
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="deconv package" href="deconv.html" />
-    <link rel="prev" title="UI_Test_img module" href="UI_Test_img.html" /> 
+    <link rel="prev" title="UI_Test_img" href="UI_Test_img.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -41,13 +41,13 @@
 <ul class="current">
 <li class="toctree-l1 current"><a class="reference internal" href="modules.html">MasterThesis_OfSpinesAndDendrites</a><ul class="current">
 <li class="toctree-l2"><a class="reference internal" href="SIREN.html">SIREN package</a></li>
-<li class="toctree-l2"><a class="reference internal" href="UI_Test_img.html">UI_Test_img module</a></li>
-<li class="toctree-l2 current"><a class="current reference internal" href="#">data_augmentation module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="UI_Test_img.html">UI_Test_img</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">data_augmentation</a></li>
 <li class="toctree-l2"><a class="reference internal" href="deconv.html">deconv package</a></li>
-<li class="toctree-l2"><a class="reference internal" href="denoising.html">denoising module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="imagequalitymetrics.html">imagequalitymetrics module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="normalize.html">normalize module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="utils.html">utils module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="denoising.html">denoising</a></li>
+<li class="toctree-l2"><a class="reference internal" href="imagequalitymetrics.html">imagequalitymetrics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="normalize.html">normalize</a></li>
+<li class="toctree-l2"><a class="reference internal" href="utils.html">utils</a></li>
 </ul>
 </li>
 </ul>
@@ -67,7 +67,7 @@
   <ul class="wy-breadcrumbs">
       <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
           <li><a href="modules.html">MasterThesis_OfSpinesAndDendrites</a> &raquo;</li>
-      <li>data_augmentation module</li>
+      <li>data_augmentation</li>
       <li class="wy-breadcrumbs-aside">
             <a href="_sources/data_augmentation.rst.txt" rel="nofollow"> View page source</a>
       </li>
@@ -78,26 +78,34 @@
            <div itemprop="articleBody">
              
   <section id="module-data_augmentation">
-<span id="data-augmentation-module"></span><h1>data_augmentation module<a class="headerlink" href="#module-data_augmentation" title="Permalink to this headline"></a></h1>
+<span id="data-augmentation"></span><h1>data_augmentation<a class="headerlink" href="#module-data_augmentation" title="Permalink to this headline"></a></h1>
 <dl class="py class">
 <dt class="sig sig-object py" id="data_augmentation.DataAugmenter">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">data_augmentation.</span></span><span class="sig-name descname"><span class="pre">DataAugmenter</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">args</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#data_augmentation.DataAugmenter" title="Permalink to this definition"></a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Creates patches of data and saves it to file.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="data_augmentation.DataAugmenter.augment">
-<span class="sig-name descname"><span class="pre">augment</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data_path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">source</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">target</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">care</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data_dir</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">save_file_name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'my_data.npz'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">save_h5</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#data_augmentation.DataAugmenter.augment" title="Permalink to this definition"></a></dt>
-<dd><dl class="field-list simple">
+<span class="sig-name descname"><span class="pre">augment</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data_path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">source</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">target</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">care</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data_dir</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">save_file_name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'my_data.npz'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">save_h5</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#data_augmentation.DataAugmenter.augment" title="Permalink to this definition"></a></dt>
+<dd><p>Create patches from images.</p>
+<dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>data_path</strong> – </p></li>
-<li><p><strong>source</strong> – </p></li>
-<li><p><strong>target</strong> – </p></li>
-<li><p><strong>care</strong> – </p></li>
-<li><p><strong>data_dir</strong> – </p></li>
+<li><p><strong>data_path</strong> (<em>str</em>) – Data path to image pairs</p></li>
+<li><p><strong>source</strong> (<em>str</em>) – Relative path from data path to input data (e.g. distorted data)</p></li>
+<li><p><strong>target</strong> (<em>str</em>) – Relative path from data path to output data (e.g. undistorted data)</p></li>
+<li><p><strong>care</strong> (<em>bool</em><em>, </em><em>optional</em>) – Whether to use the data augmentation provided by CSBDeep package - no other option currently
+implemented, defaults to True</p></li>
+<li><p><strong>data_dir</strong> (<em>str</em><em> or </em><em>NoneType</em><em>, </em><em>optional</em>) – Directory where to store npz-file- if None it is not stored as npz-file, defaults to None</p></li>
+<li><p><strong>save_file_name</strong> (<em>str</em><em>, </em><em>optional</em>) – File name to store npz-file as, defaults to ‘my_data.npz’</p></li>
+<li><p><strong>save_h5</strong> (<em>str</em><em> or </em><em>NoneType</em><em>, </em><em>optional</em>) – Path and filename to store h5 file as - if None it is not stored as h5-file, defaults to None</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
-<dd class="field-even"><p></p>
+<dd class="field-even"><p>Pairs of augmented distorted and undistorted image patches, data_dir</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>tuple(augmented distorted data, augmented undistorted data, axes), str</p>
 </dd>
 </dl>
 </dd></dl>
@@ -105,39 +113,72 @@
 <dl class="py method">
 <dt class="sig sig-object py" id="data_augmentation.DataAugmenter.augment_img">
 <span class="sig-name descname"><span class="pre">augment_img</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">raw_img</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">gt_img</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#data_augmentation.DataAugmenter.augment_img" title="Permalink to this definition"></a></dt>
-<dd></dd></dl>
+<dd><p>Augment single image using own implementation.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>raw_img</strong> (<em>nd.array</em>) – Raw image</p></li>
+<li><p><strong>gt_img</strong> (<em>nd.array</em>) – Ground truth image corresponding to raw image</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Pairs of image patches, axes (here to be consistent with required input for CARE)</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>nd.array, nd.array, str</p>
+</dd>
+</dl>
+</dd></dl>
 
 </dd></dl>
 
 <dl class="py class">
 <dt class="sig sig-object py" id="data_augmentation.DataProvider">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">data_augmentation.</span></span><span class="sig-name descname"><span class="pre">DataProvider</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">size</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data_path</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">source</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">target</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_patches</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">50</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data_file</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'data.h5'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#data_augmentation.DataProvider" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">data_augmentation.</span></span><span class="sig-name descname"><span class="pre">DataProvider</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">size</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data_path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">source</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">target</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_patches</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">50</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data_file</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'data.h5'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#data_augmentation.DataProvider" title="Permalink to this definition"></a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Class providing functionality to handle training data. A number of patches can be requested and this class enables
+loading them from a h5 file. (Used for Mu-Net)</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="data_augmentation.DataProvider.get">
 <span class="sig-name descname"><span class="pre">get</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">batch_size</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#data_augmentation.DataProvider.get" title="Permalink to this definition"></a></dt>
-<dd></dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="data_augmentation.DataProvider.shuffle">
-<span class="sig-name descname"><span class="pre">shuffle</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#data_augmentation.DataProvider.shuffle" title="Permalink to this definition"></a></dt>
-<dd></dd></dl>
+<dd><p>Get data of specified batch size from file.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>batch_size</strong> (<em>int</em>) – Batch size</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Batch - image pairs of raw data and corresponding ground truth</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>nd.array, nd.array</p>
+</dd>
+</dl>
+</dd></dl>
 
 </dd></dl>
 
 <dl class="py class">
 <dt class="sig sig-object py" id="data_augmentation.DataProvider_CompleteImg">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">data_augmentation.</span></span><span class="sig-name descname"><span class="pre">DataProvider_CompleteImg</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data_path</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">source</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">target</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">''</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#data_augmentation.DataProvider_CompleteImg" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">data_augmentation.</span></span><span class="sig-name descname"><span class="pre">DataProvider_CompleteImg</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data_path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">source</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">target</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#data_augmentation.DataProvider_CompleteImg" title="Permalink to this definition"></a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Class providing functionality to handle training data of complete images. A number of images can be requested and t
+his class enables loading them from a h5 file. (Used for Mu-Net)</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="data_augmentation.DataProvider_CompleteImg.get">
 <span class="sig-name descname"><span class="pre">get</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">batch_size</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#data_augmentation.DataProvider_CompleteImg.get" title="Permalink to this definition"></a></dt>
-<dd></dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="data_augmentation.DataProvider_CompleteImg.shuffle">
-<span class="sig-name descname"><span class="pre">shuffle</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#data_augmentation.DataProvider_CompleteImg.shuffle" title="Permalink to this definition"></a></dt>
-<dd></dd></dl>
+<dd><p>Get data of specified batch size from file.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>batch_size</strong> (<em>int</em>) – Batch size</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Batch - image pairs of raw data and corresponding ground truth</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>nd.array, nd.array</p>
+</dd>
+</dl>
+</dd></dl>
 
 </dd></dl>
 
@@ -147,7 +188,7 @@
            </div>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="UI_Test_img.html" class="btn btn-neutral float-left" title="UI_Test_img module" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="UI_Test_img.html" class="btn btn-neutral float-left" title="UI_Test_img" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
         <a href="deconv.html" class="btn btn-neutral float-right" title="deconv package" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 

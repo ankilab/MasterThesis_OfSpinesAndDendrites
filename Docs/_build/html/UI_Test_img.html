@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>UI_Test_img module &mdash; MasterThesis: Of Spines And Dendrites  documentation</title>
+  <title>UI_Test_img &mdash; MasterThesis: Of Spines And Dendrites  documentation</title>
       <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
@@ -41,7 +41,7 @@
 <ul class="current">
 <li class="toctree-l1 current"><a class="reference internal" href="modules.html">MasterThesis_OfSpinesAndDendrites</a><ul class="current">
 <li class="toctree-l2"><a class="reference internal" href="SIREN.html">SIREN package</a></li>
-<li class="toctree-l2 current"><a class="current reference internal" href="#">UI_Test_img module</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">UI_Test_img</a></li>
 <li class="toctree-l2"><a class="reference internal" href="data_augmentation.html">data_augmentation module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="deconv.html">deconv package</a></li>
 <li class="toctree-l2"><a class="reference internal" href="denoising.html">denoising module</a></li>
@@ -67,7 +67,7 @@
   <ul class="wy-breadcrumbs">
       <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
           <li><a href="modules.html">MasterThesis_OfSpinesAndDendrites</a> &raquo;</li>
-      <li>UI_Test_img module</li>
+      <li>UI_Test_img</li>
       <li class="wy-breadcrumbs-aside">
             <a href="_sources/UI_Test_img.rst.txt" rel="nofollow"> View page source</a>
       </li>
@@ -77,8 +77,82 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <section id="ui-test-img-module">
-<h1>UI_Test_img module<a class="headerlink" href="#ui-test-img-module" title="Permalink to this headline"></a></h1>
+  <section id="module-UI_Test_img">
+<span id="ui-test-img"></span><h1>UI_Test_img<a class="headerlink" href="#module-UI_Test_img" title="Permalink to this headline"></a></h1>
+<dl class="py class">
+<dt class="sig sig-object py" id="UI_Test_img.ImageSelection">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">UI_Test_img.</span></span><span class="sig-name descname"><span class="pre">ImageSelection</span></span><a class="headerlink" href="#UI_Test_img.ImageSelection" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">PyQt5.QtWidgets.QWidget</span></code></p>
+<p>User Interface for blind comparison of images. The same image plane is shown deconvolved with two different
+algorithms. The user is asked to select the plane he/she likes better. In the end, statistics are returned that
+reflect on how often each deconvolution method was selected over the other ones.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="UI_Test_img.ImageSelection.center">
+<span class="sig-name descname"><span class="pre">center</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#UI_Test_img.ImageSelection.center" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="UI_Test_img.ImageSelection.closeEvent">
+<span class="sig-name descname"><span class="pre">closeEvent</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">event</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#UI_Test_img.ImageSelection.closeEvent" title="Permalink to this definition"></a></dt>
+<dd><p>Specify behaviour upon closing the application. The statistics are saved to file.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>event</strong> – Close event</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="UI_Test_img.ImageSelection.img_2_pixmap">
+<span class="sig-name descname"><span class="pre">img_2_pixmap</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">img</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#UI_Test_img.ImageSelection.img_2_pixmap" title="Permalink to this definition"></a></dt>
+<dd><p>Convert image to displayable version.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>img</strong> (<em>nd.array</em>) – Input image</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Displayable image</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>nd.array</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="UI_Test_img.ImageSelection.random_images">
+<span class="sig-name descname"><span class="pre">random_images</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#UI_Test_img.ImageSelection.random_images" title="Permalink to this definition"></a></dt>
+<dd><p>Select random image planes and deconvolution techniques.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="UI_Test_img.ImageSelection.show_img">
+<span class="sig-name descname"><span class="pre">show_img</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#UI_Test_img.ImageSelection.show_img" title="Permalink to this definition"></a></dt>
+<dd><p>Display images.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="UI_Test_img.get_result">
+<span class="sig-prename descclassname"><span class="pre">UI_Test_img.</span></span><span class="sig-name descname"><span class="pre">get_result</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#UI_Test_img.get_result" title="Permalink to this definition"></a></dt>
+<dd><p>Load statistics.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>Statistics</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>pd.DataFrame</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="UI_Test_img.main">
+<span class="sig-prename descclassname"><span class="pre">UI_Test_img.</span></span><span class="sig-name descname"><span class="pre">main</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#UI_Test_img.main" title="Permalink to this definition"></a></dt>
+<dd><p>Run application.</p>
+</dd></dl>
+
 </section>
 
 

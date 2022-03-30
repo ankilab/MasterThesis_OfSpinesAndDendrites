@@ -82,30 +82,30 @@ class Denoiser():
             self.n_levels=3
 
         if self.n_levels == 3:
-            L0_L1, self.L0_pred = munet_cnn_level_0(self.L0_img, name='gen_l0')
-            L1_L2, self.L1_pred = munet_cnn_level_1(self.L1_img, L0_L1, name='gen_l1')
-            L2_L3, self.L2_pred = munet_cnn_level_2(self.L2_img, L1_L2, name='gen_l2')
-            self.L3_pred = munet_cnn_level_3(self.img, L2_L3, name='gen_l3')
+            L0_L1, self.L0_pred = munet_cnn_level_0(self.L0_img)
+            L1_L2, self.L1_pred = munet_cnn_level_1(self.L1_img, L0_L1)
+            L2_L3, self.L2_pred = munet_cnn_level_2(self.L2_img, L1_L2)
+            self.L3_pred = munet_cnn_level_3(self.img, L2_L3)
             self.model = tf.keras.Model(inputs=self.img, outputs=[self.L0_pred, self.L1_pred, self.L2_pred, self.L3_pred])
             self.gt=tf.keras.Model(inputs=self.label, outputs=[self.L0_label, self.L1_label, self.L2_label])
 
         elif self.n_levels == 2:
-            L1_L2, self.L1_pred = munet_cnn_level_1(self.L1_img, name='gen_l1')
-            L2_L3, self.L2_pred = munet_cnn_level_2(self.L2_img, L1_L2, name='gen_l2')
-            self.L3_pred = munet_cnn_level_3(self.img, L2_L3, name='gen_l3')
+            L1_L2, self.L1_pred = munet_cnn_level_1(self.L1_img)
+            L2_L3, self.L2_pred = munet_cnn_level_2(self.L2_img, L1_L2)
+            self.L3_pred = munet_cnn_level_3(self.img, L2_L3)
             self.model = tf.keras.Model(inputs=self.img, outputs=[self.L1_pred, self.L2_pred, self.L3_pred])
             self.gt = tf.keras.Model(inputs=self.label, outputs=[self.L1_label, self.L2_label])
             self.gt.compile(loss='mse', optimizer='adam')
 
         elif self.n_levels == 1:
-            L2_L3, self.L2_pred = munet_cnn_level_2(self.L2_img, name='gen_l2')
-            self.L3_pred = munet_cnn_level_3(self.img, L2_L3, name='gen_l3')
+            L2_L3, self.L2_pred = munet_cnn_level_2(self.L2_img)
+            self.L3_pred = munet_cnn_level_3(self.img, L2_L3)
             self.model = tf.keras.Model(inputs=self.img, outputs=[self.L2_pred, self.L3_pred])
             self.gt = tf.keras.Model(inputs=self.label, outputs=[self.L2_label])
             self.gt.compile(loss='mse', optimizer='adam')
 
         elif self.n_levels == 0:
-            self.L3_pred = munet_cnn_level_3(self.img, name='gen_l3')
+            self.L3_pred = munet_cnn_level_3(self.img)
             self.model = tf.keras.Model(inputs=self.img, outputs=[self.L3_pred])
             self.gt = None
 
@@ -129,6 +129,17 @@ class Denoiser():
         return gen_loss
 
     def train(self, data_provider, epochs=30):
+        """
+        Train Mu-Net.
+
+        :param data_provider: Data provider
+        :type data_provider: data_augmentation.DataAugmenter
+        :param epochs: Number of epochs, defaults to 30
+        :type epochs: int, optional
+        :return: Path where trained model is stored, Training history
+        :rtype: str, dict
+        """
+
         self.data_provider = data_provider
         num_batch_samples = np.ceil(self.data_provider.size[0]/self.batch_sz).astype(int)
         self._train_history_setup()
@@ -141,7 +152,7 @@ class Denoiser():
         self.model.compile(optimizer=g_optimizer, loss=self.loss_func, run_eagerly=True)
 
         for _ in tqdm(range(0, epochs)):
-            self.data_provider.shuffle()
+            self.data_provider._shuffle()
 
             for _ in range(0, num_batch_samples):
                 sample_patch, sample_label = self.data_provider.get(self.batch_sz)
@@ -174,6 +185,14 @@ class Denoiser():
         return self.model_path, self.train_hist
 
     def load_model(self, batch_size=4, path='./model'):
+        """
+        Load model from file.
+
+        :param batch_size: Batch size, defaults to 4
+        :type batch_size: int, optional
+        :param path: path, where model is stored, defaults to './model'
+        :type path: str, optional
+        """
         self.model = tf.keras.models.load_model(path, compile=False)
         if not tf.is_tensor(self.model.output):
             self.n_levels = len(self.model.output)
@@ -182,6 +201,15 @@ class Denoiser():
         # self.gt = tf.keras.models.load_model(path+'/gt', compile=False)
 
     def denoising_patch(self, img):
+        """
+        Denoise/deconvolve image patch using Mu-Net.
+
+        :param img: Input
+        :type img: nd.array
+        :return: Denoised outputs of all Mu-Net levels
+        :rtype: nd.array, nd.array, nd.array, nd.array
+        """
+
         img = img.astype('float32') - self.min_value
         sc = self.max_value / 2.0
         img = img / sc - 1.0
@@ -209,7 +237,16 @@ class Denoiser():
 
         return L0_pred, L1_pred, L2_pred, denoised_img
 
-    def denoising_img(self, img, sliding_step=None):
+    def denoising_img(self, img, sliding_step=16):
+        """
+        Denoise/Deconvolve image.
+
+        :param img: Input image
+        :type img: nd.array
+        :param sliding_step: Step size of sliding window, defaults to 16
+        :type sliding_step: int, optional
+        :return:
+        """
         if sliding_step is None:
             sliding_step = [16, 32, 32]
         sliding_step = np.array(sliding_step)

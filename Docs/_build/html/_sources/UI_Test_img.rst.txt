@@ -1,4 +1,4 @@
-UI\_Test\_img module
+UI\_Test\_img
 ====================
 
 .. automodule:: UI_Test_img

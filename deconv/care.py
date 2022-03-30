@@ -43,7 +43,7 @@ class CAREDeconv(Deconvolver):
         Train CARE model.
 
         :param data_dir: Folder/file with training data
-        :type data_dir: string
+        :type data_dir: str
         :param validation_split: Proportion of training data to use as validation data (between 0 and 1), defaults to 0.1
         :type validation_split: float, optional
         :param epochs: Number of training epochs, defaults to 10
@@ -57,7 +57,7 @@ class CAREDeconv(Deconvolver):
         :param unet_n_depth: U-Net Depth, defaults to 2
         :type unet_n_depth: int, optional
         :return: Model directory, model path
-        :rtype: string, string
+        :rtype: str, str
         """
 
         # Load training data, easiest obtained using data_augmentation.DataAugmenter.augment()
@@ -110,13 +110,13 @@ class CAREDeconv(Deconvolver):
         Deconvolve all images in specified folder using CARE model.
 
         :param data_dir: Folder containing files that should be deconvolved
-        :type data_dir: string
+        :type data_dir: str
         :param model_dir: Directory where CARE model is stored
-        :type model_dir: string
+        :type model_dir: str
         :param name: Directory where CARE model is stored
-        :type name: string
+        :type name: str
         :param res_folder: Folder where results are to be stored, defaults to './'
-        :type res_folder: string, optional
+        :type res_folder: str, optional
         :return: Time taken to deconvolve each image
         :rtype: list[float]
         """
@@ -148,12 +148,12 @@ class CAREDeconv(Deconvolver):
         :param X: Input image
         :type X: nd.array
         :param model_dir: Directory where CARE model is stored
-        :type model_dir: string
+        :type model_dir: str
         :param name: Directory where CARE model is stored
-        :type name: string
+        :type name: str
         :param save_as: File name under which to store the deconvolution result. If nothing is specified, it is not stored.
                         Defaults to None
-        :type save_as: string, optional
+        :type save_as: str, optional
         :return: Deconvolved image, time taken for deconvolution
         :rtype: nd.array, float
         """

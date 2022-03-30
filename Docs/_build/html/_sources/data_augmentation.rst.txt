@@ -1,4 +1,4 @@
-data\_augmentation module
+data\_augmentation
 =========================
 
 .. automodule:: data_augmentation

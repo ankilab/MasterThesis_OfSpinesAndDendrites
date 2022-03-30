@@ -18,6 +18,26 @@ N = 0
 
 def build_conv_layer(input_conv, num_filters=32, filter_sz=3, stride=1, padding='SAME', relu_op=False, norm=False,
                      name=''):
+    """
+    Build Mu-Net convolution layer.
+
+    :param input_conv:
+    :param num_filters: Number of filters, defaults to 32
+    :type num_filters: int, optional
+    :param filter_sz: Filter size, defaults to 3
+    :type filter_sz: int, optional
+    :param stride: Stride, defaults to 1
+    :type stride: int, optional
+    :param padding: How to handle/pad boundaries, defaults to 'SAME'
+    :type padding: str, optional
+    :param relu_op: Flag whether to use LeakyReLu activation, defaults to False
+    :type relu_op: bool, optional
+    :param norm: Flag, whether to use Instance Normalization, defaults to False
+    :type norm: bool, optional
+    :param name: LAyer name, defaults to ''
+    :type name: str, optional
+    :return: Convolution layer
+    """
     if padding == 'VALID':
         if input_conv.shape[1] is not None:
             if (input_conv.shape[1] <=1):
@@ -56,6 +76,27 @@ def build_conv_layer(input_conv, num_filters=32, filter_sz=3, stride=1, padding=
 
 def build_upconv_layer(input_conv, num_filters=16, filter_sz=3, stride=(2, 2, 2), padding='SAME', relu_op=False,
                        norm=False, name=''):
+    """
+    Build Mu-Net up-convolution layer.
+
+    :param input_conv:
+    :param num_filters: Number of filters, defaults to 16
+    :type num_filters: int, optional
+    :param filter_sz: Filter size, defaults to 3
+    :type filter_sz: int, optional
+    :param stride: Stride, defaults to (2,2,2)
+    :type stride: tuple(int, int, int), optional
+    :param padding: How to handle/pad boundaries, defaults to 'SAME'
+    :type padding: str, optional
+    :param relu_op: Flag whether to use LeakyReLu activation, defaults to False
+    :type relu_op: bool, optional
+    :param norm: Flag, whether to use Instance Normalization, defaults to False
+    :type norm: bool, optional
+    :param name: Layer name, defaults to ''
+    :type name: str, optional
+    :return: Up-convolution layer
+    """
+
     up_sample = tf.keras.layers.UpSampling3D(size=stride)(input_conv)
     if padding == 'VALID':
         if input_conv.shape[1] is not None and (up_sample.shape[1] <= 1):
@@ -90,7 +131,13 @@ def build_upconv_layer(input_conv, num_filters=16, filter_sz=3, stride=(2, 2, 2)
     return conv
 
 
-def munet_cnn_level_0(L0_img, name='munet'):
+def munet_cnn_level_0(L0_img):
+    """
+    Create Mu-Net level (lowest level).
+
+    :param L0_img: Input
+    :return: Level outputs
+    """
     conv1 = build_conv_layer(L0_img, num_filters=nf, filter_sz=fz, stride=1, padding='VALID',
                              relu_op=True, norm=False)
     if conv1.shape[1] == 1:
@@ -151,7 +198,15 @@ def munet_cnn_level_0(L0_img, name='munet'):
     return L0_L1, L0_pred
 
 
-def munet_cnn_level_1(L1_img, L0_L1= None, name = 'l1'):
+def munet_cnn_level_1(L1_img, L0_L1= None):
+    """
+    Create Mu-Net level.
+
+    :param L1_img: Input image
+    :param L0_L1: Output of next lower level
+    :return: Level outputs
+    """
+
     if L0_L1 is None:
         conv1 = build_conv_layer(tf.concat(L1_img, 4), num_filters=nf, filter_sz=fz, stride=1, padding='VALID',
                                  relu_op=True, norm=False)
@@ -217,7 +272,15 @@ def munet_cnn_level_1(L1_img, L0_L1= None, name = 'l1'):
     return L1_L2, L1_pred
 
 
-def munet_cnn_level_2(L2_img, L1_L2= None, name = 'l2'):
+def munet_cnn_level_2(L2_img, L1_L2= None):
+    """
+    Create Mu-Net level.
+
+    :param L2_img: Input image
+    :param L1_L2: Output of next lower level
+    :return: Level outputs
+    """
+
     if L1_L2 is None:
         conv1 = build_conv_layer(tf.concat(L2_img, 4), num_filters=nf, filter_sz=fz, stride=1, padding='VALID',
                              relu_op=True, norm=False)
@@ -284,7 +347,15 @@ def munet_cnn_level_2(L2_img, L1_L2= None, name = 'l2'):
     return L2_L3, L2_pred
 
 
-def munet_cnn_level_3(L3_img, L2_L3=None, name = 'l3'):
+def munet_cnn_level_3(L3_img, L2_L3=None):
+    """
+    Create Mu-Net level.
+
+    :param L3_img: Input image
+    :param L2_L3: Output of next lower level
+    :return: Level outputs
+    """
+
     if L2_L3 is None:
         conv1 = build_conv_layer(tf.concat(L3_img, 4), num_filters=nf, filter_sz=fz, stride=1, padding='VALID',
                              relu_op=True, norm=False)
@@ -347,21 +418,3 @@ def munet_cnn_level_3(L3_img, L2_L3=None, name = 'l3'):
     conv7_1 = build_conv_layer(conv7, num_filters=nf * 1, filter_sz=fz, stride=1, padding='VALID', relu_op=True)
     L3_pred = build_conv_layer(conv7_1, num_filters=1, filter_sz=fz, stride=1, padding='VALID', name ='L3_pred')
     return L3_pred
-
-
-def discriminator(img, name='disc'):
-    input_conv = build_conv_layer(img, num_filters=nf, filter_sz=fz, stride=1, padding='VALID', relu_op=True)
-
-    conv1 = build_conv_layer(input_conv, num_filters=nf, filter_sz=fz, stride=1, padding='VALID', relu_op=True)
-    conv1_pool = build_conv_layer(conv1, num_filters=nf, filter_sz=fz, stride=2, padding='VALID', relu_op=True)
-
-    conv2 = build_conv_layer(conv1_pool, num_filters=nf * 2, filter_sz=fz, stride=1, padding='VALID', relu_op=True)
-    conv2_pool = build_conv_layer(conv2, num_filters=nf * 2, filter_sz=fz, stride=2, padding='VALID', relu_op=True)
-
-    conv3 = build_conv_layer(conv2_pool, num_filters=nf * 4, filter_sz=fz, stride=1, padding='VALID', relu_op=True)
-    conv3_pool = build_conv_layer(conv3, num_filters=nf * 4, filter_sz=fz, stride=2, padding='VALID', relu_op=True)
-
-    conv4 = build_conv_layer(conv3_pool, num_filters=nf * 8, filter_sz=fz, stride=1, padding='VALID', relu_op=True)
-    response = build_conv_layer(conv4, num_filters=1, filter_sz=1, stride=1, padding='VALID')
-
-    return conv1, conv2, conv3, response

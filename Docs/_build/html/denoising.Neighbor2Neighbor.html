@@ -75,17 +75,168 @@
 <section id="denoising-neighbor2neighbor-data-loader-module">
 <h2>denoising.Neighbor2Neighbor.data_loader module<a class="headerlink" href="#denoising-neighbor2neighbor-data-loader-module" title="Permalink to this headline"></a></h2>
 </section>
-<section id="denoising-neighbor2neighbor-neighbor2neighbor-module">
-<h2>denoising.Neighbor2Neighbor.neighbor2neighbor module<a class="headerlink" href="#denoising-neighbor2neighbor-neighbor2neighbor-module" title="Permalink to this headline"></a></h2>
+<section id="module-denoising.Neighbor2Neighbor.neighbor2neighbor">
+<span id="denoising-neighbor2neighbor-neighbor2neighbor-module"></span><h2>denoising.Neighbor2Neighbor.neighbor2neighbor module<a class="headerlink" href="#module-denoising.Neighbor2Neighbor.neighbor2neighbor" title="Permalink to this headline"></a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="denoising.Neighbor2Neighbor.neighbor2neighbor.Neighbor2Neighbor">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">denoising.Neighbor2Neighbor.neighbor2neighbor.</span></span><span class="sig-name descname"><span class="pre">Neighbor2Neighbor</span></span><a class="headerlink" href="#denoising.Neighbor2Neighbor.neighbor2neighbor.Neighbor2Neighbor" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<dl class="py method">
+<dt class="sig sig-object py" id="denoising.Neighbor2Neighbor.neighbor2neighbor.Neighbor2Neighbor.predict">
+<span class="sig-name descname"><span class="pre">predict</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">checkpoint_dir</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">input</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">res_path</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#denoising.Neighbor2Neighbor.neighbor2neighbor.Neighbor2Neighbor.predict" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="denoising.Neighbor2Neighbor.neighbor2neighbor.Neighbor2Neighbor.predict_image">
+<span class="sig-name descname"><span class="pre">predict_image</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">checkpoint_dir</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">img</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">net</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#denoising.Neighbor2Neighbor.neighbor2neighbor.Neighbor2Neighbor.predict_image" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="denoising.Neighbor2Neighbor.neighbor2neighbor.Neighbor2Neighbor.train">
+<span class="sig-name descname"><span class="pre">train</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">train_data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">val_data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">res_path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lr</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.0003</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_epochs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">100</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">batch_size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">4</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#denoising.Neighbor2Neighbor.neighbor2neighbor.Neighbor2Neighbor.train" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
 </section>
-<section id="denoising-neighbor2neighbor-noise-augmetation-module">
-<h2>denoising.Neighbor2Neighbor.noise_augmetation module<a class="headerlink" href="#denoising-neighbor2neighbor-noise-augmetation-module" title="Permalink to this headline"></a></h2>
+<section id="module-denoising.Neighbor2Neighbor.noise_augmetation">
+<span id="denoising-neighbor2neighbor-noise-augmetation-module"></span><h2>denoising.Neighbor2Neighbor.noise_augmetation module<a class="headerlink" href="#module-denoising.Neighbor2Neighbor.noise_augmetation" title="Permalink to this headline"></a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="denoising.Neighbor2Neighbor.noise_augmetation.AugmentNoise">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">denoising.Neighbor2Neighbor.noise_augmetation.</span></span><span class="sig-name descname"><span class="pre">AugmentNoise</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">style</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#denoising.Neighbor2Neighbor.noise_augmetation.AugmentNoise" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<dl class="py method">
+<dt class="sig sig-object py" id="denoising.Neighbor2Neighbor.noise_augmetation.AugmentNoise.add_train_noise">
+<span class="sig-name descname"><span class="pre">add_train_noise</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#denoising.Neighbor2Neighbor.noise_augmetation.AugmentNoise.add_train_noise" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="denoising.Neighbor2Neighbor.noise_augmetation.AugmentNoise.add_valid_noise">
+<span class="sig-name descname"><span class="pre">add_valid_noise</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#denoising.Neighbor2Neighbor.noise_augmetation.AugmentNoise.add_valid_noise" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
 </section>
-<section id="denoising-neighbor2neighbor-utils-module">
-<h2>denoising.Neighbor2Neighbor.utils module<a class="headerlink" href="#denoising-neighbor2neighbor-utils-module" title="Permalink to this headline"></a></h2>
+<section id="module-denoising.Neighbor2Neighbor.utils">
+<span id="denoising-neighbor2neighbor-utils-module"></span><h2>denoising.Neighbor2Neighbor.utils module<a class="headerlink" href="#module-denoising.Neighbor2Neighbor.utils" title="Permalink to this headline"></a></h2>
+<dl class="py function">
+<dt class="sig sig-object py" id="denoising.Neighbor2Neighbor.utils.calculate_psnr">
+<span class="sig-prename descclassname"><span class="pre">denoising.Neighbor2Neighbor.utils.</span></span><span class="sig-name descname"><span class="pre">calculate_psnr</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">target</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ref</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#denoising.Neighbor2Neighbor.utils.calculate_psnr" title="Permalink to this definition"></a></dt>
+<dd><p>Calculate SSIM.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>target</strong> (<em>nd.array</em>) – Predicted image</p></li>
+<li><p><strong>ref</strong> (<em>nd.array</em>) – Target image</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>SSIM</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="denoising.Neighbor2Neighbor.utils.calculate_ssim">
+<span class="sig-prename descclassname"><span class="pre">denoising.Neighbor2Neighbor.utils.</span></span><span class="sig-name descname"><span class="pre">calculate_ssim</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">target</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ref</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#denoising.Neighbor2Neighbor.utils.calculate_ssim" title="Permalink to this definition"></a></dt>
+<dd><p>calculate SSIM
+the same outputs as MATLAB’s
+img1, img2: [0, 255]</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="denoising.Neighbor2Neighbor.utils.checkpoint">
+<span class="sig-prename descclassname"><span class="pre">denoising.Neighbor2Neighbor.utils.</span></span><span class="sig-name descname"><span class="pre">checkpoint</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">net</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">epoch</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">opt</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">systime</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#denoising.Neighbor2Neighbor.utils.checkpoint" title="Permalink to this definition"></a></dt>
+<dd><p>Save training checkpoint.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>net</strong> – PyTorch model</p></li>
+<li><p><strong>epoch</strong> (<em>int</em>) – Epoch number</p></li>
+<li><p><strong>name</strong> (<em>str</em>) – Model name</p></li>
+<li><p><strong>opt</strong> – Information about where to store checkpoint</p></li>
+<li><p><strong>systime</strong> – System time</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Path where checkpoint ist stored</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="denoising.Neighbor2Neighbor.utils.generate_mask_pair">
+<span class="sig-prename descclassname"><span class="pre">denoising.Neighbor2Neighbor.utils.</span></span><span class="sig-name descname"><span class="pre">generate_mask_pair</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">img</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#denoising.Neighbor2Neighbor.utils.generate_mask_pair" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="denoising.Neighbor2Neighbor.utils.generate_subimages">
+<span class="sig-prename descclassname"><span class="pre">denoising.Neighbor2Neighbor.utils.</span></span><span class="sig-name descname"><span class="pre">generate_subimages</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">img</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mask</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#denoising.Neighbor2Neighbor.utils.generate_subimages" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="denoising.Neighbor2Neighbor.utils.get_generator">
+<span class="sig-prename descclassname"><span class="pre">denoising.Neighbor2Neighbor.utils.</span></span><span class="sig-name descname"><span class="pre">get_generator</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#denoising.Neighbor2Neighbor.utils.get_generator" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="denoising.Neighbor2Neighbor.utils.load_checkpoint">
+<span class="sig-prename descclassname"><span class="pre">denoising.Neighbor2Neighbor.utils.</span></span><span class="sig-name descname"><span class="pre">load_checkpoint</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lr</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.0003</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_channel</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_feature</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">48</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#denoising.Neighbor2Neighbor.utils.load_checkpoint" title="Permalink to this definition"></a></dt>
+<dd><p>Load checkpoint from file.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>path</strong> (<em>str</em>) – Path to checkpoint.</p></li>
+<li><p><strong>lr</strong> (<em>float</em><em>, </em><em>optional</em>) – Learning rate, defaults to 3e-4</p></li>
+<li><p><strong>n_channel</strong> (<em>int</em><em>, </em><em>optional</em>) – Number of channels, defaults to 1</p></li>
+<li><p><strong>n_feature</strong> (<em>int</em><em>, </em><em>optional</em>) – Number of features, defaults to 48</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Pytorch network</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="denoising.Neighbor2Neighbor.utils.load_img">
+<span class="sig-prename descclassname"><span class="pre">denoising.Neighbor2Neighbor.utils.</span></span><span class="sig-name descname"><span class="pre">load_img</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dataset_dir</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#denoising.Neighbor2Neighbor.utils.load_img" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="denoising.Neighbor2Neighbor.utils.load_val_images">
+<span class="sig-prename descclassname"><span class="pre">denoising.Neighbor2Neighbor.utils.</span></span><span class="sig-name descname"><span class="pre">load_val_images</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dataset_dir</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#denoising.Neighbor2Neighbor.utils.load_val_images" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="denoising.Neighbor2Neighbor.utils.space_to_depth">
+<span class="sig-prename descclassname"><span class="pre">denoising.Neighbor2Neighbor.utils.</span></span><span class="sig-name descname"><span class="pre">space_to_depth</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">block_size</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#denoising.Neighbor2Neighbor.utils.space_to_depth" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="denoising.Neighbor2Neighbor.utils.ssim">
+<span class="sig-prename descclassname"><span class="pre">denoising.Neighbor2Neighbor.utils.</span></span><span class="sig-name descname"><span class="pre">ssim</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">prediction</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">target</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#denoising.Neighbor2Neighbor.utils.ssim" title="Permalink to this definition"></a></dt>
+<dd><p>Calculate SSIM.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>prediction</strong> (<em>nd.array</em>) – Predicted image</p></li>
+<li><p><strong>target</strong> (<em>nd.array</em>) – Target image</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>SSIM</p>
+</dd>
+</dl>
+</dd></dl>
+
 </section>
 <section id="module-denoising.Neighbor2Neighbor">
 <span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-denoising.Neighbor2Neighbor" title="Permalink to this headline"></a></h2>
+<p>Adjusted code from implementation provided along publication:
+Huang, Tao, et al. “Neighbor2neighbor: Self-supervised denoising from single noisy images.”
+Proceedings of the IEEE/CVF Conference on Computer Vision and Pattern Recognition. 2021.</p>
 </section>
 </section>
 

@@ -11,6 +11,18 @@ MIN_VAL = -2327
 operation_seed_counter = 0
 
 def checkpoint(net, epoch, name, opt, systime):
+    """
+    Save training checkpoint.
+
+    :param net: PyTorch model
+    :param epoch: Epoch number
+    :type epoch: int
+    :param name: Model name
+    :type name: str
+    :param opt: Information about where to store checkpoint
+    :param systime: System time
+    :return: Path where checkpoint ist stored
+    """
     save_model_path = os.path.join(opt.save_model_path, opt.log_name, systime)
     os.makedirs(save_model_path, exist_ok=True)
     model_name = 'epoch_{}_{:03d}.pth'.format(name, epoch)
@@ -21,6 +33,19 @@ def checkpoint(net, epoch, name, opt, systime):
 
 
 def load_checkpoint(path, lr =3e-4, n_channel=1, n_feature=48):
+    """
+    Load checkpoint from file.
+
+    :param path: Path to checkpoint.
+    :type path: str
+    :param lr: Learning rate, defaults to 3e-4
+    :type lr: float, optional
+    :param n_channel: Number of channels, defaults to 1
+    :type n_channel: int, optional
+    :param n_feature: Number of features, defaults to 48
+    :type n_feature: int, optional
+    :return: Pytorch network
+    """
     net = UNet(in_nc=n_channel,
                out_nc=n_channel,
                n_feature=n_feature)
@@ -107,23 +132,16 @@ def load_img(dataset_dir, name):
 
 
 def ssim(prediction, target):
-    # C1 = (0.01 * MAX_VAL)**2
-    # C2 = (0.03 * MAX_VAL)**2
-    # img1 = prediction.astype(np.float64)
-    # img2 = target.astype(np.float64)
-    # kernel = cv2.getGaussianKernel(11, 1.5)
-    # window = np.outer(kernel, kernel.transpose())
-    # mu1 = cv2.filter3D(img1, -1, window)[5:-5, 5:-5]  # valid
-    # mu2 = cv2.filter2D(img2, -1, window)[5:-5, 5:-5]
-    # mu1_sq = mu1**2
-    # mu2_sq = mu2**2
-    # mu1_mu2 = mu1 * mu2
-    # sigma1_sq = cv2.filter2D(img1**2, -1, window)[5:-5, 5:-5] - mu1_sq
-    # sigma2_sq = cv2.filter2D(img2**2, -1, window)[5:-5, 5:-5] - mu2_sq
-    # sigma12 = cv2.filter2D(img1 * img2, -1, window)[5:-5, 5:-5] - mu1_mu2
-    # ssim_map = ((2 * mu1_mu2 + C1) *
-    #             (2 * sigma12 + C2)) / ((mu1_sq + mu2_sq + C1) *
-    #                                    (sigma1_sq + sigma2_sq + C2))
+    """
+    Calculate SSIM.
+
+    :param prediction: Predicted image
+    :type prediction: nd.array
+    :param target: Target image
+    :type target: nd.array
+    :return: SSIM
+    """
+
     return sk_ssim(prediction, target)
 
 
@@ -152,6 +170,16 @@ def calculate_ssim(target, ref):
 
 
 def calculate_psnr(target, ref):
+    """
+    Calculate SSIM.
+
+    :param target: Predicted image
+    :type target: nd.array
+    :param ref: Target image
+    :type ref: nd.array
+    :return: SSIM
+    """
+
     img1 = np.array(target, dtype=np.float32)
     img2 = np.array(ref, dtype=np.float32)
     diff = img1 - img2

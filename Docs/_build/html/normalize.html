@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>normalize module &mdash; MasterThesis: Of Spines And Dendrites  documentation</title>
+  <title>normalize &mdash; MasterThesis: Of Spines And Dendrites  documentation</title>
       <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
@@ -18,8 +18,8 @@
     <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="utils module" href="utils.html" />
-    <link rel="prev" title="imagequalitymetrics module" href="imagequalitymetrics.html" /> 
+    <link rel="next" title="utils" href="utils.html" />
+    <link rel="prev" title="imagequalitymetrics" href="imagequalitymetrics.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -41,13 +41,13 @@
 <ul class="current">
 <li class="toctree-l1 current"><a class="reference internal" href="modules.html">MasterThesis_OfSpinesAndDendrites</a><ul class="current">
 <li class="toctree-l2"><a class="reference internal" href="SIREN.html">SIREN package</a></li>
-<li class="toctree-l2"><a class="reference internal" href="UI_Test_img.html">UI_Test_img module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="data_augmentation.html">data_augmentation module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="UI_Test_img.html">UI_Test_img</a></li>
+<li class="toctree-l2"><a class="reference internal" href="data_augmentation.html">data_augmentation</a></li>
 <li class="toctree-l2"><a class="reference internal" href="deconv.html">deconv package</a></li>
-<li class="toctree-l2"><a class="reference internal" href="denoising.html">denoising module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="imagequalitymetrics.html">imagequalitymetrics module</a></li>
-<li class="toctree-l2 current"><a class="current reference internal" href="#">normalize module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="utils.html">utils module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="denoising.html">denoising</a></li>
+<li class="toctree-l2"><a class="reference internal" href="imagequalitymetrics.html">imagequalitymetrics</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">normalize</a></li>
+<li class="toctree-l2"><a class="reference internal" href="utils.html">utils</a></li>
 </ul>
 </li>
 </ul>
@@ -67,7 +67,7 @@
   <ul class="wy-breadcrumbs">
       <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
           <li><a href="modules.html">MasterThesis_OfSpinesAndDendrites</a> &raquo;</li>
-      <li>normalize module</li>
+      <li>normalize</li>
       <li class="wy-breadcrumbs-aside">
             <a href="_sources/normalize.rst.txt" rel="nofollow"> View page source</a>
       </li>
@@ -78,15 +78,32 @@
            <div itemprop="articleBody">
              
   <section id="module-normalize">
-<span id="normalize-module"></span><h1>normalize module<a class="headerlink" href="#module-normalize" title="Permalink to this headline"></a></h1>
+<span id="normalize"></span><h1>normalize<a class="headerlink" href="#module-normalize" title="Permalink to this headline"></a></h1>
 <dl class="py class">
 <dt class="sig sig-object py" id="normalize.MinMaxNormalizer">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">normalize.</span></span><span class="sig-name descname"><span class="pre">MinMaxNormalizer</span></span><a class="headerlink" href="#normalize.MinMaxNormalizer" title="Permalink to this definition"></a></dt>
 <dd><p>Bases: <a class="reference internal" href="#normalize.Normalizer" title="normalize.Normalizer"><code class="xref py py-class docutils literal notranslate"><span class="pre">normalize.Normalizer</span></code></a></p>
+<p>Min-Max-Normalization.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="normalize.MinMaxNormalizer.normalize">
 <span class="sig-name descname"><span class="pre">normalize</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">img</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">min</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#normalize.MinMaxNormalizer.normalize" title="Permalink to this definition"></a></dt>
-<dd></dd></dl>
+<dd><p>Normalize input to range of 0 and 1.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>img</strong> – Input image</p></li>
+<li><p><strong>min</strong> (<em>float</em><em>, </em><em>optional</em>) – Minimum value</p></li>
+<li><p><strong>max</strong> (<em>float</em><em>, </em><em>optional</em>) – Maximum value</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Normalized Input</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>nd.array</p>
+</dd>
+</dl>
+</dd></dl>
 
 </dd></dl>
 
@@ -94,51 +111,68 @@
 <dt class="sig sig-object py" id="normalize.Normalizer">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">normalize.</span></span><span class="sig-name descname"><span class="pre">Normalizer</span></span><a class="headerlink" href="#normalize.Normalizer" title="Permalink to this definition"></a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Super-class for implemented normalization-approaches. Every derived class overwrited the normalize method according
+to its functionality.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="normalize.Normalizer.normalize">
 <span class="sig-name descname"><span class="pre">normalize</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#normalize.Normalizer.normalize" title="Permalink to this definition"></a></dt>
-<dd></dd></dl>
+<dd><p>Implemented in derived classes</p>
+</dd></dl>
 
 </dd></dl>
 
 <dl class="py class">
 <dt class="sig sig-object py" id="normalize.PercentileNormalizer">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">normalize.</span></span><span class="sig-name descname"><span class="pre">PercentileNormalizer</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pmin=2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pmax=99.9</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">do_after=True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dtype=&lt;class</span> <span class="pre">'numpy.float32'&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">**kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#normalize.PercentileNormalizer" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">normalize.</span></span><span class="sig-name descname"><span class="pre">PercentileNormalizer</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pmin=2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pmax=99.9</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dtype=&lt;class</span> <span class="pre">'numpy.float32'&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">**kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#normalize.PercentileNormalizer" title="Permalink to this definition"></a></dt>
 <dd><p>Bases: <a class="reference internal" href="#normalize.Normalizer" title="normalize.Normalizer"><code class="xref py py-class docutils literal notranslate"><span class="pre">normalize.Normalizer</span></code></a></p>
-<p>Percentile-based image normalization.
-Parameters
-———-
-pmin : float</p>
-<blockquote>
-<div><p>Low percentile.</p>
-</div></blockquote>
-<dl class="simple">
-<dt>pmax<span class="classifier">float</span></dt><dd><p>High percentile.</p>
-</dd>
-<dt>do_after<span class="classifier">bool</span></dt><dd><p>Flag to indicate whether to undo normalization (original data type will not be restored).</p>
-</dd>
-<dt>dtype<span class="classifier">type</span></dt><dd><p>Data type after normalization.</p>
-</dd>
-<dt>kwargs<span class="classifier">dict</span></dt><dd><p>Keyword arguments for <code class="xref py py-func docutils literal notranslate"><span class="pre">csbdeep.utils.normalize_mi_ma()</span></code>.</p>
-</dd>
-</dl>
+<p>Percentile-based image normalization. Adjusted from CSBDeep package.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="normalize.PercentileNormalizer.normalize">
 <span class="sig-name descname"><span class="pre">normalize</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#normalize.PercentileNormalizer.normalize" title="Permalink to this definition"></a></dt>
-<dd><p>Percentile-based normalization of raw input image.
-See <code class="xref py py-func docutils literal notranslate"><span class="pre">csbdeep.predict.Normalizer.before()</span></code> for parameter descriptions.
-Note that percentiles are computed individually for each channel (if present in <cite>axes</cite>).</p>
+<dd><p>Percentile-based normalization of raw input image.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>x</strong> (<em>nd.array</em>) – Input to be normalized</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="normalize.PercentileNormalizer.normalize_mi_ma">
 <span class="sig-name descname"><span class="pre">normalize_mi_ma</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mi</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ma</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">clip=False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">eps=1e-20</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dtype=&lt;class</span> <span class="pre">'numpy.float32'&gt;</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#normalize.PercentileNormalizer.normalize_mi_ma" title="Permalink to this definition"></a></dt>
-<dd></dd></dl>
+<dd><p>Normalize input given minimum and maximum values.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>x</strong> (<em>nd.array</em>) – Input to be normalized</p></li>
+<li><p><strong>mi</strong> (<em>float</em><em> or </em><em>ndarray</em>) – Minimum value</p></li>
+<li><p><strong>ma</strong> (<em>float</em><em> or </em><em>ndarray</em>) – Maximum value</p></li>
+<li><p><strong>clip</strong> (<em>bool</em><em>, </em><em>optional</em>) – Flag whether tio clip the output to range of 0 to 1, defaults to False</p></li>
+<li><p><strong>eps</strong> (<em>float</em><em>, </em><em>optional</em>) – Constant to avoid division by zero, defaults to 1e-20</p></li>
+<li><p><strong>dtype</strong> (<em>type</em><em>, </em><em>optional</em>) – Data type after normalization, defaults to np.float32</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Normalized input</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>nd.array</p>
+</dd>
+</dl>
+</dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="normalize.PercentileNormalizer.normalize_minmse">
 <span class="sig-name descname"><span class="pre">normalize_minmse</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">target</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#normalize.PercentileNormalizer.normalize_minmse" title="Permalink to this definition"></a></dt>
 <dd><p>Affine rescaling of x, such that the mean squared error to target is minimal.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>x</strong> (<em>nd.array</em>) – Moving image</p></li>
+<li><p><strong>target</strong> (<em>nd.array</em>) – Target image</p></li>
+</ul>
+</dd>
+</dl>
 </dd></dl>
 
 </dd></dl>
@@ -147,10 +181,27 @@ Note that percentiles are computed individually for each channel (if present in 
 <dt class="sig sig-object py" id="normalize.Rescaler">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">normalize.</span></span><span class="sig-name descname"><span class="pre">Rescaler</span></span><a class="headerlink" href="#normalize.Rescaler" title="Permalink to this definition"></a></dt>
 <dd><p>Bases: <a class="reference internal" href="#normalize.Normalizer" title="normalize.Normalizer"><code class="xref py py-class docutils literal notranslate"><span class="pre">normalize.Normalizer</span></code></a></p>
+<p>Rescale input to new value range.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="normalize.Rescaler.normalize">
 <span class="sig-name descname"><span class="pre">normalize</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">img</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">new_min</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">new_max</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#normalize.Rescaler.normalize" title="Permalink to this definition"></a></dt>
-<dd></dd></dl>
+<dd><p>Rescale input to new value range.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>img</strong> – Input image</p></li>
+<li><p><strong>new_min</strong> (<em>float</em><em>, </em><em>optional</em>) – Minimum value after rescaljng</p></li>
+<li><p><strong>new_max</strong> (<em>float</em><em>, </em><em>optional</em>) – Maximum value  after rescaljng</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Normalized Input</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>nd.array</p>
+</dd>
+</dl>
+</dd></dl>
 
 </dd></dl>
 
@@ -160,8 +211,8 @@ Note that percentiles are computed individually for each channel (if present in 
            </div>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="imagequalitymetrics.html" class="btn btn-neutral float-left" title="imagequalitymetrics module" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="utils.html" class="btn btn-neutral float-right" title="utils module" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="imagequalitymetrics.html" class="btn btn-neutral float-left" title="imagequalitymetrics" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="utils.html" class="btn btn-neutral float-right" title="utils" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>

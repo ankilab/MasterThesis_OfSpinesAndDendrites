@@ -18,7 +18,7 @@
     <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="UI_Test_img module" href="UI_Test_img.html" />
+    <link rel="next" title="UI_Test_img" href="UI_Test_img.html" />
     <link rel="prev" title="MasterThesis_OfSpinesAndDendrites" href="modules.html" /> 
 </head>
 
@@ -41,19 +41,12 @@
 <ul class="current">
 <li class="toctree-l1 current"><a class="reference internal" href="modules.html">MasterThesis_OfSpinesAndDendrites</a><ul class="current">
 <li class="toctree-l2 current"><a class="current reference internal" href="#">SIREN package</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#submodules">Submodules</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#module-SIREN.application">SIREN.application module</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#siren-learn-subsampled-module">SIREN.learn_subsampled module</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#siren-motion-correction-module">SIREN.motion_correction module</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#module-SIREN.network">SIREN.network module</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#siren-siren-torch-module">SIREN.siren_torch module</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#siren-test-module">SIREN.test module</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#siren-test-torch-module">SIREN.test_torch module</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#module-SIREN.utils">SIREN.utils module</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#module-SIREN">Module contents</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#module-SIREN.application">SIREN.application</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#module-SIREN.network">SIREN.network</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#module-SIREN.utils">SIREN.utils</a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="UI_Test_img.html">UI_Test_img module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="UI_Test_img.html">UI_Test_img</a></li>
 <li class="toctree-l2"><a class="reference internal" href="data_augmentation.html">data_augmentation module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="deconv.html">deconv package</a></li>
 <li class="toctree-l2"><a class="reference internal" href="denoising.html">denoising module</a></li>
@@ -91,29 +84,46 @@
              
   <section id="siren-package">
 <h1>SIREN package<a class="headerlink" href="#siren-package" title="Permalink to this headline"></a></h1>
-<section id="submodules">
-<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline"></a></h2>
-</section>
 <section id="module-SIREN.application">
-<span id="siren-application-module"></span><h2>SIREN.application module<a class="headerlink" href="#module-SIREN.application" title="Permalink to this headline"></a></h2>
+<span id="siren-application"></span><h2>SIREN.application<a class="headerlink" href="#module-SIREN.application" title="Permalink to this headline"></a></h2>
 <dl class="py class">
 <dt class="sig sig-object py" id="SIREN.application.InterplanePrediction">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">SIREN.application.</span></span><span class="sig-name descname"><span class="pre">InterplanePrediction</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">args</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#SIREN.application.InterplanePrediction" title="Permalink to this definition"></a></dt>
 <dd><p>Bases: <a class="reference internal" href="#SIREN.application.SIREN_application" title="SIREN.application.SIREN_application"><code class="xref py py-class docutils literal notranslate"><span class="pre">SIREN.application.SIREN_application</span></code></a></p>
+<p>Implements learning the implicit representation of the training data and allows for predicting function
+values at arbitrary positions.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="SIREN.application.InterplanePrediction.preprocess">
 <span class="sig-name descname"><span class="pre">preprocess</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">img3d</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">train_plane_step_size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">2</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#SIREN.application.InterplanePrediction.preprocess" title="Permalink to this definition"></a></dt>
-<dd></dd></dl>
+<dd><p>Preprocess data: create input grid and split data into training and validation or test set.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>img3d</strong> (<em>nd.array</em>) – Input data (e.g. image stack)</p></li>
+<li><p><strong>train_plane_step_size</strong> (<em>int</em>) – Offset between training planes. Remaining planes are assigned to validation or
+test set.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Training and test data.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>dict, dict</p>
+</dd>
+</dl>
+</dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="SIREN.application.InterplanePrediction.test">
 <span class="sig-name descname"><span class="pre">test</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">X</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#SIREN.application.InterplanePrediction.test" title="Permalink to this definition"></a></dt>
-<dd></dd></dl>
+<dd><p>Calls super-class implementation.</p>
+</dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="SIREN.application.InterplanePrediction.train">
 <span class="sig-name descname"><span class="pre">train</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">X</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_steps</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1000</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">steps_to_plot</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1000</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">batch_size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">result_path</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'./'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#SIREN.application.InterplanePrediction.train" title="Permalink to this definition"></a></dt>
-<dd></dd></dl>
+<dd><p>Calls super-class implementation.</p>
+</dd></dl>
 
 </dd></dl>
 
@@ -121,20 +131,40 @@
 <dt class="sig sig-object py" id="SIREN.application.Motion_Correction">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">SIREN.application.</span></span><span class="sig-name descname"><span class="pre">Motion_Correction</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">args</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#SIREN.application.Motion_Correction" title="Permalink to this definition"></a></dt>
 <dd><p>Bases: <a class="reference internal" href="#SIREN.application.SIREN_application" title="SIREN.application.SIREN_application"><code class="xref py py-class docutils literal notranslate"><span class="pre">SIREN.application.SIREN_application</span></code></a></p>
+<p>Implements learning the implicit representation of several images of the same scene. We found that this allows for
+correcting motion artifacts.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="SIREN.application.Motion_Correction.preprocess">
 <span class="sig-name descname"><span class="pre">preprocess</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data_path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">img_name</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#SIREN.application.Motion_Correction.preprocess" title="Permalink to this definition"></a></dt>
-<dd></dd></dl>
+<dd><p>Create data structures for training. Assumed that the repetitions are named with the same file name and an
+appended index. E.g. stack1.tif, stack2.tif, stack3.tif</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>data_path</strong> – Data path to location where repetitions of one scene are found.</p></li>
+<li><p><strong>img_name</strong> – Name of the image to be processed e.g. stack.tif</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Training data, batch size (= size of one image)</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>dict, int</p>
+</dd>
+</dl>
+</dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="SIREN.application.Motion_Correction.test">
 <span class="sig-name descname"><span class="pre">test</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">X</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#SIREN.application.Motion_Correction.test" title="Permalink to this definition"></a></dt>
-<dd></dd></dl>
+<dd><p>Calls super-class implementation.</p>
+</dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="SIREN.application.Motion_Correction.train">
-<span class="sig-name descname"><span class="pre">train</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">X</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_steps</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1000</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">steps_to_plot</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1000</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">batch_size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">result_path</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'./'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#SIREN.application.Motion_Correction.train" title="Permalink to this definition"></a></dt>
-<dd></dd></dl>
+<span class="sig-name descname"><span class="pre">train</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">X</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_steps</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1000</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">batch_size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">result_path</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'./'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#SIREN.application.Motion_Correction.train" title="Permalink to this definition"></a></dt>
+<dd><p>Calls super-class implementation.</p>
+</dd></dl>
 
 </dd></dl>
 
@@ -142,126 +172,223 @@
 <dt class="sig sig-object py" id="SIREN.application.SIREN_application">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">SIREN.application.</span></span><span class="sig-name descname"><span class="pre">SIREN_application</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">args</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#SIREN.application.SIREN_application" title="Permalink to this definition"></a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Super-class for applications based on SIREN. Each object has a preprocess, train and test function.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="SIREN.application.SIREN_application.preprocess">
 <span class="sig-name descname"><span class="pre">preprocess</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#SIREN.application.SIREN_application.preprocess" title="Permalink to this definition"></a></dt>
-<dd></dd></dl>
+<dd><p>Implemeted in derived classes.</p>
+</dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="SIREN.application.SIREN_application.test">
 <span class="sig-name descname"><span class="pre">test</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">X</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#SIREN.application.SIREN_application.test" title="Permalink to this definition"></a></dt>
-<dd></dd></dl>
+<dd><p>Compute predictions for input data.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>X</strong> – Input data</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Predictions</p>
+</dd>
+</dl>
+</dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="SIREN.application.SIREN_application.train">
-<span class="sig-name descname"><span class="pre">train</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">X</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_steps</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">steps_to_plot</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">batch_size</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">result_path</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#SIREN.application.SIREN_application.train" title="Permalink to this definition"></a></dt>
-<dd></dd></dl>
+<span class="sig-name descname"><span class="pre">train</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">X</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_steps</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">batch_size</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">result_path</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#SIREN.application.SIREN_application.train" title="Permalink to this definition"></a></dt>
+<dd><p>Train SIREN network.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>X</strong> (<em>dict with 'grid' and 'y'</em>) – Input data providing the coordinates (X[‘grid’]) and the corresponding output value (X[‘y’])
+e.g. for images the pixel coordinates (x,y,z) are given and the gray value.</p></li>
+<li><p><strong>n_steps</strong> (<em>int</em>) – Number of training steps</p></li>
+<li><p><strong>batch_size</strong> (<em>int</em>) – Batch size</p></li>
+<li><p><strong>result_path</strong> (<em>str</em>) – Path to folder where to model weights</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Training loss</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>list[float]</p>
+</dd>
+</dl>
+</dd></dl>
 
 </dd></dl>
 
 </section>
-<section id="siren-learn-subsampled-module">
-<h2>SIREN.learn_subsampled module<a class="headerlink" href="#siren-learn-subsampled-module" title="Permalink to this headline"></a></h2>
-</section>
-<section id="siren-motion-correction-module">
-<h2>SIREN.motion_correction module<a class="headerlink" href="#siren-motion-correction-module" title="Permalink to this headline"></a></h2>
-</section>
 <section id="module-SIREN.network">
-<span id="siren-network-module"></span><h2>SIREN.network module<a class="headerlink" href="#module-SIREN.network" title="Permalink to this headline"></a></h2>
+<span id="siren-network"></span><h2>SIREN.network<a class="headerlink" href="#module-SIREN.network" title="Permalink to this headline"></a></h2>
 <dl class="py class">
 <dt class="sig sig-object py" id="SIREN.network.SIREN">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">SIREN.network.</span></span><span class="sig-name descname"><span class="pre">SIREN</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">in_features</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">hidden_features</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">hidden_layers</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">out_features</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">outermost_linear</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">first_omega_0</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">30.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">hidden_omega_0</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">30.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sine</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#SIREN.network.SIREN" title="Permalink to this definition"></a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Network with sinosoidal activation functions, based on:
+“Sitzmann, Vincent, et al. “Implicit neural representations with periodic activation functions.” Advances in Neural
+Information Processing Systems 33 (2020): 7462-7473.”</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="SIREN.network.SIREN.SineActivation">
 <span class="sig-name descname"><span class="pre">SineActivation</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">omega_0</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#SIREN.network.SIREN.SineActivation" title="Permalink to this definition"></a></dt>
-<dd></dd></dl>
+<dd><p>Sinusoidal activation.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>x</strong> – input</p></li>
+<li><p><strong>omega_0</strong> (<em>float</em>) – Frequency tuning parameter</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>sinusoidal activated input</p>
+</dd>
+</dl>
+</dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="SIREN.network.SIREN.SineLayer">
-<span class="sig-name descname"><span class="pre">SineLayer</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">in_features</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">out_features</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bias</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">is_first</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">omega_0</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">30.0</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#SIREN.network.SIREN.SineLayer" title="Permalink to this definition"></a></dt>
-<dd></dd></dl>
+<span class="sig-name descname"><span class="pre">SineLayer</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">X</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">in_features</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">out_features</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bias</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">is_first</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">omega_0</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">30.0</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#SIREN.network.SIREN.SineLayer" title="Permalink to this definition"></a></dt>
+<dd><p>Fully connected layer with sinus activation.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>X</strong> – Input</p></li>
+<li><p><strong>in_features</strong> (<em>int</em>) – Number of inputs</p></li>
+<li><p><strong>out_features</strong> (<em>int</em>) – Number of outputs</p></li>
+<li><p><strong>bias</strong> (<em>bool</em>) – Whether to use bias</p></li>
+<li><p><strong>is_first</strong> (<em>bool</em>) – Whether it is the first layer</p></li>
+<li><p><strong>omega_0</strong> (<em>float</em>) – Frequency tuning parameter</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Layer output</p>
+</dd>
+</dl>
+</dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="SIREN.network.SIREN.model_setup">
 <span class="sig-name descname"><span class="pre">model_setup</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#SIREN.network.SIREN.model_setup" title="Permalink to this definition"></a></dt>
-<dd></dd></dl>
+<dd><p>Initialize and compile network based on object parameters set at initialization.</p>
+</dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="SIREN.network.SIREN.predict">
-<span class="sig-name descname"><span class="pre">predict</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">X</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">batchsize</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#SIREN.network.SIREN.predict" title="Permalink to this definition"></a></dt>
-<dd></dd></dl>
+<span class="sig-name descname"><span class="pre">predict</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">X</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">batch_size</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#SIREN.network.SIREN.predict" title="Permalink to this definition"></a></dt>
+<dd><p>Predict output for input data.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>X</strong> – Input data</p></li>
+<li><p><strong>batch_size</strong> – Batch size</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Predictions</p>
+</dd>
+</dl>
+</dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="SIREN.network.SIREN.preprocess">
 <span class="sig-name descname"><span class="pre">preprocess</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">X</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#SIREN.network.SIREN.preprocess" title="Permalink to this definition"></a></dt>
-<dd></dd></dl>
+<dd><p>Preprocessing: None required.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>X</strong> – Input data</p></li>
+<li><p><strong>y</strong> – Output data</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="SIREN.network.SIREN.train">
-<span class="sig-name descname"><span class="pre">train</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">steps</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">X</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">step_to_plot</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">orig_shape</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">batch_size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">128</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#SIREN.network.SIREN.train" title="Permalink to this definition"></a></dt>
-<dd></dd></dl>
+<span class="sig-name descname"><span class="pre">train</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">steps</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">X</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">batch_size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#SIREN.network.SIREN.train" title="Permalink to this definition"></a></dt>
+<dd><p>Train the network.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>steps</strong> (<em>int</em>) – Number of training steps</p></li>
+<li><p><strong>X</strong> – Input data</p></li>
+<li><p><strong>y</strong> – Output data (ground truth)</p></li>
+<li><p><strong>batch_size</strong> (<em>int</em><em> or </em><em>NoneType</em>) – Batch size</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Loss over training training time</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>list[float]</p>
+</dd>
+</dl>
+</dd></dl>
 
 </dd></dl>
 
-<dl class="py function">
-<dt class="sig sig-object py" id="SIREN.network.get_dataset">
-<span class="sig-prename descclassname"><span class="pre">SIREN.network.</span></span><span class="sig-name descname"><span class="pre">get_dataset</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filename</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#SIREN.network.get_dataset" title="Permalink to this definition"></a></dt>
-<dd></dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="SIREN.network.parse_single_item">
-<span class="sig-prename descclassname"><span class="pre">SIREN.network.</span></span><span class="sig-name descname"><span class="pre">parse_single_item</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">X</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">label</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#SIREN.network.parse_single_item" title="Permalink to this definition"></a></dt>
-<dd></dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="SIREN.network.read_element">
-<span class="sig-prename descclassname"><span class="pre">SIREN.network.</span></span><span class="sig-name descname"><span class="pre">read_element</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">element</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#SIREN.network.read_element" title="Permalink to this definition"></a></dt>
-<dd></dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="SIREN.network.serialize_array">
-<span class="sig-prename descclassname"><span class="pre">SIREN.network.</span></span><span class="sig-name descname"><span class="pre">serialize_array</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">array</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#SIREN.network.serialize_array" title="Permalink to this definition"></a></dt>
-<dd></dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="SIREN.network.write_to_file">
-<span class="sig-prename descclassname"><span class="pre">SIREN.network.</span></span><span class="sig-name descname"><span class="pre">write_to_file</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">X</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">path</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#SIREN.network.write_to_file" title="Permalink to this definition"></a></dt>
-<dd></dd></dl>
-
-</section>
-<section id="siren-siren-torch-module">
-<h2>SIREN.siren_torch module<a class="headerlink" href="#siren-siren-torch-module" title="Permalink to this headline"></a></h2>
-</section>
-<section id="siren-test-module">
-<h2>SIREN.test module<a class="headerlink" href="#siren-test-module" title="Permalink to this headline"></a></h2>
-</section>
-<section id="siren-test-torch-module">
-<h2>SIREN.test_torch module<a class="headerlink" href="#siren-test-torch-module" title="Permalink to this headline"></a></h2>
 </section>
 <section id="module-SIREN.utils">
-<span id="siren-utils-module"></span><h2>SIREN.utils module<a class="headerlink" href="#module-SIREN.utils" title="Permalink to this headline"></a></h2>
+<span id="siren-utils"></span><h2>SIREN.utils<a class="headerlink" href="#module-SIREN.utils" title="Permalink to this headline"></a></h2>
 <dl class="py function">
 <dt class="sig sig-object py" id="SIREN.utils.flatten_meshgrid">
 <span class="sig-prename descclassname"><span class="pre">SIREN.utils.</span></span><span class="sig-name descname"><span class="pre">flatten_meshgrid</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">shape</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">xx</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">yy</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">zz</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#SIREN.utils.flatten_meshgrid" title="Permalink to this definition"></a></dt>
-<dd></dd></dl>
+<dd><p>Reshape grid such that corresponding x-y-z values are aligned.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>shape</strong> (<em>tuple</em><em>(</em><em>int</em><em>, </em><em>int</em><em>, </em><em>int</em><em>)</em>) – Input shape (i.e. image shape)</p></li>
+<li><p><strong>xx</strong> (<em>nd.array</em>) – Grid values in x-direction</p></li>
+<li><p><strong>yy</strong> (<em>nd.array</em>) – Grid values in y-direction</p></li>
+<li><p><strong>zz</strong> (<em>nd.array</em>) – Grid values in z-direction</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Reshaped grid</p>
+</dd>
+</dl>
+</dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="SIREN.utils.get_mgrid3">
-<span class="sig-prename descclassname"><span class="pre">SIREN.utils.</span></span><span class="sig-name descname"><span class="pre">get_mgrid3</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">shape</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">x</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">z</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.1</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#SIREN.utils.get_mgrid3" title="Permalink to this definition"></a></dt>
-<dd><p>Generates a flattened grid of (x,y,…) coordinates in a range of -1 to 1.
-sidelen: int
-dim: int</p>
+<span class="sig-prename descclassname"><span class="pre">SIREN.utils.</span></span><span class="sig-name descname"><span class="pre">get_mgrid3</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">shape</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">x</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">z</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.1</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#SIREN.utils.get_mgrid3" title="Permalink to this definition"></a></dt>
+<dd><p>Generates a flattened grid of (x,y,…) coordinates in a range of -1 to 1.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>shape</strong> (<em>tuple</em><em>(</em><em>int</em><em>, </em><em>int</em><em>, </em><em>int</em><em>)</em>) – Input shape (i.e. image shape)</p></li>
+<li><p><strong>x</strong> (<em>float</em>) – Maximum grid value in x-direction</p></li>
+<li><p><strong>y</strong> (<em>float</em>) – Maximum grid value in y-direction</p></li>
+<li><p><strong>z</strong> (<em>float</em>) – Maximum grid value in z-direction</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Rescaled grid</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="SIREN.utils.rescale_indices">
 <span class="sig-prename descclassname"><span class="pre">SIREN.utils.</span></span><span class="sig-name descname"><span class="pre">rescale_indices</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">shape</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">x</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">z</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.1</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#SIREN.utils.rescale_indices" title="Permalink to this definition"></a></dt>
-<dd></dd></dl>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>shape</strong> (<em>tuple</em><em>(</em><em>int</em><em>, </em><em>int</em><em>, </em><em>int</em><em>)</em>) – Input shape (i.e. image shape)</p></li>
+<li><p><strong>x</strong> (<em>float</em>) – Maximum grid value in x-direction</p></li>
+<li><p><strong>y</strong> (<em>float</em>) – Maximum grid value in y-direction</p></li>
+<li><p><strong>z</strong> (<em>float</em>) – Maximum grid value in z-direction</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Meshgrid (x,y,z-direction)</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>nd.array, nd.array, nd.array</p>
+</dd>
+</dl>
+</dd></dl>
 
-</section>
-<section id="module-SIREN">
-<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-SIREN" title="Permalink to this headline"></a></h2>
 </section>
 </section>
 
@@ -270,7 +397,7 @@ dim: int</p>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
         <a href="modules.html" class="btn btn-neutral float-left" title="MasterThesis_OfSpinesAndDendrites" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="UI_Test_img.html" class="btn btn-neutral float-right" title="UI_Test_img module" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="UI_Test_img.html" class="btn btn-neutral float-right" title="UI_Test_img" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>

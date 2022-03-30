@@ -1,17 +1,8 @@
-denoising module
+denoising
 ================
 
-Submodules
-----------
 
-.. automodule:: denoising
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-
-
-deconv.denoiser module
+denoising.denoiser
 ------------------
 
 .. automodule:: denoising.denoiser
@@ -19,11 +10,3 @@ deconv.denoiser module
    :undoc-members:
    :show-inheritance:
 
-
-Module contents
----------------
-
-.. automodule:: denoiser
-   :members:
-   :undoc-members:
-   :show-inheritance:

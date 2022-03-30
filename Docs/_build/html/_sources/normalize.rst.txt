@@ -1,4 +1,4 @@
-normalize module
+normalize
 ================
 
 .. automodule:: normalize

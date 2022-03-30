@@ -1,4 +1,3 @@
-
 from PyQt5.QtWidgets import QWidget
 import sys
 import os
@@ -9,17 +8,15 @@ from PyQt5.QtWidgets import QApplication, QLabel, QPushButton, QDesktopWidget, Q
 from PyQt5 import QtGui
 import pandas as pd
 
-base_path = 'D:/jo77pihe/Registered'
-aq = os.path.join(base_path, 'Deconved_AutoQuant_R2')
-care = os.path.join(base_path, 'CARE_res_x')
-blind = os.path.join(base_path, 'Deconved')
-mu3 = os.path.join(base_path, 'Mu_Net_res_3_levels50')
-mu2 = os.path.join(base_path, 'Mu_Net_res_2_levels50')
-mu1 = os.path.join(base_path, 'Mu_Net_res_1_levels50')
-mu0 = os.path.join(base_path, 'Mu_Net_res_0_levels50')
-names = ['AQ', 'CARE', 'Blind_RL', 'Mu_Net-3', 'Mu_Net-2', 'Mu_Net-1', 'Mu_Net-0']
+base_path = 'D:/jo77pihe/Registered/20220223_Deconv_comp'
+aq = os.path.join(base_path, '20220203_AutoQuant_NotAveraged')
+care = os.path.join(base_path, 'CARE')
+blind = os.path.join(base_path, 'BlindRL')
+mu3 = os.path.join(base_path, 'MuNet')
 
-paths = [aq,care,blind,mu3,mu2,mu1,mu0]
+names = ['AQ', 'CARE', 'Blind_RL', 'Mu_Net']
+
+paths = [aq,care,blind,mu3]
 
 num = 20
 files = [f for f in os.listdir(aq) if f.endswith('.tif')]
@@ -29,7 +26,18 @@ MIN_VAL = -2327
 
 
 class ImageSelection(QWidget):
+    """
+    User Interface for blind comparison of images. The same image plane is shown deconvolved with two different
+    algorithms. The user is asked to select the plane he/she likes better. In the end, statistics are returned that
+    reflect on how often each deconvolution method was selected over the other ones.
+
+    """
+
     def __init__(self):
+        """
+        Initialize user interface.
+        """
+
         super().__init__()
 
         self.res = np.zeros((len(names), len(names)))
@@ -89,6 +97,10 @@ class ImageSelection(QWidget):
         self.move(qr.topLeft())
 
     def show_img(self):
+        """
+        Display images.
+        """
+
         # Count selection to stastics
         if self.cx:
             if self.rb2.isChecked():
@@ -111,6 +123,10 @@ class ImageSelection(QWidget):
         self.rb1.setChecked(True)
 
     def random_images(self):
+        """
+        Select random image planes and deconvolution techniques.
+        """
+
         # show new images
         a = randrange(len(names))
         b = randrange(len(names))
@@ -140,15 +156,37 @@ class ImageSelection(QWidget):
             self.random_images()
 
     def img_2_pixmap(self, img):
+        """
+        Convert image to displayable version.
+
+        :param img: Input image
+        :type img: nd.array
+        :return: Displayable image
+        :rtype: nd.array
+        """
         img = (self._rescale(img) * 255).astype(np.uint8)
         img = QtGui.QImage(img, img.shape[0], img.shape[0], img.shape[0], QtGui.QImage.Format_Indexed8)
         return QtGui.QPixmap.fromImage(img)
 
     def _rescale(self, img):
+        """
+        Rescale input to range of 0 and 1
+
+        :param img: Input
+        :type img: nd.array
+        :return: Rescaled input
+        :rtype: nd.array
+        """
+
         img = (img - img.min())
         return img / img.max()
 
     def closeEvent(self, event):
+        """
+        Specify behaviour upon closing the application. The statistics are saved to file.
+
+        :param event: Close event
+        """
         reply = QMessageBox.question(self, 'Window Close', 'Are you sure you want to close the window?',
                                      QMessageBox.Yes | QMessageBox.No, QMessageBox.No)
 
@@ -162,6 +200,12 @@ class ImageSelection(QWidget):
 
 
 def get_result():
+    """
+    Load statistics.
+
+    :return: Statistics
+    :rtype: pd.DataFrame
+    """
     counter=np.load('counter_comparison.npy')
     res = np.load('res_comparison.npy')
     x = (res/counter)
@@ -170,6 +214,10 @@ def get_result():
 
 
 def main():
+    """
+    Run application.
+
+    """
     app = QApplication(sys.argv)
     ex = ImageSelection()
 

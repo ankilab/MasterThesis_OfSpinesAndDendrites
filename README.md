@@ -1,6 +1,6 @@
 # Master Thesis: Of Spines And Dendrites
 
-All code used to produce the results and plots in my Master's thesis.
+All code used to produce the results and plots in my Master's thesis (@johbros).
 
 **Docs.** This folder contains the files for generating a Sphinx (https://www.sphinx-doc.org/en/master/) documentation for the repository.
 
